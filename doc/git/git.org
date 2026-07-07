@@ -1,0 +1,104 @@
+#+title: Git用法
+# #+subtitle: 
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+* 补丁篇
+** 生成patch
+*** git diff > xxx.patch
+#+begin_src shell
+  #只想 patch Test.java 文件
+  git diff Test.java > test.patch
+  # 把所有的修改文件打成 patch
+  git diff > test.patch
+#+end_src
+*** git format-patch
+#+begin_src shell
+  #生成最近的1次commit的patch
+  $ git format-patch HEAD^       
+  #生成最近的2次commit的patch
+  $ git format-patch HEAD^^      
+  #生成最近的3次commit的patch
+  $ git format-patch HEAD^^^     
+  #生成最近的4次commit的patch
+  $ git format-patch HEAD^^^^    
+  #生成两个commit间的修改的patch（包含两个commit. 和都是具体的commit号)
+  $ git format-patch ..  
+  #生成单个commit的patch
+  $ git format-patch -1      
+  #生成某commit以来的修改patch（不包含该commit）
+  $ git format-patch         
+  #生成从根到r1提交的所有patch
+  $ git format-patch --root	
+#+end_src
+** 应用patch
+git apply 是另外一种打 patch 的命令，其与 git am 的区别是，git apply
+并不会将 commit message 等打上去，打完 patch 后需要重新 git add 和 git
+commit，而 git am 会直接将 patch 的所有信息打上去，而且不用重新 git
+add 和 git commit,author 也是 patch 的 author 而不是打 patch 的人
+*** 检查patch 的情况
+#+begin_src shell
+  # 查看patch的情况
+  $ git apply --stat 0001-limit-log-function.patch 
+  # 检查patch是否能够打上，如果没有任何输出，则说明无冲突，可以打上
+  $ git apply --check 0001-limit-log-function.patch 
+#+end_src
+*** 使用git diff 生成的 patch
+#+begin_src shell
+  $ git apply xxx.patch
+#+end_src
+*** 使用git format-patch 生成的 patch
+#+begin_src shell
+  # 将名字为0001-limit-log-function.patch的patch打上
+  $ git am 0001-limit-log-function.patch 
+  # 添加-s或者--signoff，还可以把自己的名字添加为signed off by信息，
+  # 作用是注明打patch的人是谁，因为有时打patch的人并不是patch的作者
+  $ git am --signoff 0001-limit-log-function.patch 
+  # 将路径~/patch-set/*.patch 按照先后顺序打上
+  $ git am ~/patch-set/*.patch 
+  # 当git am失败时，用以将已经在am过程中打上的patch废弃掉
+  # (比如有三个patch，打到第三个patch时有冲突，那么这条命令会把打上的前两个patch丢弃掉，
+  # 返回没有打patch的状态)
+  $ git am --abort 
+  #当git am失败，解决完冲突后，这条命令会接着打patch
+  $ git am --resolved 
+#+end_src
+*** 打Patch 的过程中发生了冲突
+解决 patch 冲突的过程是：
+如果不想打这一系列 patch 了，直接：git am --abort。
+如果还想打， 有两种解决方案.
+- 方案一（推荐）：
+  + 根据 git am 失败的信息，找到发生冲突的具体 patch 文件，然后用命令
+    git apply --reject <patch_name>，强行打这个 patch，发生冲突的部分
+    会保存为.rej 文件（例如发生冲突的文件是 a.txt，那么运行完这个命令
+    后，发生 conflict 的部分会保存为 a.txt.rej），未发生冲突的部分会成
+    功打上 patch
+  + 根据.rej 文件，通过编辑该 patch 文件的方式解决冲突。
+  + 废弃上一条 am 命令已经打了的 patch：git am --abort
+  + 重新打 patch：git am ~/patch-set/*.patchpatch
+- 方案二：
+  + 根据 git am 失败的信息，找到发生冲突的具体 patch 文件，然后用命令
+    git apply --reject <patch_name>，强行打这个 patch，发生冲突的部分
+    会保存为.rej 文件（例如发生冲突的文件是 a.txt，那么运行完这个命令
+    后，发生 conflict 的部分会保存为 a.txt.rej），未发生冲突的部分会成
+    功打上 patch;
+  + 根据.rej 文件，通过编辑发生冲突的 code 文件的方式解决冲突。
+  + 将该 patch 涉及到的所有文件（不仅仅是发生冲突的文件）通过命令 git
+    add <file_name > 添加到工作区中
+  + 告诉 git 冲突已经解决，继续打 patch: git am --resolved (git am
+    --resolved 和 git am --continue 是一样的)
+
+    
+
+分析：方案一和方案二主要区别是解决冲突的方法不一样。方案一是通过编辑
+patch 文件的方式解决冲突，方案二十通过编辑冲突 code 文件的方式解决冲突。
+这两种方案区别比较大：经过实验，核心区别在于，方案二无法验证冲突有没有
+切实的解决。即使你在方案二的第二步乱改一通，也能 “打完” 发生冲突的
+patch（并没有检测修改后的 code 文件跟 patch 期望的是否相同）。因此，如
+果采用方案二，那么再解决 code 文件冲突后，需要人工去确认修改的正确性。
+

@@ -1,0 +1,463 @@
+#+title: ARM CoreSight寄存器级调试
+#+subtitle: ETM/TPIU/CTI协同配置与工程实践
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+
+ARM CoreSight架构作为现代 Cortex-M/Cortex-A 处理器的标准调试基础设施，
+其核心组件——嵌入式跟踪宏单元（ETM）、跟踪端口接口单元（TPIU）和交叉触
+发接口（CTI）——共同构成了一个可配置、可扩展、高带宽的片上调试与跟踪网
+络。
+* 嵌入式跟踪宏单元（ETM）
+ETM即指令与数据流的精密捕获引擎,ETM是CoreSight跟踪链路的源头，它以极低
+侵入性的方式实时监控CPU内核的指令执行流、数据访问行为以及异常/中断事件
+。其核心价值在于提供“非侵入式”、“全速运行”、“时间精确”的程序行为快照，
+是性能分析、死锁诊断与安全审计的基石。理解ETM的寄存器映射，是构建完整
+跟踪解决方案的第一步。
+** ETM核心控制与状态寄存器详解
+ETM的操作围绕几个关键寄存器展开，它们共同决定了跟踪的启停、模式与当前健康状况。
+*** 跟踪使能与状态监控
+ETM_PRGCTLR（偏移0x004）是ETM的主开关。其最低位EN（bit 0）是全局使能位。
+必须强调的是，该位的写入并非简单的“置1即开” 。在写入EN=1之前，必须确保：
+- CPU 的调试使能已激活（DEMCR.TRCENA=1）；
+- 系统级调试时钟已稳定；
+- 所有依赖的跟踪缓冲区（如ITM、DWT）已正确配置。
+
+
+#+begin_src c
+  void etm_enable_safe(void) {
+      // 1. 确保 CPU 调试使能
+      DEMCR |= DEMCR_TRCENA_Msk;
+      // 2. 清除可能存在的错误状态(可选但推荐)
+      ETM_VICTLR |= ETM_VICTLR_TRCRESET_Msk; // 触发软复位
+      __DSB(); __ISB();
+      // 3. 配置其他必要寄存器(如 ETM_EVENTCTL0, ETM_CONFIGR)后...
+      // 4. 最终使能
+      ETM_PRGCTLR |= ETM_PRGCTLR_EN_Msk;
+      __DSB(); __ISB();
+      // 5. 验证状态
+      if ((ETM_STATR &amp; ETM_STATR_PMSTABLE_Msk) == 0)
+      {
+          // PMSTABLE 为 0 表示跟踪尚未稳定&#xff0c;需等待或检查配置
+          while ((ETM_STATR &amp; ETM_STATR_PMSTABLE_Msk) == 0);
+      }
+  }
+#+end_src  
+
+
+ETM_STATR（偏移 0x00C）则提供了两个至关重要的只读状态位：
+- PMSTABLE（bit 1）：表示ETM的内部管道（Pipeline）已稳定，可以开始产生
+  有效跟踪数据。在 ETM_PRGCTLR.EN 置位后，此位会由硬件自动置位。
+- IDLE（bit 0）：指示ETM当前是否处于空闲状态。当 ETM 正在生成跟踪数据
+  时，此位为 0 ；当无活动时，为 1 。这是一个非常实用的调试信号，可用于
+  判断跟踪是否被意外中断。
+*** 跟踪配置与事件控制
+ETM_CONFIGR（偏移0x010）是一个多功能配置寄存器，其中 COND[5:0] （bits
+15:10）字段尤为关键。它定义了 ETM 支持的条件跟踪模式数量。例如，若
+COND = 0x3F （即 6 个条件），则意味着 ETM 可以同时监控 6 组独立的地址/
+数据/指令匹配条件。这为实现复杂的“仅在特定函数入口处开始跟踪”或“仅当某
+全局变量被修改时记录”等高级场景提供了硬件支持。 ETM_EVENTCTL0 （偏移
+0x020 ）和 ETM_EVENTCTL1 （偏移 0x024 ）共同构成了事件选择器。它们通过
+SEL0[3:0] 和 SEL1[3:0] 字段，将 COND 字段所定义的条件，映射到具体的跟
+踪行为上。例如， SEL0 = 0x1 可能代表“当条件0满足时，开始跟踪”，而 SEL1
+= 0x2 则代表“当条件1满足时，停止跟踪”。这种“条件-动作”的解耦设计，赋予
+了 ETM 极大的灵活性。
+
+
+|------------------+---------------+---------------------------|
+| 事件选择器字段      | 含义           | 典型值与用途                |
+|------------------+---------------+---------------------------|
+|------------------+---------------+---------------------------|
+| SEL0[3:0]        | 条件0触发的动作  | 0x0:无动作；                |
+|                  |               | 0x1:开始跟踪；              |
+|                  |               | 0x2:停止跟踪；              |
+|                  |               | 0x4:生成同步包              |
+|------------------+---------------+---------------------------|
+| SEL1[3:0]        | 条件1触发的动作  | 同上，用于构建更复杂的触发序列 |
+|------------------+---------------+---------------------------|
+| INSTEN[1:0]      | 指令跟踪使能级别 | 0x0:禁用；                 |
+| in ETM_EVENTCTL1 |               | 0x1:仅跟踪分支指令；         |
+|                  |               | 0x2:跟踪所有指令            |
+|------------------+---------------+---------------------------|
+
+** ETM身份识别与能力查询寄存器
+在对任何CoreSight组件进行编程前，首要任务是对其进行“身份识别”与“能力探
+测”。这不仅能避免向不支持的寄存器写入，更能指导软件根据硬件能力动态调
+整配置策略。ETM 提供了一套完整的 ID 寄存器族。
+*** 核心身份寄存器（IDR）
+ETM_IDR0（偏移 0x1E0）是能力查询的起点。其多个位域揭示了 ETM 的核心特性：
+- TRCBB（bit 9）：指示是否支持“分支广播”（Branch Broadcast）模式，这是
+  实现多核间指令流同步跟踪的关键。
+- TRCCOND（bit 10）：指示是否支持条件跟踪，即前述 COND 字段是否有效。
+- NUMEVENT[1:0]（bits 13:12）：直接给出硬件支持的最大并发事件数，是配
+  置 ETM_EVENTCTL0/1 的上限依据。
+
+
+#+begin_src c
+  // 查询ETM是否支持条件跟踪
+  bool etm_supports_conditional_tracing(void)
+  {
+      return (ETM_IDR0 & ETM_IDR0_TRCCOND_Msk) != 0;
+  }
+  // 查询最大支持的事件数
+  uint8_t etm_max_events(void)
+  {
+      uint32_t idr0 = ETM_IDR0;
+      uint8_t num_event_bits = (idr0 & ETM_IDR0_NUMEVENT_Msk) >> ETM_IDR0_NUMEVENT_Pos;
+      // 根据 ARM 文档&#xff0c;00=1, 01=2, 10=4, 11=8
+      static const uint8_t max_events_lut[4] = {1, 2, 4, 8};
+      return max_events_lut[num_event_bits];
+  }
+#+end_src
+
+*** 版本与架构信息寄存器（PIDR/CIDR）
+ETM_PIDR0（0xFE0）、ETM_PIDR1（0xFE4）等构成的PIDR（Peripheral ID
+Register）系列，存储了芯片厂商、部件编号和修订版本等信息。 ETM_CIDR0
+（ 0xFF0 ）至 ETM_CIDR3 （ 0xFFC ）则是 CoreSight 标准的组件 ID 寄存器，
+用于确认该外设是否符合 CoreSight 规范。 ETM_CIDR3 （偏移 0xFFC ）的
+PREAMBLE[27:20] 字段重置值为 0xB1 ，这是一个硬编码的“通用标识值”，是所
+有符合规范的 CoreSight 组件的签名。在驱动 初始化 时，读取 ETM_CIDR3 并
+校验其值是否为 0xB1 ，是验证 ETM 外设是否存在且可访问的最简单、最可靠
+的方法。
+#+begin_src c
+  // 初始化时的 ETM 存在性验证
+  bool etm_is_present_and_valid(void)
+  {
+      // 读取 CIDR3
+      uint32_t cidr3 = *(volatile uint32_t*)(ETM_BASE + 0xFFC);
+      // 检查 PREAMBLE[27:20] 是否为 0xB1
+      return ((cidr3 & 0xFF) == 0xB1);
+  }
+#+end_src
+
+* 跟踪端口接口单元（TPIU）
+TPIU 即高速数据流的格式化与输出枢纽, 如果ETM是跟踪数据的“生产者”，那么
+TPIU 就是它的“物流中心”。TPIU 负责接收来自 ETM、ITM、DWT 等多个源的原
+始跟踪数据流，对其进行格式化、同步、压缩，并最终通过物理端口（并行或
+SWO）输出到外部调试器。其配置的正确性，直接决定了跟踪数据能否被主机成
+功捕获与解析。
+
+** TPIU基础配置与端口管理
+TPIU 的工作始于对端口能力的探测与选择。
+
+*** 端口能力与当前配置
+TPIU_SSPSR（Supported Port Size Register，偏移0x000）和
+TPIU_CSPSR（Current Port Size Register，偏移0x004）是一对孪生寄存器。
+TPIU_SSPSR 的每一位（bit n-1）代表是否支持 n 位宽的并行端口。例如，其
+重置值 0x0000000F （二进制 ...00001111 ）表明该 TPIU 支持 1、2、3、4
+位的端口。 TPIU_CSPSR 则用于设置当前使用的端口宽度。 关键约束是：只能
+有一位被置位，且该位对应的宽度必须在 TPIU_SSPSR 所声明的支持范围内。
+违反此规则将导致不可预测的行为。
+#+begin_src c
+  // 设置 TPIU 为 4 位并行端口模式
+  void tpiu_set_port_width_4bit(void)
+  {
+      // 1. 首先,确保 formatter 已停止(根据手册要求)
+      TPIU_FFCR &= ~TPIU_FFCR_ENFCONT_Msk; // 禁用连续格式化
+      __DSB(); __ISB();
+      // 2. 等待 FLINPROG 清零,确保无 flush 进行中
+      while (TPIU_FFSR & TPIU_FFSR_FLINPROG_Msk);
+      // 3. 设置当前端口宽度为 4 位(bit 3)
+      TPIU_CSPSR = 0x00000008; // 0x8 = 1 << (4-1)
+      __DSB(); __ISB();
+  }
+#+end_src
+*** 异步输出（SWO）配置
+对于资源受限的系统，串行线输出（SWO）是比并行端口更常用的方案。
+TPIU_ACPR （Asynchronous Clock Prescaler Register，偏移 0x010 ）是 SWO
+的核心配置寄存器。其 PRESCALER[12:0] 字段决定了 SWO 的波特率：
+Baudrate = TRACECLKIN / (PRESCALER + 1) 。 假设系统 TRACECLKIN 为 10
+MHz，目标波特率为 2 Mbps，则计算过程如下： PRESCALER = (10,000,000 /
+2,000,000) - 1 = 4 因此，应向 TPIU_ACPR 写入 0x00000004 。 TPIU_SPPR
+（Selected Pin Protocol Register，偏移 0x0F0 ）的 TXMODE[1:0] 字段则决
+定了 SWO 的编码方式：
+- 0x0 : 并行模式（Parallel trace port mode）
+- 0x1 : 曼彻斯特编码（Manchester encoding）
+- 0x2 : 不归零编码（NRZ encoding） 在绝大多数现代调试器（如 ST-Link
+  v2/v3, J-Link）中， NRZ （ 0x2 ）是默认且兼容性最好的选择。
+  
+** TPIU 格式化器（ Formatter ）控制
+TPIU 的核心功能——数据格式化——由 TPIU_FFCR （Formatter and Flush
+Control Register）和 TPIU_FFSR （Formatter and Flush Status Register）
+共同管理。
+
+*** 格式化器启停与状态
+TPIU_FFCR 的 ENFCONT （bit 1）是连续格式化使能位。当其为 1 时，TPIU 会
+持续处理输入的跟踪数据流；当为 0 时，在 SWO 模式下，它会绕过格式化器，
+仅输出 ITM/DWT 数据，而丢弃 ETM 数据。这是一个重要的性能/带宽权衡开关。
+TPIU_FFSR 的 FTSTOPPED （bit 1）位是格式化器停止状态的反映。当软件向
+TPIU_FFCR 发送停止命令后，此位会被硬件置位，表示格式化器已完全停止并发
+送完所有缓存数据。
+
+*** 同步与刷新机制
+TPIU_PSCR （Periodic Synchronization Counter Register，偏移 0x308 ）控
+制着同步包的生成频率。其 PSCOUNT[12:0] 字段是一个 12 位计数器，定义了
+两次完整同步包之间的“格式化帧”数量。默认值 0x0000000A （10）对应每
+1024 字节插入一个同步包，这对于大多数调试场景是合适的。 手动触发一次刷
+新（Flush）的操作也非常简单：向 TPIU_FFCR 的 FONMAN （bit 6）位写入 1
+即可。这是一个自清零位，写入后硬件会立即发起一次刷新操作，并在完成后自
+动清零。
+#+begin_src c
+  // 手动触发一次 TPIU 刷新
+  void tpiu_manual_flush(void)
+  {
+      TPIU_FFCR |= TPIU_FFCR_FONMAN_Msk;
+      // 等待刷新完成
+      while (TPIU_FFSR & TPIU_FFSR_FLINPROG_Msk);
+  }
+#+end_src
+
+* 交叉触发接口（CTI）
+CTI即多组件协同调试的神经中枢, 在复杂的 SoC 中，单一的调试事件（如断点
+命中）往往需要联动多个调试组件。例如，当 CPU 在某个地址断点时，我们可
+能希望同时冻结 DMA 控制器、捕获总线监视器（Bus Monitor）的数据，并启动
+ETM 进行跟踪。CTI 就是实现这种“事件联动”的硬件枢纽，它像一个可编程的
+“触发器交换机”，将来自不同源的触发信号（Trigger In）路由到不同的目标
+（Trigger Out）。
+
+** CTI基础架构与寄存器布局
+CTI 的寄存器基地址为 0xE0042000 。其核心思想是“通道（Channel）”模型：
+一个 CTI 通常有 4 个逻辑通道（Channel 0-3），每个通道可以独立地接收输
+入事件、进行逻辑处理，并产生输出事件。
+
+*** 全局使能与通道状态
+CTI_CONTROL （偏移 0x000 ）的 GLBEN （bit 0）是 CTI 的总开关。在配置任
+何其他寄存器之前，必须先将其置位。 CTI_CHINSTATUS （偏移 0x138 ）和
+CTI_CHOUTSTATUS （偏移 0x13C ）是两个只读状态寄存器，分别反映了当前 4
+个通道的输入和输出状态。它们是调试 CTI 配置是否生效的最直接证据。例如，
+当向 CTI_APPSET 写入以“手动设置”一个通道事件后，应立即检查
+CTI_CHINSTATUS 对应位是否变为 1 。
+
+*** 触发输入/输出使能寄存器
+CTI 的强大之处在于其高度的可配置性，这主要通过两组使能寄存器实现：
+- CTI_INENx （偏移 0x020 + 0x4*x , x=0..7）：控制 8 个 CTITRIGINx 输入
+  信号中，哪些可以激活哪个通道。例如， CTI_INEN0 的 TRIGINEN[3:0] 字段
+  若为 0b0011 ，则表示 CTITRIGIN0 的激活会同时在 Channel 0 和 Channel
+  1 上产生事件。
+- CTI_OUTENx （偏移 0x0A0 + 0x4*x , x=0..7）：控制 8 个 CTITRIGOUTx 输
+  出信号中，哪些由哪个通道的事件来驱动。例如， CTI_OUTEN1 的
+  TRIGOUTEN[3:0] 若为 0b1000 ，则表示 Channel 3 的事件会驱动
+  CTITRIGOUT1 输出。 这种“输入-通道-输出”的三级映射，使得 CTI 能够构建
+  极其复杂的触发网络。
+** CTI 典型应用：CPU 断点联动 ETM 跟踪
+一个最经典的应用场景是：当 CPU 在 main() 函数入口处命中硬件断点时，自
+动启动 ETM 进行跟踪。这需要 CTI 作为中间桥梁。 配置步骤如下：
+- 连接 CPU 断点输出到 CTI 输入： 大多数 Cortex-M 处理器会将断点事件映
+  射到 CTITRIGIN0 。确保 CTI_INEN0 被正确配置，使 CTITRIGIN0 能激活
+  Channel 0。
+- 连接 CTI 输出到 ETM 输入： ETM 通常有一个 ETMTRIGIN 输入引脚，用于接
+  收外部启动信号。将 CTITRIGOUT0 连接到此引脚，并配置 CTI_OUTEN0 ，使
+  Channel 0 的事件能驱动 CTITRIGOUT0 。
+- 配置 ETM 响应外部触发： 在 ETM_VICTLR （偏移 0x080 ）中，设置
+  EVENT[7:0] 字段，使其能响应来自 CTITRIGOUT0 的脉冲。
+
+
+#+begin_src c
+  // 配置 CTI 实现 "CPU Breakpoint -> Start ETM" 联动
+  void cti_configure_breakpoint_to_etm(void)
+  {
+      // 1. 使能 CTI
+      CTI_CONTROL |= CTI_CONTROL_GLBEN_Msk;
+      // 2. 配置 CTITRIGIN0 激活 Channel 0
+      CTI_INEN0 = 0x00000001; // TRIGINEN[0] = 1
+      // 3. 配置 Channel 0 驱动 CTITRIGOUT0
+      CTI_OUTEN0 = 0x00000001; // TRIGOUTEN[0] = 1
+      // 4. (可选)手动触发一次,测试连通性
+      CTI_APPSET = 0x00000001; // 设置 Channel 0 事件
+      // 此时,CTITRIGOUT0 应变为高电平
+  }
+#+end_src
+此配置完成后，无需任何软件干预，CPU 的每一次断点命中都会自动、即时地启
+动 ETM 跟踪，实现了真正意义上的“硬件级”调试自动化。
+
+
+但仅完成信号通路的建立远未达到工程落地标准——实际系统中，CTI 的行为必须
+与 CPU 调试状态机严格同步，否则极易出现“触发丢失”或“误触发”。关键在于
+理解 CTI 事件传播的时序约束与握手机制。
+*** CTI 事件传播延迟与同步屏障
+CTI 并非零延迟通路。从 CTITRIGIN0 上升沿到达 Channel 0 输入端，到
+CTITRIGOUT0 输出有效电平，中间存在至少 2~3 个 AHB 总线周期的传播延迟。
+在高速 Cortex-M7/M33 等内核上，若此时 CPU 正处于指令流水线深度执行阶段，
+ETM 可能因未及时捕获到触发边沿而错过首条指令。解决方案是引入 同步屏障
+（Synchronization Barrier） ：在断点命中后、ETM 启动前，强制插入一个
+__DSB() + __ISB() 序列，并确保该序列位于断点处理函数（如
+HardFault_Handler 中模拟的断点异常入口）的最前端。更稳健的做法是，在
+CTI 配置中启用 CTI_GATE 寄存器（偏移 0x140 ）的 GATEEN 位，并将
+GATESEL 字段指向一个由调试器可控的 GPIO 或 DWT 比较器输出，从而实现“调
+试器下发门控信号 → 断点触发 → CTI 转发 → ETM 启动”的三级时序锁定。
+#+begin_src c
+  // 增强型 CTI 配置:带门控同步的断点联动
+  void cti_configure_breakpoint_to_etm_with_gate(void)
+  {
+      // 1. 使能 CTI 全局
+      CTI_CONTROL |= CTI_CONTROL_GLBEN_Msk;
+      // 2. 配置输入:CTITRIGIN0 → Channel 0
+      CTI_INEN0 = 0x00000001;
+      // 3. 配置输出:Channel 0 → CTITRIGOUT0
+      CTI_OUTEN0 = 0x00000001;
+      // 4. 启用门控(Gate),并选择 DWT_COMP0 作为门控源
+      // (假设 DWT 已配置为在某地址写入时产生 COMP0 事件)
+      CTI_GATE = (1U << CTI_GATE_GATEEN_Pos) |
+          (0U << CTI_GATE_GATESEL_Pos); // GATESEL=0 → DWT_COMP0
+      // 5. 清除所有通道状态,避免残留事件干扰
+      CTI_APPCLEAR = 0xFFFFFFFF;
+      __DSB(); __ISB();
+  }
+#+end_src
+*** CTI通道逻辑组合与多条件触发
+单通道仅支持“或”逻辑（多个输入可同时激活同一通道），但真实场景常需“与”、
+“非”或“边沿检测”。CTI 提供了 CTI_TRIGON （偏移 0x100 ）和 CTI_TRIGOFF
+（偏移 0x104 ）寄存器，允许对通道事件进行动态使能/禁用。例如，要实现
+“仅当断点命中 且 某全局标志 g_debug_mode == 1 时才启动 ETM”，可将
+g_debug_mode 映射至 CTITRIGIN1 （通过 GPIO 输入或内存映射外设），然后
+配置 Channel 0 同时监听 CTITRIGIN0 和 CTITRIGIN1 ，再通过软件轮询
+CTI_CHINSTATUS 确认双输入均有效后，再手动置位 CTI_APPSET 触发输出。这
+是一种软硬协同的“条件与”实现方式，规避了硬件不支持布尔组合的限制。
+|--------------+--------------+---------------+-------------------------------|
+| 场景          | 输入信号       | 通道配置        | 软件协同动作                    |
+|--------------+--------------+---------------+-------------------------------|
+|--------------+--------------+---------------+-------------------------------|
+| 单断点触发     | CTITRIGIN0   | CTI_INEN0=0x1 | 无                             |
+|--------------+--------------+---------------+-------------------------------|
+| 断点+标志位联合 | CTITRIGIN0/1 | CTI_INEN0=0x3 | 读CTI_CHINSTATUS&0x3==0x3      |
+|              |              |               | 后CTI_APPSET=0x1               |
+|--------------+--------------+---------------+-------------------------------|
+| 异常类型过滤   | CTITRIGIN2   | CTI_INEN2=0x1 | 配合DEMCR.EXCITRIG选择特定异常号 |
+|--------------+--------------+---------------+-------------------------------|
+* 多组件协同初始化流程
+多组件协同初始化流程即从寄存器到可运行跟踪链,单一模块的寄存器配置只是
+起点，真正的挑战在于构建一个 原子化、可重入、错误可恢复 的全链路初始化
+流程。以下是一个经过量产项目验证的7阶段初始化协议，严格遵循 ARM
+CoreSight 架构的依赖关系与时序要求。
+** 初始化阶段划分与依赖图谱
+CoreSight 组件间存在严格的初始化次序依赖：
+- Stage 0：系统准备 —— 确保 DBGMCU_CR （Cortex-M）或 OSDLR （Cortex-A）
+  已解锁调试域， DEMCR.TRCENA = 1 已置位；
+- Stage 1：CTI 预配置 —— 仅使能 CTI，不连接任何输入/输出，为后续联动预留通道；
+- Stage 2：ETM 基础就绪 —— 读取 ID 寄存器确认存在性，复位
+  ETM_VICTLR.TRCRESET ，配置 ETM_CONFIGR.COND 和 ETM_EVENTCTL0/1 的默
+  认值（如全禁用）；
+- Stage 3：TPIU 端口协商 —— 读 TPIU_SSPSR ，根据目标调试器能力选择最优
+  端口宽度（SWO 优先），设置 TPIU_ACPR 和 TPIU_SPPR ；
+- Stage 4：ETM 精细配置 —— 设置地址比较器（ ETM_ADDR0 / ETM_ADDR1 ）、
+  数据掩码（ ETM_DATAMASK0 ）、指令过滤（ ETM_INSTP0 ），并启用
+  ETM_PRGCTLR.EN ；
+- Stage 5：CTI 连通性验证 —— 手动 CTI_APPSET 触发，用逻辑分析仪捕获
+  CTITRIGOUTx 电平变化，或通过 CTI_CHOUTSTATUS 读取验证；
+- Stage 6：全链路功能测试 —— 在目标地址设断点，运行程序，用 OpenOCD 或
+  Segger J-Link Commander 捕获 SWO 数据流，解析 ETM 包头（ 0x00000001
+  同步包）与指令包（ 0x00000002 ）。 该流程中，每个阶段失败均应返回明
+  确错误码（如 CORESIGHT_ERR_CTINOTFOUND 、 CORESIGHT_ERR_TPIUWIDTH ），
+  而非 assert() 致命中断，以支持调试器热插拔等动态场景。
+  
+** 关键寄存器写保护与安全访问策略
+CoreSight 寄存器并非全部可自由读写。 ETM_LOCKACCESS （偏移 0xFB0 ）和
+TPIU_LAR （偏移 0xFB0 ）是典型的锁存寄存器（Lock Access Register）。其
+设计初衷是防止调试会话被恶意软件篡改。写入 0xC5ACCE55 解锁，写入
+0x00000000 锁定。 必须注意：
+- 解锁操作必须在 __DSB() + __ISB() 后立即执行，否则可能被编译器优化掉；
+- 所有受保护寄存器的写入，必须包裹在 lock/unlock 代码块内；
+- 若多次解锁失败（连续读 ETM_LOCKSTATUS 返回 0x0 ），应判定为硬件故障
+  或调试器占用冲突。
+  
+#+begin_src c
+  // 安全写入受保护 ETM 寄存器的宏
+  #define ETM_WRITE_PROTECTED(reg, val) do { \
+          ,*(volatile uint32_t*)(ETM_BASE + 0xFB0) = 0xC5ACCE55;   \
+          __DSB(); __ISB();                                       \
+          ,*(volatile uint32_t*)(ETM_BASE + (reg)) = (val);        \
+          __DSB(); __ISB();                                       \
+          ,*(volatile uint32_t*)(ETM_BASE + 0xFB0) = 0x00000000;   \
+          __DSB(); __ISB();                                       \
+      } while(0)
+  // 使用示例:安全配置 ETM 地址比较器
+  // ETM_ADDR0 = main() 入口
+  ETM_WRITE_PROTECTED(0x0A0, 0x08001000); 
+  // ETM_ADDRMASK0 = 4-byte 对齐掩码
+  ETM_WRITE_PROTECTED(0x0A4, 0x0000000F); 
+#+end_src
+** 实时跟踪数据解析与带宽瓶颈诊断
+即使硬件链路完全正常，用户仍可能面临“有输出无数据”或“数据断续”问题。根
+源往往不在寄存器配置，而在 跟踪数据带宽与主机接收能力的失配 。典型瓶颈
+点包括：
+- TPIU 缓冲区溢出 ：当 ETM 生成速率 > TPIU 格式化+输出速率，
+  TPIU_FFSR.FULL （bit 0）会被置位，表示内部 FIFO 已满，后续数据被丢弃；
+- SWO物理层误码：波特率过高或线路噪声导致TPIU_FFSR.ERR（bit 2）置位；
+- 调试器固件限制 ：某些 ST-Link 固件版本对 SWO 数据包长度有硬限制（如
+  最大 64 字节），超出则静默丢弃。 诊断流程必须结构化：
+  + 读 TPIU_FFSR ，检查 FULL 、 ERR 、 FTSTOPPED 位；
+  + 若 FULL 置位，降低 ETM 跟踪粒度（如将 ETM_CONFIGR.INSTEN 从 0x2 改
+    为 0x1 ，仅跟踪分支）；
+  + 若 ERR 置位，降低 TPIU_ACPR.PRESCALER 值（即降低波特率），并检查
+    PCB 上 SWO 信号线是否过长或未端接；
+  + 使用TPIU_PSCR.PSCOUNT增大同步包间隔（如设为0x20），减少协议开销。
+    
+
+#+begin_src c
+  // TPIU 健康状态自检函数
+  typedef struct
+  {
+      bool is_full;
+      bool has_error;
+      bool formatter_stopped;
+      uint32_t raw_status;
+  } tpiu_health_t;
+  tpiu_health_t tpiu_diagnose(void)
+  {
+      uint32_t ffsr = TPIU_FFSR;
+      tpiu_health_t health =
+          {
+              .is_full = (ffsr & TPIU_FFSR_FULL_Msk) != 0,
+              .has_error = (ffsr & TPIU_FFSR_ERR_Msk) != 0,
+              .formatter_stopped = (ffsr & TPIU_FFSR_FTSTOPPED_Msk) != 0,
+              .raw_status = ffsr
+          };
+      return health;
+  }
+  // 调用示例
+  tpiu_health_t h = tpiu_diagnose();
+  if (h.is_full)
+  {
+      // 启动降级策略:关闭数据跟踪,仅保留指令流
+      ETM_EVENTCTL0 &= ~ETM_EVENTCTL0_DATAEN_Msk;
+  }
+#+end_src
+
+* 工程实践陷阱与规避清单
+基于数十个 Cortex-M3/M4/M7 项目的实战经验，总结出以下高频致命陷阱，每
+一条都对应真实产线Bug.
+|--------------------------+---------------------------------------+---------------------------------------------------|
+| 现象                      | 根本原因                                | 规避方案                                            |
+|--------------------------+---------------------------------------+---------------------------------------------------|
+|--------------------------+---------------------------------------+---------------------------------------------------|
+| TM启用后系统死锁            | ETM_PRGCTLR.EN=1 时，                  | 在ETM_PRGCTLR.EN=1前，执行                          |
+|                          | CPU仍在执行未完成的调试事务               | DWT_CTRL&=~DWT_CTRL_CYCEVTENA_Msk                 |
+|                          | （如未清空DWT触发器）                    | 并__DSB()                                          |
+|--------------------------+---------------------------------------+---------------------------------------------------|
+| WO输出乱码，但波特率计算无误 | TPIU_SPPR.TXMODE被误设为0x0（并行模式）， | 初始化时强制写TPIU_SPPR=(2U<<TPIU_SPPR_TXMODE_Pos)， |
+|                          | 而硬件实际连接的是SWO引脚                 | 覆盖所有位                                          |
+|--------------------------+---------------------------------------+---------------------------------------------------|
+| TI触发一次后失效            | CTI_APPCLEAR 未在每次触发后调用，        | 将CTI_APPCLEAR写入置于中断服务程序（ISR）             |
+|                          | 导致通道状态锁死                         | 末尾，形成闭环                                       |
+|--------------------------+---------------------------------------+---------------------------------------------------|
+| 核系统中ETM数据混杂         | 未配置ETM_IDR0.TRCBB=1且未启用           | 对多核 SoC，必须启用分支广播与时间戳同步，              |
+|                          | ETM_CONFIGR.SYNCTIME=1                | ETM_CONFIGR 中 SYNCTIME=1 , TRCBB=1                |
+|--------------------------+---------------------------------------+---------------------------------------------------|
+| 踪数据在调试器中显示为       | TPIU_FFCR.TXEXT=0（外部时钟未使能），    | 检查TPIU_FFCR的TXEXT位（bit 8），                    |
+| “Unknown Packet”         | 但系统使用外部 TRACECLK                  | 设为1并确保外部晶振已起振                             |
+|--------------------------+---------------------------------------+---------------------------------------------------|
+
+最后，必须强调一个反直觉但至关重要的原则： CoreSight 初始化不是一次性
+操作，而是可重复、可暂停、可恢复的状态机 。在 RTOS 环境中，应将
+ETM/CTI/TPIU 封装为一个 coresight_driver_t 对象，提供 init() 、
+start() 、 pause() 、 resume() 、 deinit() 接口。 pause() 不应简单关闭
+ETM_PRGCTLR.EN ，而应通过 CTI_APPCLEAR 切断所有触发源，并等待
+ETM_STATR.IDLE == 1 后再返回； resume() 则重新使能 CTI 通道并触发
+CTI_APPSET 。这种设计使跟踪功能可无缝集成到任务调度、低功耗模式切换等
+复杂场景中，真正发挥 CoreSight 作为系统级调试基础设施的价值。
+

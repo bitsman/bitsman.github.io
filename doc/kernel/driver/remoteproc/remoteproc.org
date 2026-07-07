@@ -1,0 +1,162 @@
+#+title: Kernel Remoteproc框架详解
+# #+subtitle: 
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+
+* 简介
+remoteproc（Remote Processor，远程处理器）是 Linux 内核提供的异构多核
+处理器管理框架，用于统一管理 SoC 上的协处理器、MCU、DSP、RTOS 小核、蓝
+牙基带、ISP、VPU 等非 Linux 运行的远程处理器。典型场景：
+- 主核：ARM Cortex-A/A55/A72 跑 Linux
+- 远程核：Cortex-R/M、DSP、RISC-V 跑 RTOS / 裸机固件
+- remoteproc 负责：固件加载、上电复位、启动停止、异常捕获、内存资源分
+  配、远程日志、故障恢复。
+  
+* 核心作用
+- 把远程处理器抽象成统一设备，屏蔽各厂商上电、复位、内存映射差异;
+- 从文件系统加载固件（.elf/.bin）到远程核共享内存
+- 管理远程核生命周期：上电->加载固件->复位->启动->停止->下电
+- 预留、保护主核与远程核之间的共享内存、DMA 区域、中断资源
+- 配合 rpmsg 框架实现主核 Linux <--> 远程核的进程间通信
+- 远程核崩溃时捕获异常、收集 crash 日志、支持自动重启
+
+* 整体架构分层
+** 用户层接口
+- /dev/remoteprocX 字符设备：用户空间可通过 rprocctl、fw_loader 控制远
+  程核启停、加载固件
+- sysfs 节点：/sys/class/remoteproc/remoteprocX/
+  #+begin_example
+    state        # offlined/stopped/running
+    firmware     # 指定固件名，如 imx_rproc_m4.elf
+    recover      # 崩溃是否自动恢复
+    crash         # 崩溃信息
+  #+end_example
+- 常用操作
+  #+begin_src shell
+    echo imx_m4_fw.elf > /sys/class/remoteproc/remoteproc0/firmware
+    echo start > /sys/class/remoteproc/remoteproc0/state
+    echo stop > /sys/class/remoteproc/remoteproc0/state
+  #+end_src
+** 核心层
+- 生命周期：remoteproc 核心（drivers/remoteproc/remoteproc_core.c），
+  定义 struct rproc 作为远程处理器抽象对象，统一生命周期管理：
+  + rproc_add()：注册到内核，创建 sysfs、字符设备
+  + rproc_boot()：启动流程：加载固件->解析ELF段->分配/映射内存->复位启动
+    远程核
+  + rproc_shutdown()：停止远程核、释放资源
+  + 崩溃处理：远程核异常触发看门狗 / 异常中断 → 进入 rproc 崩溃处理，可
+    选自动重启
+  
+
+- 关键数据结构
+  #+begin_src c
+    struct rproc {
+        struct list_head link;
+        const char *name;
+        const char *firmware;    // 要加载的固件文件名
+        struct device dev;
+        struct rproc_ops *ops;   // 平台底层操作回调
+        struct fw_priv *fw;      // 固件解析后的段信息
+        struct list_head segments; // ELF 代码段、数据段列表
+        struct list_head mappings; // 共享内存映射
+        void *priv;              // 平台私有数据
+        bool auto_recover;       // 崩溃自动重启
+        enum rproc_state state;  // 状态机
+        ...
+    };
+  #+end_src
+
+- 状态机：
+  - RPROC_OFFLINE
+  - RPROC_SUSPENDED
+  - RPROC_RUNNING
+  - RPROC_CRASHED
+  - RPROC_STOPPED
+  - RPROC_DELETED
+** 平台底层层
+struct rproc_ops（厂商适配层）,remoteproc 核心不直接操作寄存器，由各
+SOC 厂商实现硬件操作回调：
+#+begin_src c
+  struct rproc_ops {
+      int (*start)(struct rproc *rproc);       // 上电、去复位、启动小核
+      int (*stop)(struct rproc *rproc);        // 停核、复位、下电
+      int (*prepare)(struct rproc *rproc);     // 启动前资源准备（时钟、电源、中断）
+      int (*unprepare)(struct rproc *rproc);
+      void (*kick)(struct rproc *rproc);       // 唤醒远程核（rpmsg 发送后触发）
+      int (*da_to_va)(struct rproc *rproc, dma_addr_t da, void **va);
+      int (*va_to_da)(struct rproc *rproc, void *va, dma_addr_t *da);
+      // 崩溃、异常回调
+      void (*crashed)(struct rproc *rproc);
+  };
+#+end_src
+** 固件解析层（ELF 加载）
+固件解析层采用remoteproc，默认支持 ELF 固件：
+- 内核请求 firmware_class 从 /lib/firmware/ 加载固件文件
+- 解析 ELF 程序段（.text、.data、.bss、.resource 段）
+- 对每一段：
+  1. 从 rproc_ops 申请远程核物理地址空间
+  2. 将段内容拷贝到共享内存
+  3. 建立主核虚拟地址 ↔ 远程核设备地址映射
+
+
+特殊 .resource 段
+远程核固件中自定义的 .resource ELF 段，用于向 Linux 声明需要的资源：
+- 共享内存区域（rpmsg 环形缓冲区）
+- 设备中断、DMA 预留区
+- trace、日志缓冲区
+- rproc 解析该段后自动预留内存，避免主核内存管理覆盖远程核固件区域。
+** 配套通信
+通信采用rpmsg 子系统， remoteproc 负责把远程核跑起来，rpmsg 负责双核数
+据通信，二者强绑定：
+- remoteproc 解析 .resource 段，创建 rpmsg 共享环形缓冲区
+- 注册 virtio 设备，主核 virtio 驱动与远程核 virtio 后端通信
+- 用户态可通过 /dev/rpmsgX、socket 方式收发双核数据  
+* 远程核完整启动流程
+- DTS 中定义 remoteproc 节点：指定时钟、复位、共享内存区域、固件名
+- 平台驱动 probe：调用 rproc_alloc + 填充 rproc_ops + rproc_add
+- 用户态写固件名到 sysfs firmware 属性
+- 用户执行 echo start：
+  + request_firmware 加载 ELF 固件
+  + 解析 ELF 各个段，申请、映射共享内存
+  + 执行 rproc_ops->prepare：开时钟、电源、配置内存保护
+  + 把固件段拷贝到远程核运行地址
+  + 调用 rproc_ops->start：释放复位，远程核从指定入口地址开始运行
+- 远程核启动后，初始化 virtio/rpmsg 驱动，双核建立通信通道
+
+* 关键资源管理
+内存保护
+- DTS 中用 reserved-memory 预留一块物理内存，不进入 Linux 系统内存管理
+- remoteproc 将这块内存作为远程核固件运行区、rpmsg 共享缓冲区
+- 通过 iommu 或物理地址偏移映射，实现主核虚拟地址 ↔ 远程核设备地址转换
+- 禁止 Linux 内存碎片化、OOM 回收占用该区域  
+* 常用调试手段
+- 状态和日志
+  #+begin_src shell
+    # 查看远程核状态
+    cat /sys/class/remoteproc/remoteproc0/state
+    # 查看崩溃日志
+    cat /sys/class/remoteproc/remoteproc0/crash
+    # 动态开关自动恢复
+    echo 1 > /sys/class/remoteproc/remoteproc0/recover
+  #+end_src
+- 内核日志：dmesg | grep remoteproc
+- 固件加载失败常见原因：
+  + 固件路径错误（必须放在 /lib/firmware）
+  + ELF 段地址超出预留共享内存范围
+  + DTS 未正确配置 reserved-memory、时钟复位
+  + 内存地址映射、IOMMU 配置错误
+
+* 关键内核配置选项
+#+begin_src makefile
+  CONFIG_REMOTEPROC=y/m          # 开启 remoteproc 核心框架
+  CONFIG_REMOTEPROC_CDEV=y       # 开启 /dev/remoteproc 字符设备
+  CONFIG_RPMSG=y                 # 双核通信
+  CONFIG_RPMSG_VIRTIO=y
+  CONFIG_FW_LOADER=y             # 固件加载依赖
+#+end_src

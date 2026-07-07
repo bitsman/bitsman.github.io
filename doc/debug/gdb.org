@@ -1,0 +1,311 @@
+#+title: GDB使用方法
+# #+subtitle: 
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+* 用法
+- save breakpoints file_name: 将现有所有断点信息保存在file_name文件中，
+  下次可以一次性加载这些断点；
+  + 启动gdb时使用“-x file_name”；
+  + 在gdb中执行“source file_name”；
+- trace跟踪
+  + ftrace：跟踪系统函数；
+  + ptrace：跟踪进程执行；
+  + trace：跟踪系统调用；
+- 源码及调试： 在emacs下gdb要能进行kernel源码及调试，需要在gdb后面带
+  上--fullname xxx.elf的参数调出加载debuginfo的过程。
+** jump
+一般来说，被调试程序会按照程序代码的运行顺
+序依次执行，但是GDB也提供了乱序执行的功能，也就
+是说，GDB可以修改程序的执行顺序，从而让程序随意
+跳跃。这个功能可以由GDB的jump命令jump<linespec>
+来指定下一条语句的运行点。<linespec>可以是文件
+的行号，可以是file：line格式，也可以是+num这种
+偏移量格式，表示下一条运行语句从哪里开始。 
+** return
+如果在函数中设置了调试断点，在断点后还有语
+句没有执行完，这时候我们可以使用return命令强制
+函数忽略还没有执行的语句并返回，且可以指定返回值。
+** call
+call命令用于强制调用某函数
+
+** 多核调试
+- monitor targets: 展示多核状态,需要openocd/gdbserver连上多核;
+  #+begin_example
+    (gdb) monitor targets 
+        TargetName         Type       Endian TapName            State       
+    --  ------------------ ---------- ------ ------------------ ------------
+     0* hwd10909.a53.0     aarch64    little hwd10909.tap       halted
+     1  hwd10909.a53.1     aarch64    little hwd10909.tap       running
+     2  hwd10909.a53.2     aarch64    little hwd10909.tap       running
+     3  hwd10909.a53.3     aarch64    little hwd10909.tap       running
+  #+end_example
+- monitor targets xxx: 在smp模式下,可以切换当前观察核到其他核上,xxx可
+  以使用编号,也可以使用TargetName,切换后,再用monitor targets,显示如下.
+  #+begin_example
+        TargetName         Type       Endian TapName            State       
+    --  ------------------ ---------- ------ ------------------ ------------
+     0  hwd10909.a53.core0 aarch64    little hwd10909.tap       halted
+     1* hwd10909.a53.core1 aarch64    little hwd10909.tap       halted
+     2  hwd10909.a53.core2 aarch64    little hwd10909.tap       halted
+     3  hwd10909.a53.core3 aarch64    little hwd10909.tap       halted
+  #+end_example
+
+* Python辅助
+判断gdb是否支持python, 如果是ARM,也可以直接使用arm-none-eabi-gdb-py,但
+是需要python2.7支持.
+#+begin_src shell
+  $ /path/to/gdb  --config
+  This GDB was configured as follows:
+  [...]
+               --with-python=/usr
+  [...]
+#+end_src
+
+
+调试的示例代码如下
+#+begin_src c
+  #include <inttypes.h>
+  #include <stddef.h>
+  #include <stdlib.h>
+
+  typedef struct Uuid {
+    uint8_t bytes[16];
+  } Uuid;
+
+  typedef struct UuidListNode {
+    struct UuidListNode *next;
+    Uuid uuid;
+  } UuidListNode;
+
+  static UuidListNode *s_list_head = NULL;
+
+  void list_add_uuid(const Uuid *uuid) {
+    UuidListNode *node_to_add = malloc(sizeof(UuidListNode));
+    assert(node_to_add != NULL);
+
+    ,*node_to_add = (UuidListNode) {
+      .uuid = *uuid,
+    };
+
+    // Add entry to the front of the list
+    node_to_add->next = s_list_head;
+    s_list_head = node_to_add;
+  }
+
+  //
+  // Code to populate the list with fake data
+  //
+
+  // A completely fake uuid-generator implementation
+  static void generate_fake_uuid(Uuid *uuid) {
+    for (size_t i = 0; i < sizeof(*uuid); i++) {
+      uuid->bytes[i] = rand() & 0xff;
+    }
+  }
+
+  static void generate_fake_uuid_list(void) {
+    for (int i = 0; i < 10; i++) {
+      Uuid uuid;
+      generate_fake_uuid(&uuid);
+      list_add_uuid(&uuid);
+    }
+  }
+
+  int main(void) {
+    generate_fake_uuid_list();
+    // Let's just spin loop so we can break at any point and dump the list
+    while (1) { }
+    return 0;
+  }
+#+end_src
+** 实现一个Pretty Printer
+- 定义一个类用于检测在给定的类型下,是否支持pretty printing, 检测器需要
+  定义一个__call__函数,该函数会传入一个gdb.Value,返回一个用户定义的
+  printer或如果处理不了,返回None.
+- 这个printer类,需要定义一个to_string函数,gdb会调用它打印value.
+#+begin_src python
+  from gdb.printing import PrettyPrinter, register_pretty_printer
+  import gdb
+  import uuid
+
+  class UuidPrettyPrinter(object):
+      """Print 'struct Uuid' as 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'"""
+
+      def __init__(self, val):
+          self.val = val
+
+      def to_string(self):
+          return "TODO: Implement"
+
+
+  class CustomPrettyPrinterLocator(PrettyPrinter):
+      """Given a gdb.Value, search for a custom pretty printer"""
+
+      def __init__(self):
+          super(CustomPrettyPrinterLocator, self).__init__(
+              "my_pretty_printers", []
+          )
+
+      def __call__(self, val):
+          """Return the custom formatter if the type can be handled"""
+
+          typename = gdb.types.get_basic_type(val.type).tag
+          if typename is None:
+              typename = val.type.name
+
+          if typename == "Uuid":
+              return UuidPrettyPrinter(val)
+#+end_src
+** 注册Pretty Detector
+#+begin_src python
+  register_pretty_printer(None, CustomPrettyPrinterLocator(), replace=True)
+#+end_src
+
+replace=True, 表示被gdb重新source后,新的printer脚本会替换原来的,这样可
+以随时修改printer打印格式.
+#+begin_src shell
+  (gdb) source custom_gdb_extensions.py
+  (gdb) info pretty-printer
+  global pretty-printers:
+    builtin
+      mpx_bound128
+    my_pretty_printers
+#+end_src
+** Pretty Printer用法
+在具体使用时
+#+begin_src shell
+  (gdb) p *s_list_head
+  $1 = {
+    next = 0x200070a8,
+    uuid = TODO: Implement
+  }
+#+end_src
+
+继续修改to_string.
+#+begin_src python
+  def to_string(self):
+      # gdb.Value can be accessed just like they would be in C. Since
+      # this is a Uuid struct we can index into "bytes" and grab the
+      # value from each entry in the array
+      array = self.val["bytes"]
+      # Format the byte array as a hex string so Python uuid module can
+      # be used to get the string
+      uuid_bytes = "".join(
+          ["%02x" % int(array[i]) for i in range(0, array.type.sizeof)]
+      )
+      return str(uuid.UUID(uuid_bytes))
+#+end_src
+
+
+继续source
+#+begin_src shell
+  (gdb) source custom_gdb_extensions.py
+  (gdb) p *s_list_head
+  $6 = {
+    next = 0x200070a8,
+    uuid = 9d5d4440-8b5a-235e-a9ef-ec3f919c7a41
+  }
+  (gdb) p *s_list_head->next
+  $7 = {
+    next = 0x20007088,
+    uuid = 8afe211b-197e-e475-8ec6-878558dd24e6
+  }
+#+end_src
+
+** 用python自定义命令
+
+*** python命令
+- 通过继承调用gdb.Command,可以用python脚本增加新命令
+- 使用gdb.parse_and_eval可以转换传给命令的任意参数为一个gdb.Value,由此
+  可以索引c结构体成员.
+
+#+begin_src python
+  class UuidListDumpCmd(gdb.Command):
+      """Prints the ListNode from our example in a nice format!"""
+      def __init__(self):
+          super(UuidListDumpCmd, self).__init__(
+              "uuid_list_dump", gdb.COMMAND_USER
+          )
+
+      def _uuid_list_to_str(self, val):
+          """Walk through the UuidListNode list.
+
+          We will simply follow the 'next' pointers until we encounter NULL
+          """
+          idx = 0
+          node_ptr = val
+          result = ""
+          while node_ptr != 0:
+              uuid = node_ptr["uuid"]
+              result += "\n%d: Addr: 0x%x, uuid: %s" % (idx, node_ptr, uuid)
+              node_ptr = node_ptr["next"]
+              idx += 1
+          result = ("Found a Linked List with %d nodes:" % idx) + result
+          return result
+
+      def complete(self, text, word):
+          # We expect the argument passed to be a symbol so fallback to the
+          # internal tab-completion handler for symbols
+          return gdb.COMPLETE_SYMBOL
+
+      def invoke(self, args, from_tty):
+          # We can pass args here and use Python CLI utilities like argparse
+          # to do argument parsing
+          print("Args Passed: %s" % args)
+
+          node_ptr_val = gdb.parse_and_eval(args)
+          if str(node_ptr_val.type) != "UuidListNode *":
+              print("Expected pointer argument of type (UuidListNode *)")
+              return
+
+          print(self._uuid_list_to_str(node_ptr_val))
+
+  # 实例化
+  UuidListDumpCmd()
+#+end_src  
+
+*** 用法
+由此uuid_list_dump,就进入了gdb的用户自定义命令.
+#+begin_src shell
+  (gdb) help user-defined
+  User-defined commands.
+  The commands in this class are those defined by the user.
+  Use the "define" command to define a command.
+
+  List of commands:
+
+  uuid_list_dump -- Prints the ListNode from our example in a nice format!
+  # 具体使用
+  (gdb) uuid_list_dump s_list_head
+  Args Passed: s_list_head
+  Found a Linked List with 10 nodes:
+  0: Addr: 0x200070c0, uuid: 9d5d4440-8b5a-235e-a9ef-ec3f919c7a41
+  1: Addr: 0x200070a8, uuid: 8afe211b-197e-e475-8ec6-878558dd24e6
+  2: Addr: 0x20007088, uuid: 0f84cd49-d683-4217-e7a3-399373c6e6f1
+  3: Addr: 0x20007070, uuid: 23b05b1b-a32a-8288-4419-0e30f26ba3ae
+  4: Addr: 0x20007050, uuid: 3ca835e5-8f2a-cdc2-40c1-cf52716a7229
+  5: Addr: 0x20007038, uuid: 30d4349d-3a0d-0fbd-2fa1-f70fd968f4d9
+  6: Addr: 0x20007018, uuid: 437bbe90-1689-9d7e-77c6-2f269888f5b4
+  7: Addr: 0x20007000, uuid: 5e20fb38-a84e-a614-9325-562444df598d
+  8: Addr: 0x20006fe0, uuid: 7a96092c-a557-7464-c4af-1528a4e957db
+  9: Addr: 0x20006fc8, uuid: 2dcf4629-04b4-78d8-68a7-ff3f2bf1fcd9
+
+#+end_src
+
+
+可以把这个python扩展放入gdb初始化脚本就可以直接调用
+#+begin_src shell
+  source /path/to/custom_gdb_extensions.py
+#+end_src
+
+
+或者gdb启动时就调用
+#+begin_src shell
+  gdb  --ex="source /path/to/custom_gdb_extensions.py"
+#+end_src

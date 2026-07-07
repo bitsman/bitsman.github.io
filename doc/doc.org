@@ -1,0 +1,158 @@
+#+title: blog
+# #+subtitle: 
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+
+* schedule
+|------+-------------------+------------------------------|
+|      | LN                | LJT                          |
+|------+-------------------+------------------------------|
+| 周一 | -                 | -                            |
+| 周二 | 网球(18:20)       | 英语(19:00~20:00)            |
+| 周三 | 网球(18:20)       | -                            |
+| 周四 | 英语(18:30~20:00) | CPP(18:00)/英语(19:00~20:00) |
+| 周五 | 舞蹈(18:30~20:30) |                              |
+| 周六 | 隔周团集会        | 上午狼团/隔周团集会(14:30)    |
+| 周日 | -                 | 数学(15:00)                  |
+|------+-------------------+------------------------------|
+* blog
+** HPC
+- [ ] https://pramodkumbhar.com/
+- [X] Understanding CPU Architecture And Performance Using LIKWID
+  + https://pramodkumbhar.com/2020/03/architectural-optimisations-using-likwid-profiler/
+- [X] Navigating the Complexity of Large Codebases Using Vtune + xdot:
+  + https://pramodkumbhar.com/2024/04/navigating-the-complexity-of-large-codebases-using-vtune-xdot-or-perf-gprof2dot/
+- [X] core-to-core-latency: A Nice Little Tool
+  + https://pramodkumbhar.com/2023/09/core-to-core-latency-a-nice-little-tool/
+- [X] https://pramodkumbhar.com/2017/04/summary-of-profiling-tools/
+** cache
+- [X] Add new tool to analyze cacheline contention on NUMA systems
+  + https://lwn.net/Articles/588866/
+
+** linux
+- [ ] Linux Coredumps
+  + https://interrupt.memfault.com/blog/linux-coredumps-part-1
+  + https://interrupt.memfault.com/blog/linux-coredumps-part-2
+  + https://interrupt.memfault.com/blog/linux-coredumps-part-3
+- [ ] Dynamic Module Loading on Linux:
+  + https://phb-crystal-ball.org/dynamic-module-loading-on-linux-a-practical-guide/
+- [ ] Prevent Kernel Exploits in Linux
+  + https://phb-crystal-ball.org/prevent-kernel-exploits-in-linux/
+- [ ] Linux System Calls Tutorial
+  + https://phb-crystal-ball.org/linux-system-calls-tutorial-a-step-by-step-guide/
+- [ ] I Write a Linux Daemon in C
+  + https://phb-crystal-ball.org/i-write-a-linux-daemon-in-c-a-practical-guide/
+- [ ] Understanding Linux Process Lifecycle
+  + https://phb-crystal-ball.org/understanding-linux-process-lifecycle-a-practical-approach/
+- [ ] Signal Handling in Linux
+  + https://phb-crystal-ball.org/signal-handling-in-linux-step-by-step-instructions/
+- [ ] What Is a Kernel Module? A Beginner’s Guide to Linux Kernel Modules
+  + https://phb-crystal-ball.org/what-is-a-kernel-module-a-beginners-guide-to-linux-kernel-modules/
+- [ ] How to Debug a Kernel Module: A Beginner’s Guide
+  + https://phb-crystal-ball.org/how-to-debug-a-kernel-module-a-beginners-guide/
+
+** perphiral
+- [ ] Sequential-storage － Efficiently Store Data in Flash
+  + https://interrupt.memfault.com/blog/sequential-storage-crate
+** synopsys
+- https://github.com/foss-for-synopsys-dwc-arc-processors/openocd
+- https://github.com/foss-for-synopsys-dwc-arc-processors/embarc_mli
+- https://github.com/foss-for-synopsys-dwc-arc-processors/snps-accel-linux/wiki/Synopsys-NPX-VPX-Linux-Kernel-Drivers-Porting-Guide#files-hierarchy
+* server
+** csmt
+- ip: 192.168.11.252:
+  + account0:
+    1. user: LiXC
+    2. passwd: AAAbb123
+  + account1:
+    1. user: soc
+    2. passwd: soc
+- gitlab:ip, 192.168.11.251:
+  + account0:
+    1. user: Li_XiaoChao
+    2. passwd: aaabbb123
+- ip: 192.168.11.254:
+- kernel:
+  + username: root
+  + passwd: 123456
+- ip: 192.168.11.65: m7 builder
+  + username: fpga
+  + passwd: fpga
+  + tool: remmina
+- ip: 192.168.11.222: arc builder
+  + username: abc
+  + passwd: AAAbb123
+- ip: 192.168.11.191: trace32
+  + start_debug.sh 192.168.11.191
+- ip: 192.168.11.65: ftp
+** jtt
+- jintt: [[http://net.xxx.cn:280]]
+  + account0: lxc#jintt123456
+* npu
+** 调试步骤
+- 登录FPGA Server:
+  + ssh
+    #+begin_src shell
+      # 密码：hejian
+      ssh hjuser@192.168.11.254
+    #+end_src
+  + 进入root账户
+    #+begin_src shell
+      # 密码：hejian
+      su
+    #+end_src
+
+- 检查和设置FPGA环境
+  #+begin_src shell
+    cd /home/data/UVHS_202506.P1/runtime_sw_service
+    ./uv_runtime_sw_manual_run.sh -u
+    ./uv_runtime_sw_manual_run.sh
+    # 检查连接性
+    ping 192.168.1.30
+    ping 192.168.1.31
+    # 查询版本
+    query -version
+  #+end_src
+- 设置path环境变量
+  #+begin_src shell
+    source ../hw_env_2506P1.sh
+    # 运行daemon
+    uv_shell -t runtime -d U2 -w ./
+  #+end_src
+- 进入工作目录
+  #+begin_src shell
+    输入p910
+    # 进入bit文件夹
+    cd bit4_cmn3x3_asic_0512
+  #+end_src
+- bit下载到FPGA
+  #+begin_src shell
+    # 每次调试完bit都要exit一下
+    make uv_run   
+  #+end_src
+- 下载镜像：在uv_run shell下执行命令，把一些列镜像从FPGA后门刷入DDR
+  #+begin_src shell
+    source writeback_commands.txt
+  #+end_src 
+  + u-boot：u-boot.img： 
+  + kernel dtb：hwd.dtb
+  + kernel image：Image
+  + ramdisk：aarch64-ramdisk.uimg
+- 调试keil:打开trace32，选择Target ARM/XScale/Janus，点击右侧start
+- 其他：
+  + 8K程序：C:\zzz\程思远\hwd10910_m7_st\MDK-ARM
+  + trace32客户端：搜索Trace32 Start，选择m7.cmm，主要看load的哪里是不
+    是对的，点击go
+- 远程串口：TCP@192.168.11.195:8010  波特率看源码定义   4K是1200
+- u-boot启动kernel：
+  #+begin_src shell
+    booti 0x60000000 0x64000000 0x68000000
+  #+end_src
+* record                                                           :noexport:
++ zyj: 2026/3/7, 周六,18:52到公司加班,实际为打卡.

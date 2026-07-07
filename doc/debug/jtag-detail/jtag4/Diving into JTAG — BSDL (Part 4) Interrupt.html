@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <!-- Meta -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <meta name="title" content="Diving into JTAG — BSDL (Part 4)">
+  <meta property="og:title" content="Diving into JTAG — BSDL (Part 4)">
+  <meta property="og:description" content="A community and blog for embedded software makers">
+
+  <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Diving into JTAG — BSDL (Part 4) | Interrupt</title>
+<meta name="generator" content="Jekyll v4.2.2">
+<meta property="og:title" content="Diving into JTAG — BSDL (Part 4)">
+<meta name="author" content="Aliaksandr Kavalchuk">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="An overview of BSDL files">
+<meta property="og:description" content="An overview of BSDL files">
+<link rel="canonical" href="https://interrupt.memfault.com/blog/diving-into-jtag-part-4">
+<meta property="og:url" content="https://interrupt.memfault.com/blog/diving-into-jtag-part-4">
+<meta property="og:site_name" content="Interrupt">
+<meta property="og:image" content="https://interrupt.memfault.com/img/interrupt-cover-1200px.png">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2024-03-29T00:00:00+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:image" content="https://interrupt.memfault.com/img/interrupt-cover-1200px.png">
+<meta property="twitter:title" content="Diving into JTAG — BSDL (Part 4)">
+<meta name="google-site-verification" content="2qyLRd8BiI5o3XnqssLvbzPDJ-2S6ytb9iLoNoz1Z9M">
+<script type="text/javascript" async="" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/insight.min.js"></script><script type="text/javascript" async="" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/js_002"></script><script src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/8551838.js" type="text/javascript" id="hs-analytics"></script><script src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/banner.js" type="text/javascript" id="cookieBanner-8551838" data-cookieconsent="ignore" data-hs-ignore="true" data-loader="hs-scriptloader" data-hsjs-portal="8551838" data-hsjs-env="prod" data-hsjs-hublet="na1"></script><script src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/fb.js" type="text/javascript" id="hs-ads-pixel-8551838" data-ads-portal-id="8551838" data-ads-env="prod" data-loader="hs-scriptloader" data-hsjs-portal="8551838" data-hsjs-env="prod" data-hsjs-hublet="na1"></script><script src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/conversations-embed.js" type="text/javascript" id="hubspot-messages-loader" data-loader="hs-scriptloader" data-hsjs-portal="8551838" data-hsjs-env="prod" data-hsjs-hublet="na1"></script><script src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/collectedforms.js" type="text/javascript" id="CollectedForms-8551838" crossorigin="anonymous" data-leadin-portal-id="8551838" data-leadin-env="prod" data-loader="hs-scriptloader" data-hsjs-portal="8551838" data-hsjs-env="prod" data-hsjs-hublet="na1"></script><script type="text/javascript" async="" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/6si.min.js"></script><script type="text/javascript" async="" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/insight.min.js"></script><script type="text/javascript" async="" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/pixel.js"></script><script type="text/javascript" async="" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/js_003"></script><script type="text/javascript" async="" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/js_004"></script><script async="" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/gtm.js"></script><script type="application/ld+json">
+{"author":{"@type":"Person","name":"Aliaksandr Kavalchuk"},"@type":"BlogPosting","description":"An overview of BSDL files","url":"https://interrupt.memfault.com/blog/diving-into-jtag-part-4","image":"https://interrupt.memfault.com/img/interrupt-cover-1200px.png","headline":"Diving into JTAG — BSDL (Part 4)","dateModified":"2024-03-29T00:00:00+00:00","datePublished":"2024-03-29T00:00:00+00:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://interrupt.memfault.com/img/interrupt-logo-1200px.png"},"name":"Aliaksandr Kavalchuk"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://interrupt.memfault.com/blog/diving-into-jtag-part-4"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PDMNKRX');</script>
+  <!-- End Google Tag Manager -->
+
+  <title>Diving into JTAG — BSDL (Part 4)</title>
+  <link rel="icon" href="https://interrupt.memfault.com/img/favicon.png" type="image/png">
+
+  <!-- CSS & fonts -->
+  <style class="anchorjs"></style><link rel="stylesheet" href="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/main.css">
+  <link href="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/css.css" rel="stylesheet" type="text/css">
+  <link href="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/font-awesome.min.css" rel="stylesheet">
+  <!-- RSS -->
+  <link href="https://interrupt.memfault.com/feed.xml" type="application/rss+xml" rel="alternate" title="RSS 2.0 Feed">
+
+<script type="text/javascript" async="" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/embed.js"></script><style id="_6si-shortening">/* This stylesheet is created by 6sense */
+            .mktoForm .mktoFormRow:has(._6si_sff_filled) {
+                display: none;
+            }
+            .mktoForm .mktoFormRow ._6si_sff_filled {
+                display: none;
+            }
+            .hs-form .hs-form-field:has(._6si_sff_filled) {
+                display: none;
+            }
+            .hs-form .hs-form-field ._6si_sff_filled {
+                display: none;
+            }
+            form .form-field:not(.error):has(._6si_sff_filled) {
+                display: none;
+            }
+            form .form-field:not(.error) ._6si_sff_filled {
+                display: none;
+            }
+            .elq-form .row:has(._6si_sff_filled) {
+                display: none;
+            }
+            .elq-form .row ._6si_sff_filled {
+                display: none;
+            }
+            .elq-form .field-wrapper:has(._6si_sff_filled) {
+                display: none;
+            }
+            .elq-form .field-wrapper ._6si_sff_filled {
+                display: none;
+            }</style><style type="text/css">html.hs-messages-widget-open.hs-messages-mobile,html.hs-messages-widget-open.hs-messages-mobile body{overflow:hidden!important;position:relative!important}html.hs-messages-widget-open.hs-messages-mobile body{height:100%!important;margin:0!important}#hubspot-messages-iframe-container{display:initial!important;z-index:2147483647;position:fixed!important;bottom:0!important}#hubspot-messages-iframe-container.widget-align-left{left:0!important}#hubspot-messages-iframe-container.widget-align-right{right:0!important}#hubspot-messages-iframe-container.internal{z-index:1016}#hubspot-messages-iframe-container.internal iframe{min-width:108px}#hubspot-messages-iframe-container .hs-shadow-container{display:initial!important;z-index:-1;position:absolute;width:0;height:0;bottom:0;content:""}#hubspot-messages-iframe-container .hs-shadow-container.internal{display:none!important}#hubspot-messages-iframe-container .hs-shadow-container.active{width:400px;height:400px}#hubspot-messages-iframe-container iframe{display:initial!important;width:100%!important;height:100%!important;border:none!important;position:absolute!important;bottom:0!important;right:0!important;background:transparent!important}.hs-drag-handle{position:absolute;bottom:16px;cursor:grab;height:60px;display:none;align-items:center}.hs-drag-handle--right{right:76px}.hs-drag-handle--left{left:76px}.hs-drag-overlay{position:absolute;top:0;left:0;right:0;bottom:0;user-select:none;z-index:999;display:none}</style><style type="text/css" id="hs-form-stylea61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053">.fn-date-picker.pika-single{z-index:9999;display:block;position:relative;color:#333;background:#fff;border:1px solid #ccc;border-bottom-color:#bbb;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;*zoom:1}.fn-date-picker.pika-single.is-hidden{display:none}.fn-date-picker.pika-single.is-bound{position:absolute;box-shadow:0 5px 15px -5px rgba(0,0,0,.5)}.fn-date-picker.pika-single:after,.fn-date-picker.pika-single:before{content:" ";display:table}.fn-date-picker.pika-single:after{clear:both}.fn-date-picker .pika-lendar{float:left;width:240px;margin:8px}.fn-date-picker .pika-title{position:relative;text-align:center}.fn-date-picker .pika-title select{cursor:pointer;position:absolute;z-index:9998;margin:0;left:0;top:5px;filter:alpha(opacity=0);opacity:0}.fn-date-picker .pika-label{display:inline-block;*display:inline;position:relative;z-index:9999;overflow:hidden;margin:0;padding:5px 3px;font-size:14px;line-height:20px;font-weight:700;background-color:#fff}.fn-date-picker .pika-next,.fn-date-picker .pika-prev{display:block;cursor:pointer;position:relative;outline:none;border:0;padding:0;width:20px;height:30px;text-indent:20px;white-space:nowrap;overflow:hidden;background-color:transparent;background-position:50%;background-repeat:no-repeat;background-size:75% 75%;opacity:.5;*position:absolute;*top:0}.fn-date-picker .pika-next:hover,.fn-date-picker .pika-prev:hover{opacity:1}.fn-date-picker .pika-next.is-disabled,.fn-date-picker .pika-prev.is-disabled{cursor:default;opacity:.2}.fn-date-picker .is-rtl .pika-next,.fn-date-picker .pika-prev{float:left;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAUklEQVR42u3VMQoAIBADQf8Pgj+OD9hG2CtONJB2ymQkKe0HbwAP0xucDiQWARITIDEBEnMgMQ8S8+AqBIl6kKgHiXqQqAeJepBo/z38J/U0uAHlaBkBl9I4GwAAAABJRU5ErkJggg==");*left:0}.fn-date-picker .is-rtl .pika-prev,.fn-date-picker .pika-next{float:right;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAU0lEQVR42u3VOwoAMAgE0dwfAnNjU26bYkBCFGwfiL9VVWoO+BJ4Gf3gtsEKKoFBNTCoCAYVwaAiGNQGMUHMkjGbgjk2mIONuXo0nC8XnCf1JXgArVIZAQh5TKYAAAAASUVORK5CYII=");*right:0}.fn-date-picker .pika-select{display:inline-block;*display:inline}.fn-date-picker .pika-table{width:100%;border-collapse:collapse;border-spacing:0;border:0}.fn-date-picker .pika-table td,.fn-date-picker .pika-table th{width:14.2857142857%;padding:0}.fn-date-picker .pika-table th{color:#999;font-size:12px;line-height:25px;font-weight:700;text-align:center}.fn-date-picker .pika-table abbr{border-bottom:none;cursor:help}.fn-date-picker .pika-button{cursor:pointer;display:block;-moz-box-sizing:border-box;box-sizing:border-box;outline:none;border:0;margin:0;width:100%;padding:5px;color:#666;font-size:12px;line-height:15px;text-align:right;background:#f5f5f5}.fn-date-picker .pika-button:hover{color:#fff!important;background:#ff8000!important;box-shadow:none!important;border-radius:3px!important}.fn-date-picker .is-today .pika-button{color:#3af;font-weight:700}.fn-date-picker .is-selected .pika-button{color:#fff;font-weight:700;background:#3af;box-shadow:inset 0 1px 3px #178fe5;border-radius:3px}.fn-date-picker .is-disabled .pika-button{pointer-events:none;cursor:default;color:#999;opacity:.3}.fn-date-picker .pika-week{font-size:11px;color:#999} .hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 .inputs-list.inline-list li{vertical-align:top;display:inline-block;word-wrap:break-word;padding-right:16px}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 .inputs-list.inline-list li:after{clear:both}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 .inputs-list.inline-list li input{float:left}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 .inputs-list.inline-list.inline-list-2 li{width:50%}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 .inputs-list.inline-list.inline-list-2 li:nth-child(2n){padding-right:0}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 .inputs-list.inline-list.inline-list-3 li{width:33%}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 .inputs-list.inline-list.inline-list-3 li:nth-child(3n){width:34%;padding-right:0}.hs-fieldtype-intl-phone.hs-input{padding:0;background:none;border:none;height:auto}.hs-fieldtype-intl-phone.hs-input:after{clear:both;content:" ";display:table}.hs-fieldtype-intl-phone.hs-input .hs-input{margin-bottom:0}.hs-fieldtype-intl-phone.hs-input input{width:68%!important;float:right}.hs-fieldtype-intl-phone.hs-input select{float:left;width:30%!important}@media (max-device-width:480px) and (min-device-width:320px),(max-width:400px){.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053>.hs-phone>.input>.hs-fieldtype-intl-phone.hs-input>input.hs-input{width:68%!important}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053>.hs-phone>.input>.hs-fieldtype-intl-phone.hs-input>select.hs-input{width:30%!important}}.hs-fieldtype-textarea.hs-input{resize:vertical}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 .hs-button{white-space:pre-wrap}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 .hs-richtext{word-break:break-word}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 fieldset{border:0;padding:0;margin:0;max-width:500px}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 fieldset.form-columns-1 .hs-input{width:95%}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 fieldset.form-columns-1 .input{margin-right:8px}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 fieldset.form-columns-1 input[type=checkbox],.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 fieldset.form-columns-1 input[type=radio]{width:auto}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 fieldset.form-columns-2 .hs-form-field{width:50%;float:left}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 fieldset.form-columns-2 .input{margin-right:8px}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 fieldset.form-columns-3 .hs-form-field{width:32.7%;float:left}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 fieldset.form-columns-3 .input{margin-right:8px}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 label.hs-hidden{visibility:hidden}.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 .hs-field-desc{width:100%}.hs-custom-style .hs-input,.hs-custom-style fieldset{max-width:100%}.hs-custom-style>div.form-columns-3 .hs-form-field,.hs-custom-style fieldset.form-columns-3 .hs-form-field{width:33.3%}.hs-custom-style>div>div:last-of-type .hs-input:not([type=checkbox]):not([type=radio]),.hs-custom-style fieldset>div:last-of-type .hs-input:not([type=checkbox]):not([type=radio]){width:100%;max-width:100%}.hs-custom-style>div input:not([type=image]):not([type=submit]):not([type=button]):not([type=radio]):not([type=checkbox]):not([type=file]),.hs-custom-style fieldset input:not([type=image]):not([type=submit]):not([type=button]):not([type=radio]):not([type=checkbox]):not([type=file]){box-sizing:border-box;padding:0 15px;min-height:27px}.hs-custom-style>div textarea,.hs-custom-style fieldset textarea{padding:10px 15px}.hs-custom-style .hs-dependent-field>div .hs-input:not([type=checkbox]):not([type=radio]){width:100%}@media (max-width:400px),(min-device-width:320px) and (max-device-width:480px){.hs-custom-style .hs-input:not([type=checkbox]):not([type=radio]),.hs-custom-style fieldset{margin-right:0!important;width:100%!important}form.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053:not(.hs-video-form) .form-columns-2 .hs-form-field,form.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053:not(.hs-video-form) .form-columns-3 .hs-form-field{float:none;width:100%}form.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053:not(.hs-video-form) .form-columns-2 .hs-form-field .hs-input,form.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053:not(.hs-video-form) .form-columns-3 .hs-form-field .hs-input{width:95%}form.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053:not(.hs-video-form) .form-columns-2 .hs-form-field input[type=checkbox],form.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053:not(.hs-video-form) .form-columns-2 .hs-form-field input[type=radio],form.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053:not(.hs-video-form) .form-columns-3 .hs-form-field input[type=checkbox],form.hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053:not(.hs-video-form) .form-columns-3 .hs-form-field input[type=radio]{width:auto}}.legal-consent-container .field.hs-form-field{margin-bottom:8px}.legal-consent-container .hs-field-desc.checkbox-desc{margin:-12px 0 0 21px}.legal-consent-container .hs-form-booleancheckbox-display input{float:left}.legal-consent-container .hs-form-booleancheckbox-display>span{display:block;margin-left:20px}.legal-consent-container .hs-form-booleancheckbox-display p{margin:0;display:inline}.legal-consent-container .hs-error-msgs label{color:#f2545b}.legal-consent-container~.hs_recaptcha{margin-top:18px}.cookie-reset-container{font-size:14px;margin-bottom:10px;text-align:right}#hs-outer-captcha-target,#hs-outer-captcha-target *{display:none;height:0;width:0}.hubspot-link__container{font-size:14px;padding-bottom:40px;position:relative;color:#9fa0a2;font-family:Helvetica Neue,Helvetica,Arial,sans-serif}.hubspot-link-text{color:#00a4bd;font-weight:400}.hubspot-link__container.sproket{color:#9fa0a2}.hubspot-link{color:#9fa0a2}.hubspot-link,.hubspot-link:hover{text-decoration:none}.hubspot-link:hover .hubspot-link-text{text-decoration:underline}.hubspot-link__icon{margin-bottom:-1px;margin-right:5px}.hubspot-link__container.sproket .hubspot-link__icon{width:30px;margin-right:0;float:left;margin-top:-9px;margin-left:-5px}</style><script async="" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/js"></script><script type="text/javascript" async="" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/a"></script></head>
+
+
+
+
+<body>
+	<div id="wrap">
+
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="https://interrupt.memfault.com/">Home</a>
+		<a href="https://interrupt.memfault.com/blog" title="Blog">Blog</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="https://interrupt.memfault.com/about" title="About">About</a>
+	    
+	  
+	    
+	      <a href="https://interrupt.memfault.com/authors" title="Authors">Authors</a>
+	    
+	  
+	    
+	      <a href="https://interrupt.memfault.com/code-of-conduct" title="Code of Conduct">Code of Conduct</a>
+	    
+	  
+	    
+	      <a href="https://interrupt.memfault.com/contributing" title="Contributing">Contributing</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	      <a href="https://interrupt.memfault.com/tags" title="Tags">Tags</a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+
+    <!-- Nav links -->
+	  <!-- TODO <a id="theme-toggle" href="#">Toggle dark mode</a> -->
+<a href="https://interrupt.memfault.com/jobs">Jobs</a>
+<a href="https://interrupt.memfault.com/events">Events</a>
+<a href="https://github.com/memfault/interrupt" target="_blank">Github</a>
+<a href="https://memfault.com/" target="_blank">About Memfault</a>
+
+	</div>
+
+  <!-- Nav footer -->
+  <footer>
+	
+	<!-- Your custom nav footer here -->
+	
+</footer>
+
+</nav>
+
+
+      <!-- Top banner -->
+		<ul class="banner-notifications">
+  
+    <li class="banner-notification" style="--notificationBackground: #141845; --notificationColor: #fff;">
+      <div style="text-align: center;">
+<p><i>Interrupt Live: Noah Pendleton | MCU SDK Engineer @ Memfault | Thurs, January 30th -  10:30 AM ET | 7:30 AM PT | <a href="https://www.youtube.com/watch?v=UPFhUrQa1bs" target="_blank">Get Notified</a></i></p>
+</div>
+      <button class="banner-notification-close js-banner-notification-close"></button>
+    </li>
+  
+</ul>
+
+
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      <header id="header">
+  <a href="https://interrupt.memfault.com/">
+    <img id="logo" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/interrupt-logo.svg" alt="Interrupt Logo">
+    <h1>Interrupt</h1>
+  </a>
+  <h3 class="no-anchor" id="by-memfault">by <a href="https://memfault.com/" target="_blank">Memfault</a>
+</h3>
+  <br>
+  <a href="https://interrupt.memfault.com/feed.xml">
+    <svg class="svg-icon rss"><use xlink:href="/img/social-icons.svg#rss"></use></svg><span>RSS</span>
+  </a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://go.memfault.com/interrupt-subscribe" target="_blank">Subscribe</a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://interrupt.memfault.com/contributing">Contribute</a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://interrupt.memfault.com/tags">Tags</a>&nbsp;&nbsp;
+  <a href="https://interrupt-slack.herokuapp.com/" target="_blank">
+    <svg class="svg-icon slack"><use xlink:href="/img/social-icons.svg#slack"></use></svg><span>Slack</span>
+  </a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://interrupt.memfault.com/jobs">Jobs</a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://interrupt.memfault.com/events">Events</a>&nbsp;&nbsp;&nbsp;&nbsp;
+</header>
+
+
+    <!-- Main content -->
+	  <div id="split-container-wrapper">
+      <div id="split-container">
+        <main>
+
+          <article id="post-page">
+    
+    
+
+    <script src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/anchor.min.js"></script>
+    <h2 id="diving-into-jtag-—-bsdl-part-4">Diving into JTAG — BSDL (Part 4)<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#diving-into-jtag-—-bsdl-part-4" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+    <div class="by-line">
+       <time datetime="2024-03-29T00:00:00+00:00">29 Mar 2024</time>
+       
+       <span>by <a href="https://interrupt.memfault.com/authors/zamuhrishka">Aliaksandr Kavalchuk</a></span>
+       
+    </div>
+    <div class="content">
+
+        <!-- excerpt start -->
+
+<p>In the previous article of this series, we briefly touched on how <code class="language-plaintext highlighter-rouge">.bsd</code> files
+written in Boundary Scan Description Language (BSDL) describe the structure of
+the boundary scan chain and the instruction set. In this article, we will
+examine this language’s syntax more closely before seeing how <code class="language-plaintext highlighter-rouge">.bsd</code> files are leveraged
+in JTAG testing in the next article.</p>
+
+<!-- excerpt end -->
+
+<div class="newsletter">
+  <p class="newsletter-content">Like Interrupt? <a class="newsletter-link" href="https://go.memfault.com/interrupt-subscribe" target="_blank"><b>Subscribe</b></a> to get our latest posts straight to your inbox.</p>
+</div>
+
+<div id="toc">
+
+  <h2 class="no_toc" id="table-of-contents">Table of Contents<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#table-of-contents" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+
+  <!-- prettier-ignore -->
+<ul id="markdown-toc">
+  <li><a href="#overview" id="markdown-toc-overview">Overview</a></li>
+  <li><a href="#entity-descriptions" id="markdown-toc-entity-descriptions">Entity Descriptions</a></li>
+  <li><a href="#generic-parameters" id="markdown-toc-generic-parameters">Generic Parameters</a></li>
+  <li><a href="#logical-port-description" id="markdown-toc-logical-port-description">Logical Port Description</a></li>
+  <li><a href="#use-statements" id="markdown-toc-use-statements">Use Statements</a></li>
+  <li><a href="#pin-mappings" id="markdown-toc-pin-mappings">Pin Mapping(s)</a></li>
+  <li><a href="#scan-port-identification" id="markdown-toc-scan-port-identification">Scan Port Identification</a></li>
+  <li><a href="#idcode-register-description" id="markdown-toc-idcode-register-description">IDCODE Register Description</a></li>
+  <li><a href="#instruction-register-description" id="markdown-toc-instruction-register-description">Instruction Register Description</a></li>
+  <li><a href="#register-access-description" id="markdown-toc-register-access-description">Register Access Description</a></li>
+  <li><a href="#boundary-register-description" id="markdown-toc-boundary-register-description">Boundary Register Description</a></li>
+  <li><a href="#conclusion" id="markdown-toc-conclusion">Conclusion</a></li>
+</ul>
+
+</div>
+
+<blockquote>
+  <p><strong>Note</strong>: In this series of articles, I discuss JTAG from the firmware
+engineer’s point of view and to the extent necessary for the firmware
+engineer’s work. I do not aim to thoroughly describe the syntax and format of
+BSDL, rather describe it to the extent necessary for simple understanding of
+the files supplied by the vendor chips. Also, I concentrate on the BSDL
+format, although other formats can be used to describe TAP chip controllers:
+SVF, STAPL, etc.</p>
+</blockquote>
+
+<h2 id="overview">Overview<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#overview" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+
+<p>Files with the <code class="language-plaintext highlighter-rouge">.bsd</code> extension describe how to interface with a particular chip
+using the JTAG interface in the context of PCB and chip boundary-scan testing.
+The main functions of these files are:</p>
+
+<ol>
+  <li>
+<strong>Chip Configuration Description:</strong> They provide a detailed description of
+the chip pin configuration, including which pins support JTAG.</li>
+  <li>
+<strong>Testing and Diagnostics Support:</strong> They support testing the PCB for shorts,
+open circuits, and other common problems. This is especially useful for
+verifying that components are properly mounted on the board.</li>
+  <li>
+<strong>Test Automation:</strong> They allow you to automate the testing process by
+providing the necessary information to the software that controls the test
+equipment.</li>
+  <li>
+<strong>Test Portability:</strong> Since BSDL is based on a standard, the files can be
+used with a variety of hardware and software that supports the standard,
+providing a high degree of test portability.</li>
+</ol>
+
+<p>These files are a key component in the testing process of electronic devices,
+especially in complex systems where accurate and efficient component testing is
+important.</p>
+
+<p>BSDL is a subset of VHDL, a hardware description language that describes how a
+particular JTAG device must be implemented for boundary scan. You’ll find <code class="language-plaintext highlighter-rouge">.bsd</code>
+files available from most vendors.</p>
+
+<p>One of the major uses of BSDL is as an enabler for the development of tools to
+automate the testing process based on IEEE 1149.1. Tools developed to support
+the standard can control the TAP if they know how the boundary-scan architecture
+was implemented in the device. Tools can also control the I/O pins of the
+device. BSDL provides a standard machine and human-readable data format for
+describing how IEEE 1149.1 is implemented in a device.</p>
+
+<p>A BSDL description for a device consists of the following elements:</p>
+
+<ul>
+  <li>Entity Descriptions</li>
+  <li>Generic Parameters</li>
+  <li>Logical Port Description</li>
+  <li>Use Statements</li>
+  <li>Pin Mapping(s)</li>
+  <li>Scan Port Identification</li>
+  <li>IDCODE Register Description</li>
+  <li>Instruction Register Description</li>
+  <li>Register Access Description</li>
+  <li>Boundary Register Description</li>
+</ul>
+
+<p>Let’s jump into each of these and walk through some example snippets from <code class="language-plaintext highlighter-rouge">.bsd</code>
+files.</p>
+
+<h2 id="entity-descriptions">Entity Descriptions<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#entity-descriptions" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+
+<p>The entity statement names the entity, such as the device name (e.g.,
+<code class="language-plaintext highlighter-rouge">STM32F405_415_407_417_LQFP100</code>). An entity description begins with an <code class="language-plaintext highlighter-rouge">entity</code>
+statement and terminates with an <code class="language-plaintext highlighter-rouge">end</code> statement:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>entity XYZ is
+    {statements to describe the entity go here}
+end XYZ
+</code></pre></div></div>
+
+<p>All of the rest of the attributes and descriptions that we will look at we can
+be located within this block. This structure allows the device to be described
+for testing, debugging, and diagnostic purposes, providing the necessary
+information for tools and equipment utilizing boundary scan technology.</p>
+
+<h2 id="generic-parameters">Generic Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#generic-parameters" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">generic</code> keyword is used to define a parameter that can be changed when
+implementing the description in a particular device.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>generic (PHYSICAL_PIN_MAP : string := "DW");
+</code></pre></div></div>
+
+<p>In this example, <code class="language-plaintext highlighter-rouge">PHYSICAL_PIN_MAP</code> is a generic parameter that defines the chip
+body type, which will default to the value “DW”.</p>
+
+<h2 id="logical-port-description">Logical Port Description<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#logical-port-description" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+
+<p>The port description gives <strong>logical</strong> names to the I/O pins, and defines their
+function as input, output, bidirectional, and so on.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>port (
+    OE    : in      bit;
+    Y     : out     bit_vector(1 to 3);
+    A     : in      bit_vector(1 to 3);
+    GND   : linkage bit;
+    VCC   : linkage bit;
+    NC    : linkage bit;
+    TDO   : out     bit;
+    TMS   : in      bit
+    TDI   : in      bit
+    TCK   : in      bit
+);
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">port</code> block contains both “useful” pins of the chip and the JTAG pins, as
+well as power, ground, and missing pins - pins that are not supposed to be
+connected to the chip.</p>
+
+<p>If the port is a single port, it is marked as <code class="language-plaintext highlighter-rouge">bit</code>. If it is a bus, it is
+labeled as <code class="language-plaintext highlighter-rouge">bit_vector(X to Y)</code>. Inputs are <code class="language-plaintext highlighter-rouge">in</code>, outputs are <code class="language-plaintext highlighter-rouge">out</code>, and
+bidirectional lines are <code class="language-plaintext highlighter-rouge">inout</code>. Power/ground lines, analog I/O, and pins not
+connected to the crystal are marked as <code class="language-plaintext highlighter-rouge">linkage</code>.</p>
+
+<h2 id="use-statements">Use Statements<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#use-statements" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+
+<p>The use statement indicates that a particular package or library will be used in
+the current context. For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>use STD_1149_1_1994.all;
+</code></pre></div></div>
+
+<p>indicates that this file uses the IEEE 1149.1 1994 version of the IEEE 1149.1
+standard library. In the BSDL context, this expression indicates that the
+definitions and constructs provided in the 1994 IEEE 1149.1 standard are used to
+describe the boundary scan behavior. This ensures that the description is
+compatible with tools supporting that standard.</p>
+
+<h2 id="pin-mappings">Pin Mapping(s)<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#pin-mappings" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+
+<p>This element maps logical signals from the Logical Port Description section onto
+the physical pins of a particular device package. This is necessary because the
+logical signals of a chip may be the same, but the specific pins are different
+for different packages. For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>attribute PIN_MAP of XYZ : entity is PHYSICAL_PIN_MAP;
+
+constant DW:PIN_MAP_STRING:=
+    "OE  :  1," &amp;
+    "Y   :  (2,3,4)," &amp;
+    "A   :  (5,6,7)," &amp;
+    "GND :  8," &amp;
+    "VCC :  9," &amp;
+    "TDO :  10," &amp;
+    "TDI :  11," &amp;
+    "TMS :  12," &amp;
+    "TCK :  13," &amp;
+    "NC  :  14";
+</code></pre></div></div>
+
+<p>The distribution of single pins is quite transparent: one logic name - one pin:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"OE  :  1," &amp;
+</code></pre></div></div>
+
+<p>The buses are described next way:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"Y   :  (2,3,4)," &amp;
+</code></pre></div></div>
+
+<h2 id="scan-port-identification">Scan Port Identification<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#scan-port-identification" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+
+<p>The scan port identification statements define the device’s TAP. For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>attribute TAP_SCAN_CLOCK of TCK : signal is (10.0e6, BOTH);
+attribute TAP_SCAN_IN of TDI : signal is TRUE;
+attribute TAP_SCAN_OUT of TDO : signal is TRUE;
+attribute TAP_SCAN_MODE of TMS : signal is TRUE;
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">TAP_SCAN_CLOCK</code>, <code class="language-plaintext highlighter-rouge">TAP_SCAN_IN</code>, <code class="language-plaintext highlighter-rouge">TAP_SCAN_OUT</code>, and <code class="language-plaintext highlighter-rouge">TAP_SCAN_MODE</code> are
+constants defining standard JTAG signals. <code class="language-plaintext highlighter-rouge">TCK</code>, <code class="language-plaintext highlighter-rouge">TDI</code>, <code class="language-plaintext highlighter-rouge">TDO</code>, <code class="language-plaintext highlighter-rouge">TMS</code> are the
+port names defined in the <strong>Pin Mapping(s)</strong> section for a particular chip. The
+value <code class="language-plaintext highlighter-rouge">TRUE</code> indicates active use of this port.</p>
+
+<p>Additionally, the <code class="language-plaintext highlighter-rouge">TAP_SCAN_CLOCK</code> attribute specifies the maximum frequency of
+the clock signal, in this example it is 10 MHz and that the signal is active on
+both clock edges (rising and falling). Only the <code class="language-plaintext highlighter-rouge">BOTH</code> parameter is used for the
+clock signal, but in general the following parameters can also be used for
+signals: <code class="language-plaintext highlighter-rouge">RISING</code> or <code class="language-plaintext highlighter-rouge">FALLING</code>.</p>
+
+<h2 id="idcode-register-description">IDCODE Register Description<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#idcode-register-description" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">IDCODE_REGISTER</code> attribute is used to define the <code class="language-plaintext highlighter-rouge">IDCODE</code> register of the
+chip. This attribute is part of the IEEE 1149.1 (JTAG) specification. The format
+is:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>attribute IDCODE_REGISTER of &lt;entity&gt; : entity is
+    "{specific attribute value}";
+</code></pre></div></div>
+
+<p>For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>attribute IDCODE_REGISTER of STM32F405_415_407_417_LQFP100: entity is
+     "XXXX" &amp;                  -- 4-bit version number
+     "0110010000010011" &amp;      -- 16-bit part number
+     "00000100000" &amp;           -- 11-bit identity of the manufacturer
+     "1";                      -- Required by IEEE Std 1149.1
+</code></pre></div></div>
+
+<h2 id="instruction-register-description">Instruction Register Description<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#instruction-register-description" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+
+<p>The Instruction Register description identifies the device-dependent
+characteristics of the Instruction Register. For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>attribute INSTRUCTION_LENGTH of XYZ : entity is 2;
+
+attribute INSTRUCTION_OPCODE of XYZ : entity is
+    "BYPASS (11), "&amp;
+    "EXTEST (00), "&amp;
+    "SAMPLE (10) ";
+
+attribute INSTRUCTION_CAPTURE of XYZ : entity is "01";
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">INSTRUCTION_LENGTH</code> attribute defines the length of the <code class="language-plaintext highlighter-rouge">IR</code> register in
+bits.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">INSTRUCTION_OPCODE</code> attribute defines the command codes.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">INSTRUCTION_CAPTURE</code> attribute defines the value that will be loaded into
+the shift register when TAP enters the <code class="language-plaintext highlighter-rouge">Capture-IR</code> state, in other words, this
+attribute specifies what the instruction register is initialized with.</p>
+
+<h2 id="register-access-description">Register Access Description<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#register-access-description" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+
+<p>The register access defines which register is placed between <code class="language-plaintext highlighter-rouge">TDI</code> and <code class="language-plaintext highlighter-rouge">TDO</code> for
+each instruction.</p>
+
+<p>As discussed in
+<a href="https://interrupt.memfault.com/blog/diving-into-jtag-part1">Part 1</a>, various
+codes placed in the instruction register can select various internal registers
+as a data register: <code class="language-plaintext highlighter-rouge">BYPASS</code>, <code class="language-plaintext highlighter-rouge">IDCODE</code>, <code class="language-plaintext highlighter-rouge">BSR</code>. The <code class="language-plaintext highlighter-rouge">REGISTER_ACCESS</code> attribute
+determines which instruction will connect which register as a data register. For
+example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>attribute REGISTER_ACCESS of XYZ : entity is
+    "BOUNDARY (EXTEST, SAMPLE), "&amp;
+    "BYPASS (BYPASS) ";
+</code></pre></div></div>
+
+<p>Similar to instructions that may be standard, or may be unique to a particular
+chip manufacturer (or a particular model), the JTAG module’s plug-in registers
+may not be limited to a list of <code class="language-plaintext highlighter-rouge">DEVICE_ID</code>, <code class="language-plaintext highlighter-rouge">BYPASS</code>, and <code class="language-plaintext highlighter-rouge">BOUNDARY</code>. By
+entering the <code class="language-plaintext highlighter-rouge">MY_INSTRUCTION_OPCODE</code> instruction in the <code class="language-plaintext highlighter-rouge">INSTRUCTION_OPCODE</code>
+attribute, it is possible to tell the control software in the <code class="language-plaintext highlighter-rouge">REGISTER_ACCESS</code>
+attribute that it wishes to connect a non-standard register if the corresponding
+instruction has been loaded into the instruction register:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>attribute REGISTER_ACCESS of SIMPLE_IC : entity is
+    &lt;...&gt;
+    "MY_REG[8] (MY_INSTRUCTION)," &amp;
+    &lt;...&gt;
+</code></pre></div></div>
+
+<p>Here [8] defines the length of the register.</p>
+
+<p>In addition, you can specify in this attribute what value the register to be
+connected should be initialized with when the JTAG module enters the
+<code class="language-plaintext highlighter-rouge">Capture-DR</code> state:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"MY_REG[8] (MY_INSTRUCTION CAPTURES 01010101)," &amp;
+</code></pre></div></div>
+
+<h2 id="boundary-register-description">Boundary Register Description<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#boundary-register-description" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+
+<p>The Boundary Register description contains a list of boundary-scan cells, along
+with information regarding the cell type and associated control. For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>attribute BOUNDARY_LENGTH of XYZ : entity is 7;
+
+attribute BOUNDARY_REGISTER of XYZ : entity is
+    "0 (BC_1, Y(1), output3, X, 6, 0, Z), "&amp;
+    "1 (BC_1, Y(2), output3, X, 6, 0, Z), "&amp;
+    "2 (BC_1, Y(3), output3, X, 6, 0, Z), "&amp;
+    "3 (BC_1, A(1), input, X), "&amp;
+    "4 (BC_1, A(2), input, X), "&amp;
+    "5 (BC_1, A(3), input, X), "&amp;
+    "6 (BC_1, OE, input, X), "&amp;
+    "6 (BC_1, *, control, 0)";
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">BOUNDARY_LENGTH</code> attribute specifies the total number of boundary scan
+cells.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">BOUNDARY_REGISTER</code> attribute specifies the configuration of each boundary
+scan cell. Each entry in the attribute represents one cell and includes
+information about the cell type, associated signal, mode of operation, and
+optional parameters. The format of these entries starting with the first item
+is:</p>
+
+<ul>
+  <li>
+<strong>Cell Number:</strong> The number of the scanning cell and correspondingly the bit
+number in the <code class="language-plaintext highlighter-rouge">BSR</code> register.</li>
+  <li>
+<strong>Cell Type (BC_1, BC_2, etc.):</strong> Indicates the cell class defined by IEEE
+1149.1. This may sound familiar because we discussed scan cell types in
+<a href="https://interrupt.memfault.com/blog/diving-into-jtag-part-3#the-boundary-scan-cells">the last article</a>.</li>
+  <li>
+<strong>Bound Signal:</strong> For example, <code class="language-plaintext highlighter-rouge">Y(1)</code>, <code class="language-plaintext highlighter-rouge">A(1)</code> specifies the logical name of
+the signal bound to this cell.</li>
+  <li>
+<strong>Mode of Operation:</strong> Indicates the cell’s function: <code class="language-plaintext highlighter-rouge">input</code>, <code class="language-plaintext highlighter-rouge">output2</code>,
+<code class="language-plaintext highlighter-rouge">output3</code>, <code class="language-plaintext highlighter-rouge">bidir</code>, <code class="language-plaintext highlighter-rouge">control</code> or <code class="language-plaintext highlighter-rouge">controlr</code>. We also touched these functions
+in
+<a href="https://interrupt.memfault.com/blog/diving-into-jtag-part-3#the-boundary-scan-register-bsr">the previous article</a>.</li>
+  <li>
+<strong>Additional Parameters:</strong> These include initial values or conditions for
+specific modes of cell operation. For example, for the STM32F407VG
+microcontroller, these additional parameters are as follows:
+    <ul>
+      <li>
+<code class="language-plaintext highlighter-rouge">Safe</code> - the value with which the BSR cell should be loaded for safe
+operation when the program can select a random value.</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">ccel</code> - the control cell number. Specifies the control cell that drives the
+output enable for this port. As discussed in last week’s article, there can
+be multiple scan cells per controller pin and in such cases usually one of
+the scan cells is a control cell, which controls the functionality of one or
+more other cells, for example, by switching them between input and output
+modes. And this parameter indicates the number of the cell which is the
+control cell for this cell</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">disval</code> - the value to be written to the control cell for it to switch this
+port from the “output” state to the “input” state.</li>
+      <li>
+<code class="language-plaintext highlighter-rouge">rslt</code> - the resulting state. Shows the state of the driver when it is
+disabled.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="conclusion">Conclusion<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#conclusion" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+
+<p>In this article we have covered the BSDL format and syntax that describe the
+device hardware interface for the JTAG interface including pin mappings, pin
+attributes, and control functions supplied chip vendors. I will use these files
+in the next article to describe various JTAG usage scenarios that can be useful
+for firmware engineers.</p>
+
+<blockquote>
+  <p><strong>Note</strong>: This article was originally published by Aliaksandr on his blog. You
+can find the original article
+<a href="https://medium.com/@aliaksandr.kavalchuk/diving-into-jtag-protocol-part-4-bsdl-29fc4081502c" target="_blank">here</a>.</p>
+</blockquote>
+
+<!-- Interrupt Keep START -->
+
+<div class="newsletter">
+  <p class="newsletter-content">Like Interrupt? <a class="newsletter-link" href="https://go.memfault.com/interrupt-subscribe" target="_blank"><b>Subscribe</b></a> to get our latest posts straight to your inbox.</p>
+</div>
+
+<div class="submit-pr">
+  <p class="submit-pr-content">See anything you'd like to change? Submit a pull request or open an issue on our <a class="submit-pr-link" href="https://github.com/memfault/interrupt" target="_blank">GitHub</a></p>
+</div>
+
+<!-- Interrupt Keep END -->
+
+<h2 class="no_toc" id="links">Links<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#links" style="font: 1em / 1 anchorjs-icons; padding-left: 0.375em;"></a></h2>
+
+<ul>
+  <li><a href="https://github.com/viveris/jtag-boundary-scanner" target="_blank">JTAG Boundary Scanner</a></li>
+  <li><a href="https://github.com/colinoflynn/pyjtagbs" target="_blank">JTAG with the BS (Boundary Scan) - pyjtagbs</a></li>
+  <li><a href="https://circuitcellar.com/research-design-hub/design-solutions/bringing-jtag-boundary-scan-into-2021/" target="_blank">Bringing JTAG Boundary Scan into 2021</a></li>
+  <li><a href="https://www.nxp.com/docs/en/application-note/AN2074.pdf" target="_blank">DSP56300 JTAG Examples</a></li>
+  <li><a href="https://circuitcellar.com/research-design-hub/design-solutions/bringing-jtag-boundary-scan-into-2021/" target="_blank">Bringing JTAG Boundary Scan into 2021</a></li>
+  <li><a href="https://github.com/jxwleong/jtag-boundary-scan" target="_blank">jtag-boundary-scan</a></li>
+  <li><a href="https://www2.lauterbach.com/pdf/boundary_scan.pdf" target="_blank">Lauterbach: Boundary Scan User’s Guide</a></li>
+  <li><a href="https://habr.com/ru/post/660795/" target="_blank">Looking at JTAG: .bsdl by hand</a></li>
+</ul>
+
+
+    </div>
+
+    
+        <div class="author">
+            
+            <img src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/zamuhrishka.jpeg">
+            
+            <span>
+                <a href="https://interrupt.memfault.com/authors/zamuhrishka">Aliaksandr Kavalchuk</a> is a firmware engineer with over 10 years of experience.<br>
+                
+<span>
+    
+    
+    <a href="https://www.linkedin.com/in/aleksander-kovalchuk-77030489/" target="_blank"><svg class="svg-icon linkedin"><use xlink:href="/img/social-icons.svg#linkedin"></use></svg></a>
+    
+    
+    <a href="https://github.com/Zamuhrishka" target="_blank"><svg class="svg-icon github"><use xlink:href="/img/social-icons.svg#github"></use></svg></a>
+    
+</span>
+
+            </span>
+
+        </div>
+    
+
+    <div id="discourse-comments"><iframe src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/comments.html" id="discourse-embed-frame" width="100%" frameborder="0" scrolling="no" referrerpolicy="no-referrer-when-downgrade" height="30px"></iframe></div>
+</article>
+<script type="text/javascript">
+    DiscourseEmbed = { discourseUrl: 'https://community.memfault.com/',
+        discourseEmbedUrl: 'https://interrupt.memfault.com/blog/diving-into-jtag-part-4' };
+
+    (function() {
+        var d = document.createElement('script'); d.type = 'text/javascript'; d.async = true;
+        d.src = DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
+    })();
+    anchors.options.visible = 'hover';
+    anchors.add('.post-content > h1, h2, h3, h4, h5, h6').remove('.no-anchor');
+</script>
+
+
+
+        </main>
+        <aside>
+          <form id="search-form" data-hs-cf-bound="true">
+  <label for="search-input">
+    <h3>Search</h3>
+  </label>
+  <script async="" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/cse.js"></script>
+  <div class="gcse-search"></div>
+</form>
+
+          <!--[if lte IE 8]>
+
+<script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/v2-legacy.js"></script>
+<![endif]-->
+
+<script charset="utf-8" type="text/javascript" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/v2.js"></script>
+<script data-hubspot-rendered="true"> hbspt.forms.create({ portalId: "8551838", formId: "a61bb5a0-4339-4398-b639-c0894f961532" });
+</script><div id="hbspt-form-9241f18b-deb0-401c-b3c3-fa7a7a0e0053" class="hbspt-form" data-hs-forms-root="true"><form id="hsForm_a61bb5a0-4339-4398-b639-c0894f961532" method="POST" accept-charset="UTF-8" enctype="multipart/form-data" novalidate="" action="https://forms.hsforms.com/submissions/v3/public/submit/formsnext/multipart/8551838/a61bb5a0-4339-4398-b639-c0894f961532" class="hs-form-private hsForm_a61bb5a0-4339-4398-b639-c0894f961532 hs-form-a61bb5a0-4339-4398-b639-c0894f961532 hs-form-a61bb5a0-4339-4398-b639-c0894f961532_9241f18b-deb0-401c-b3c3-fa7a7a0e0053 hs-form" target="target_iframe_a61bb5a0-4339-4398-b639-c0894f961532" data-instance-id="9241f18b-deb0-401c-b3c3-fa7a7a0e0053" data-form-id="a61bb5a0-4339-4398-b639-c0894f961532" data-portal-id="8551838" data-test-id="hsForm_a61bb5a0-4339-4398-b639-c0894f961532" data-hs-cf-bound="true"><div><div class="hs-richtext hs-main-font-element"><h3 style="font-size: 24px;"><strong>Subscribe</strong></h3>
+<p><strong>Enter your email below to receive new Interrupt posts straight to your mailbox.</strong></p></div></div><div class="hs_email hs-email hs-fieldtype-text field hs-form-field"><label id="label-email-a61bb5a0-4339-4398-b639-c0894f961532" class="" placeholder="Enter your Email" for="email-a61bb5a0-4339-4398-b639-c0894f961532"><span>Email</span><span class="hs-form-required">*</span></label><legend class="hs-field-desc" style="display: none;"></legend><div class="input"><input id="email-a61bb5a0-4339-4398-b639-c0894f961532" name="email" required="" placeholder="" type="email" class="hs-input" inputmode="email" autocomplete="email"></div></div><div class="hs_interrupt_blog_subscription_status hs-interrupt_blog_subscription_status hs-fieldtype-booleancheckbox field hs-form-field" style="display: none;"><legend class="hs-field-desc" style="display: none;"></legend><div class="input"><input name="interrupt_blog_subscription_status" class="hs-input" type="hidden" value="true"></div></div><div class="hs_submit hs-submit"><div class="hs-field-desc" style="display: none;"></div><div class="actions"><input type="submit" class="hs-button primary large" value="Subscribe"></div></div><input name="hs_context" type="hidden" value="{&quot;embedAtTimestamp&quot;:&quot;1739435722981&quot;,&quot;formDefinitionUpdatedAt&quot;:&quot;1711039048815&quot;,&quot;lang&quot;:&quot;en&quot;,&quot;embedType&quot;:&quot;SHARABLE&quot;,&quot;renderRawHtml&quot;:&quot;true&quot;,&quot;userAgent&quot;:&quot;Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:123.0) Gecko/20100101 Firefox/123.0&quot;,&quot;pageTitle&quot;:&quot;Diving into JTAG — BSDL (Part 4) | Interrupt&quot;,&quot;pageUrl&quot;:&quot;https://interrupt.memfault.com/blog/diving-into-jtag-part-4&quot;,&quot;referrer&quot;:&quot;https://interrupt.memfault.com/blog/page4/&quot;,&quot;isHubSpotCmsGeneratedPage&quot;:false,&quot;hutk&quot;:&quot;2fd9b11640fea50da02e47450070115e&quot;,&quot;__hsfp&quot;:489002728,&quot;__hssc&quot;:&quot;107301341.2.1739435797865&quot;,&quot;__hstc&quot;:&quot;107301341.2fd9b11640fea50da02e47450070115e.1736907851982.1739154887788.1739435797865.11&quot;,&quot;formTarget&quot;:&quot;#hbspt-form-9241f18b-deb0-401c-b3c3-fa7a7a0e0053&quot;,&quot;boolCheckBoxFields&quot;:&quot;interrupt_blog_subscription_status&quot;,&quot;rumScriptExecuteTime&quot;:4216,&quot;rumTotalRequestTime&quot;:4574,&quot;rumTotalRenderTime&quot;:4592,&quot;rumServiceResponseTime&quot;:358,&quot;rumFormRenderTime&quot;:18,&quot;connectionType&quot;:&quot;&quot;,&quot;firstContentfulPaint&quot;:0,&quot;largestContentfulPaint&quot;:0,&quot;locale&quot;:&quot;en&quot;,&quot;timestamp&quot;:1739435798933,&quot;originalEmbedContext&quot;:{&quot;portalId&quot;:&quot;8551838&quot;,&quot;formId&quot;:&quot;a61bb5a0-4339-4398-b639-c0894f961532&quot;,&quot;region&quot;:&quot;na1&quot;,&quot;target&quot;:&quot;#hbspt-form-9241f18b-deb0-401c-b3c3-fa7a7a0e0053&quot;,&quot;isBuilder&quot;:false,&quot;isTestPage&quot;:false,&quot;isPreview&quot;:false,&quot;isMobileResponsive&quot;:true},&quot;correlationId&quot;:&quot;9241f18b-deb0-401c-b3c3-fa7a7a0e0053&quot;,&quot;renderedFieldsIds&quot;:[&quot;email&quot;,&quot;interrupt_blog_subscription_status&quot;],&quot;captchaStatus&quot;:&quot;NOT_APPLICABLE&quot;,&quot;emailResubscribeStatus&quot;:&quot;NOT_APPLICABLE&quot;,&quot;isInsideCrossOriginFrame&quot;:false,&quot;source&quot;:&quot;forms-embed-1.7731&quot;,&quot;sourceName&quot;:&quot;forms-embed&quot;,&quot;sourceVersion&quot;:&quot;1.7731&quot;,&quot;sourceVersionMajor&quot;:&quot;1&quot;,&quot;sourceVersionMinor&quot;:&quot;7731&quot;,&quot;allPageIds&quot;:{},&quot;_debug_embedLogLines&quot;:[{&quot;clientTimestamp&quot;:1739435711834,&quot;level&quot;:&quot;INFO&quot;,&quot;message&quot;:&quot;Retrieved pageContext values which may be overriden by the embed context: {\&quot;pageTitle\&quot;:\&quot;Diving into JTAG — BSDL (Part 4) | Interrupt\&quot;,\&quot;pageUrl\&quot;:\&quot;https://interrupt.memfault.com/blog/diving-into-jtag-part-4\&quot;,\&quot;referrer\&quot;:\&quot;https://interrupt.memfault.com/blog/page4/\&quot;,\&quot;userAgent\&quot;:\&quot;Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:123.0) Gecko/20100101 Firefox/123.0\&quot;,\&quot;isHubSpotCmsGeneratedPage\&quot;:false}&quot;},{&quot;clientTimestamp&quot;:1739435711834,&quot;level&quot;:&quot;INFO&quot;,&quot;message&quot;:&quot;Retrieved countryCode property from normalized embed definition response: \&quot;CN\&quot;&quot;},{&quot;clientTimestamp&quot;:1739435798925,&quot;level&quot;:&quot;INFO&quot;,&quot;message&quot;:&quot;Retrieved analytics values from API response which may be overriden by the embed context: {\&quot;hutk\&quot;:\&quot;2fd9b11640fea50da02e47450070115e\&quot;}&quot;}]}"><iframe name="target_iframe_a61bb5a0-4339-4398-b639-c0894f961532" style="display: none;"></iframe></form></div>
+          
+
+
+
+<div class="memfault-info-wrapper">
+    <h3 class="">Embedded Events</h3>
+    <p>Discover embedded events online and around the world or share your own.</p>
+    
+    <p>
+        <a href="https://interrupt.memfault.com/events">
+            View all events
+        <img class="chevron-icon" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/chevron-right.svg">
+        </a>
+    </p>
+</div>
+
+<div class="memfault-info-wrapper">
+    <h3 class="">Sandbox Demo</h3>
+    <p>Explore Memfault firsthand with real data, guided product tours, and no SDK integration needed!</p>
+    <p>
+        <a href="https://demo.memfault.com/demo/start?utm_campaign=Sandbox&amp;utm_source=Interrupt&amp;utm_medium=side%20bar" target="_blank">
+            Try the Sandbox
+            <img class="chevron-icon" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/chevron-right.svg">
+        </a>
+    </p>
+</div>
+
+<div class="memfault-info-wrapper">
+    <p>
+        <img class="mf-icon" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/memfault-logo.png">
+        Brought to you with <span style="font-size: 10px;">❤️</span> by Memfault.
+        <br>
+        <a href="https://memfault.com/" target="_blank">
+            Learn more
+            <img class="chevron-icon" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/chevron-right.svg">
+        </a>
+    </p>
+</div>
+<div class="share-buttons-wrapper">
+    <h3>Share on: </h3>
+    <div id="share-buttons">
+        <div class="facebook" title="Share this on Facebook" onclick="window.open(`http://www.facebook.com/share.php?u=https://interrupt.memfault.com//blog/diving-into-jtag-part-4`);">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                <path fill="inherit" d="M1343 12v264h-157q-86 0-116 36t-30 108v189h293l-39 296h-254v759h-306v-759h-255v-296h255v-218q0-186 104-288.5t277-102.5q147 0 228 12z"></path>
+            </svg>
+        </div>
+
+        <div class="twitter" title="Share this on Twitter" onclick="window.open(`https://twitter.com/share?url=https://interrupt.memfault.com//blog/diving-into-jtag-part-4&amp;text=Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)`);">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1684 408q-67 98-162 167 1 14 1 42 0 130-38 259.5t-115.5 248.5-184.5 210.5-258 146-323 54.5q-271 0-496-145 35 4 78 4 225 0 401-138-105-2-188-64.5t-114-159.5q33 5 61 5 43 0 85-11-112-23-185.5-111.5t-73.5-205.5v-4q68 38 146 41-66-44-105-115t-39-154q0-88 44-163 121 149 294.5 238.5t371.5 99.5q-8-38-8-74 0-134 94.5-228.5t228.5-94.5q140 0 236 102 109-21 205-78-37 115-142 178 93-10 186-50z"></path>
+            </svg>
+        </div>
+
+        <div class="linkedin" title="Share this on Linkedin" onclick="window.open(`https://www.linkedin.com/shareArticle?mini=true&amp;url=https://interrupt.memfault.com//blog/diving-into-jtag-part-4&amp;title=Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)&amp;summary=&amp;source=https://interrupt.memfault.com//blog/diving-into-jtag-part-4`);">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                <path d="M477 625v991h-330v-991h330zm21-306q1 73-50.5 122t-135.5 49h-2q-82 0-132-49t-50-122q0-74 51.5-122.5t134.5-48.5 133 48.5 51 122.5zm1166 729v568h-329v-530q0-105-40.5-164.5t-126.5-59.5q-63 0-105.5 34.5t-63.5 85.5q-11 30-11 81v553h-329q2-399 2-647t-1-296l-1-48h329v144h-2q20-32 41-56t56.5-52 87-43.5 114.5-15.5q171 0 275 113.5t104 332.5z"></path>
+            </svg>
+        </div>
+
+        <div class="reddit" title="Share this on Reddit" onclick="window.open(`http://www.reddit.com/submit?url=https://interrupt.memfault.com//blog/diving-into-jtag-part-4&amp;title=Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)&amp;summary=&amp;source=`, 'newwindow');">
+            <svg id="Bold" enable-background="new 0 0 24 24" height="512" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg">
+                <path d="m21.325 9.308c-.758 0-1.425.319-1.916.816-1.805-1.268-4.239-2.084-6.936-2.171l1.401-6.406 4.461 1.016c0 1.108.89 2.013 1.982 2.013 1.113 0 2.008-.929 2.008-2.038s-.889-2.038-2.007-2.038c-.779 0-1.451.477-1.786 1.129l-4.927-1.108c-.248-.067-.491.113-.557.365l-1.538 7.062c-2.676.113-5.084.928-6.895 2.197-.491-.518-1.184-.837-1.942-.837-2.812 0-3.733 3.829-1.158 5.138-.091.405-.132.837-.132 1.268 0 4.301 4.775 7.786 10.638 7.786 5.888 0 10.663-3.485 10.663-7.786 0-.431-.045-.883-.156-1.289 2.523-1.314 1.594-5.115-1.203-5.117zm-15.724 5.41c0-1.129.89-2.038 2.008-2.038 1.092 0 1.983.903 1.983 2.038 0 1.109-.89 2.013-1.983 2.013-1.113.005-2.008-.904-2.008-2.013zm10.839 4.798c-1.841 1.868-7.036 1.868-8.878 0-.203-.18-.203-.498 0-.703.177-.18.491-.18.668 0 1.406 1.463 6.07 1.488 7.537 0 .177-.18.491-.18.668 0 .207.206.207.524.005.703zm-.041-2.781c-1.092 0-1.982-.903-1.982-2.011 0-1.129.89-2.038 1.982-2.038 1.113 0 2.008.903 2.008 2.038-.005 1.103-.895 2.011-2.008 2.011z"></path>
+            </svg>
+        </div>
+
+        <div class="mail" title="Share this through Email" onclick="window.open('mailto:?&amp;body=https://interrupt.memfault.com//blog/diving-into-jtag-part-4');">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1792 710v794q0 66-47 113t-113 47h-1472q-66 0-113-47t-47-113v-794q44 49 101 87 362 246 497 345 57 42 92.5 65.5t94.5 48 110 24.5h2q51 0 110-24.5t94.5-48 92.5-65.5q170-123 498-345 57-39 100-87zm0-294q0 79-49 151t-122 123q-376 261-468 325-10 7-42.5 30.5t-54 38-52 32.5-57.5 27-50 9h-2q-23 0-50-9t-57.5-27-52-32.5-54-38-42.5-30.5q-91-64-262-182.5t-205-142.5q-62-42-117-115.5t-55-136.5q0-78 41.5-130t118.5-52h1472q65 0 112.5 47t47.5 113z"></path>
+            </svg>
+        </div>
+    </div>
+</div>
+        </aside>
+      </div>
+
+        <!-- Pagination links -->
+        
+
+
+    </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+  <div class="footer-links">
+    <a href="https://interrupt.memfault.com/feed.xml">
+      <svg class="svg-icon orange"><use xlink:href="/img/social-icons.svg#rss"></use></svg><span>RSS</span>
+    </a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="https://interrupt-slack.herokuapp.com/" target="_blank">
+      <svg class="svg-icon slack"><use xlink:href="/img/social-icons.svg#slack"></use></svg><span>Slack</span>
+    </a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="https://go.memfault.com/interrupt-subscribe" target="_blank">Subscribe</a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="https://interrupt.memfault.com/contributing">Contribute</a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="https://community.memfault.com/" target="_blank">Community</a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="https://memfault.com/" target="_blank">Memfault.com</a>&nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
+  <div>© 2025 - Memfault, Inc.</div>
+</footer>
+
+
+        <!-- Script -->
+        <script src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/main.js"></script>
+
+<!-- Start of HubSpot Embed Code -->
+<script type="text/javascript" id="hs-script-loader" async="" defer="defer" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/8551838_002.js"></script>
+<!-- End of HubSpot Embed Code -->
+
+
+  </div><script id="6senseWebTag" text="" charset="" type="text/javascript" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/cf20b0c3-ea4c-47d3-bc00-1951783c0b09.js"></script><script type="text/javascript" id="" charset="">window[function(d,e){for(var b="",c=0;c<d.length;c++){var a=d[c].charCodeAt();a-=e;b==b;a+=61;a%=94;a!=c;2<e;a+=33;b+=String.fromCharCode(a)}return b}(atob("KXZ9QT45NDJDeDRI"),45)]="8dacced6c41692401988";var zi=document.createElement("script");zi.type="text/javascript";zi.async=!0;zi.src=function(d,e){for(var b="",c=0;c<d.length;c++){var a=d[c].charCodeAt();a-=e;a!=c;a+=61;a%=94;a+=33;3<e;b==b;b+=String.fromCharCode(a)}return b}(atob("OUVFQURpXl47RF1LOlxENEM6QUVEXTRAPl5LOlxFMjhdO0Q\x3d"),47);
+"complete"===document.readyState?document.body.appendChild(zi):window.addEventListener("load",function(){document.body.appendChild(zi)});</script><script type="text/javascript" id="" charset="">window.addEventListener("message",function(a){"hsFormCallback"===a.data.type&&"onFormSubmitted"===a.data.eventName&&window.dataLayer.push({event:"hubspot-form-success","hs-form-guid":a.data.id})});</script>
+<!-- Cloudflare Pages Analytics --><script defer="defer" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/beacon.min.js" data-cf-beacon="{&quot;token&quot;: &quot;a1c1df99a5934544a18718181ada5eb6&quot;}"></script><!-- Cloudflare Pages Analytics -->
+
+<iframe height="0" width="0" style="display: none; visibility: hidden;"></iframe><iframe style="display: none; visibility: hidden;" owner="archetype" title="archetype"></iframe><script type="text/javascript" async="" src="Diving%20into%20JTAG%20%E2%80%94%20BSDL%20(Part%204)%20Interrupt_files/zi-tag.js"></script></body><div style="all: initial;"><div style="all: initial;" id="__hcfy__"></div></div></html>

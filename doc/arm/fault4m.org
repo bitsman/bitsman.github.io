@@ -1,0 +1,692 @@
+#+title: Cortex-M Fault定位
+# #+subtitle: 
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+* 寄存器
+** 寄存器CFSR(Configurable Fault Status Register)
+这个32位寄存器包含了Fault发生的状态和原因.这个寄存器由3种Fault状态组成,起
+始地址为0xE000ED28,属于SCB区域;
+- MFSR寄存器: MemManage Fault: CFSR[7:0],地址为0xE000ED28;
+- BFSR寄存器: Bus Fault: CFSR[15:8],地址为0xE000ED29;
+- UFSR寄存器: Usage Fault: CFSR[31:16],地址为0xE000ED2A;
+*** Usage Fault
+- 状态寄存器UFSR(0xE000ED2A)
+  + DIVBYZERO: UFSR[9], 表示除0Fault;
+  + UNALIGNED: UFSR[8], 表示发生了非对齐访问.非对齐多word访问,如访问uint64_t时地
+    址不是8-byte对齐;
+  + NOCP: UFSR[3], 表示协处理器指令发出了, 但是协处理器被disable了或不存
+    在, 如代码编译使用了浮点扩展(-mfloat-abi=hard -mfpu=fpv4-sp-d16), 但
+    是协处理器浮点协处理器没有使能;
+  + INVPC: UFSR[2], 表示对EXC_RETURN完整性校验失败, 如果这个发生了,通常
+    表示在异常退出时,EXC_RETURN的reserved值被使用了;
+  + INVSTATE: UFSR[1], 表示处理器尝试执行的指令是无效的Execution Program
+    Status Register(EPSR),如thumb状态是否正确等;
+  + UNDEFINSTR: UFSR[0], 表示执行了未定义指令,如异常退出时栈崩溃了,导致
+    PC指向了一个异常指令;
+- 配置寄存器CCR(Configurable Control Register): 地址为0xE000ED14, 复位
+  时,这些fault都是disable;
+  + DIV_0_TRP: CCR[4], 配置除0时是否触发fault;
+  + UNALIGN_TRP: CCR[3], 配置非对齐访问时是否触发fault;
+*** Bus Fault
+- 状态寄存器BFSR(0xE000ED29)
+  + BFARVALID: BFSR[7], 表示触发的Bus Fault指令,这个指令地址被保存在
+    BFAR(Bus Fault Address Register)寄存器(0xE000ED38);
+  + LSPERR/STKERR: BFSR[5]/BFSR[4], 都是发生在栈自动保存和退出时(异常
+    进入和退出), 如栈自动保存和退出时发生在RAM地址外;
+  + UNSTKERR: BFSR[3], 表示在异常退出时发生了一个fault,如当异常正在执
+    行时,发生了栈崩溃, 或栈指针变化了并且栈上的值没有正确初始化;
+  + IMPRECISERR: BFSR[2], 指示是否能够精确的定位出发生异常的位置;
+  + PRECISERR: BFSR[1], CPU正在执行的指令先于异常入口触发了fault;
+  + IBUSERR: BFSR[0], ??;
+- 配置寄存器
+
+
+对于非精确位置的Bus Error调试建议: 非精确位置的错误是很难的一种fault调
+试,他们常常产生于异步的指令执行流, 这就意味着异常进入时栈上存的寄存器
+值不指向产生异常的指令代码.
+
+
+指令fetch和数据load时产生的fault常常是同步fault,是精确;相反, store操作
+产生异步fault, 这是因为写操作有时会先被buffer缓存着而没有flush进去, 这
+导致了PC会超前执行于实际的写数据动作.
+
+
+当调试非精确错误时, 常常是调查在做store操作发生异常所报告的那片奇怪的
+代码和数据区域, 如果有ETM(Embedded Trace Macrocell), 用trace, 近期执行
+的指令可以用调试器看到.
+
+
+对于这种被buffer缓存store操作的控制可以通过设置ACTLR(Auxiliary Control
+Register)(0xE000E008)寄存器中的功能位来禁止和使能. 这个寄存器在
+M3/M4/M7上都不太一样.
+
+*** MemManage Fault
+- 状态寄存器MFSR(0xE000ED28),这个寄存器报告MPU产生的一些错误, 或者PC
+  从system区域(0xEXXX区域)执行.
+  + MMARVALID: MFSR[7], 指示某个地址的指令执行触发了MemManage Fault,
+    这个地址会保存在MMFAR寄存器(MemManage Fault Address
+    Register)(0xE000ED34)中;
+  + MLSPERR/MSTKERR: MFSR[5]/MFSR[4], 指示在lazy state preservation时
+    发生MemManage Fault, 比如, 被使用的MPU区域监测到栈溢出;
+  + MUNSTKERR: MFSR[3],指示从异常返回时发生了一个fault;
+  + DACCVIOL: MFSR[1], 指示data access时发生了fault;
+  + IACCVIOL: MFSR[0], 指示CPU尝试执行指令触发了MPU或XN(Execution
+    Never)的fault.
+** 寄存器HFSR(HardFault Status Register)
+寄存器地址为0xE000ED2C, 指示发生Hardfault的原因
+- DEBUGEVT: HFSR[31], 表示在调试子系统没有被使能时,发生了调试事件,如执
+  行了一个breakpoint指令;
+- FORCED: HFSR[30], 这个表示一个可配置的fault发生了,但是没有配置为使能,最
+  后上升为HardFault, 或在handler执行期间发生了fault;
+- VECTTBL: HFSR[1], 表示在vector table区间进行了一次有问题的读操作;
+* 栈恢复
+要解决fault问题,需要定位出当fault发生时正在执行的指令, 为此, 需要恢复
+出在异常进入那一刻的寄存器状态.
+
+
+如果这个fault可重现, 可以用调试器attach进去, 手动在异常处理函数处添加
+断点(b HardFault_Handler). 一旦进入处理函数, 总是会自动的保存一些寄存
+器到栈上. 如果用了FPU, 还会扩展保存一些FPU寄存器到栈帧上.
+
+
+不管怎样, 在发生异常前, 总是会推同样的一套core寄存器到栈顶. Cortex-M有
+2套栈指针MSP和PSP, 一旦发生了异常进入处理函数时,在LR中保存的EXC_RETURN[2]
+值会指示异常前的程序使用哪个栈指针, 进入异常处理例程后,将一直使用MSP指
+针.造一个非法指令fault如下.
+
+#+begin_src c 
+  int illegal_instruction_execution(void) {
+    int (*bad_instruction)(void) = (void *)0xE0000000;
+    return bad_instruction();
+  }
+#+end_src
+
+调试时过程
+#+begin_src shell
+  (gdb) p/x $lr
+  $4 = 0xfffffffd
+
+  # LR[2]==1, 在异常之前使用的是psp
+  # LR[2]==0, 在异常之前使用的是msp
+  (gdb) p/x $lr&(1<<2)
+  $5 = 0x4
+
+  # First eight values on stack will always be:
+  # r0, r1, r2, r3, r12, LR, pc, xPSR
+  (gdb) p/a *(uint32_t[8] *)$psp
+  $16 = {
+    0x0 <g_pfnVectors>,
+    0x200003c4 <ucHeap+604>,
+    0x10000000,
+    0xe0000000,
+    0x200001b8 <ucHeap+80>,
+    0x61 <illegal_instruction_execution+16>,# LR展示产生异常的函数
+    0xe0000000,#PC地址展示了异常发生的
+    0x80000000
+  }
+#+end_src 
+
+* Fault叠加
+如果那些可配置的Fault(MemManageFault/BusFault/UsageFault)使能了,在他们
+的handler中在出现Fault时会触发HardFault.一旦进入HardFault Handler,
+core将运行在优先级不可配置状态, 在这个级别,新的Fault会将Processor置于
+不可恢复状态,即Lockup,通常情况下,需要一个复位才能恢复,比如WDT.
+
+
+当发生了Lockup, Processor会重复的fetch相同且固定的指令, 如0xFFFFFFFE或
+导致Lockup发生的那条指令.
+
+* Fault调试
+常常当调试器attach进去时, 在halt住前, 核的有效状态信息可能已经被复写了.当
+发生Fault时.
+- 首先,可以触发一个断点;
+  #+begin_src c 
+    // NOTE: If you are using CMSIS, the registers can also be
+    // accessed through CoreDebug->DHCSR & CoreDebug_DHCSR_C_DEBUGEN_Msk
+    #define HALT_IF_DEBUGGING()                              \
+      do {                                                   \
+        if ((*(volatile uint32_t *)0xE000EDF0) & (1 << 0)) { \
+          __asm("bkpt 1");                                   \
+        }                                                    \
+    } while (0)
+  #+end_src
+- 然后,可以定义一个C结构体表示寄存器的入栈.
+  #+begin_src c 
+    typedef struct __attribute__((packed)) ContextStateFrame {
+      uint32_t r0;
+      uint32_t r1;
+      uint32_t r2;
+      uint32_t r3;
+      uint32_t r12;
+      uint32_t lr;
+      uint32_t return_address;
+      uint32_t xpsr;
+    } sContextStateFrame;
+  #+end_src
+- 在决定在发生异常前使用哪个xSP(MSP/PSP), 将这个SP寄存器的值传给上面的
+  结构体处理模块(my_fault_handler_c).
+  #+begin_src c
+    #define HARDFAULT_HANDLING_ASM(_x)               \
+        __asm volatile(                              \
+            "tst lr, #4 \n"                          \
+            "ite eq \n"                              \
+            "mrseq r0, msp \n"                       \
+            "mrsne r0, psp \n"                       \
+            "b my_fault_handler_c \n")
+  #+end_src
+- 最后,整合
+  #+begin_src c 
+    // Disable optimizations for this function so "frame" argument
+    // does not get optimized away
+    __attribute__((optimize("O0")))
+    void my_fault_handler_c(sContextStateFrame *frame)
+    {
+        // If and only if a debugger is attached, execute a breakpoint
+        // instruction so we can take a look at what triggered the fault
+        HALT_IF_DEBUGGING();
+        // Logic for dealing with the exception. Typically:
+        //  - log the fault which occurred for postmortem analysis
+        //  - If the fault is recoverable,
+        //    - clear errors and return back to Thread Mode
+        //  - else
+        //    - reboot system
+    }
+  #+end_src
+
+
+这样当发生异常时并且调试器attach后, 可以自动的产生断点, 能够检查寄存器
+状态.
+#+begin_src shell
+  0x00000244 in my_fault_handler_c (frame=0x200005d8) at ./startup.c:94
+  94	  HALT_IF_DEBUGGING();
+  (gdb) p/a *frame
+  $18 = {
+    r0 = 0x0 <g_pfnVectors>,
+    r1 = 0x200003c4 <ucHeap+604>,
+    r2 = 0x10000000,
+    r3 = 0xe0000000,
+    r12 = 0x200001b8 <ucHeap+80>,
+    lr = 0x61 <illegal_instruction_execution+16>,
+    return_address = 0xe0000000,
+    xpsr = 0x80000000
+  }
+#+end_src
+
+* Fault恢复
+除了复位,有些Fault也可以f恢复,扩展上面的my_fault_handler_c.
+#+begin_src c 
+  void my_fault_handler_c(sContextStateFrame *frame)
+  {
+      //...
+      volatile uint32_t *cfsr = (volatile uint32_t *)0xE000ED28;
+      const uint32_t usage_fault_mask = 0xffff0000;
+      const bool non_usage_fault_occurred =
+          (*cfsr & ~usage_fault_mask) != 0;
+      // the bottom 8 bits of the xpsr hold the exception number of the
+      // executing exception or 0 if the processor is in Thread mode
+      const bool faulted_from_exception = ((frame->xpsr & 0xFF) != 0);
+      if (faulted_from_exception || non_usage_fault_occurred) {
+          // For any fault within an ISR or non-usage faults
+          // let's reboot the system
+          volatile uint32_t *aircr = (volatile uint32_t *)0xE000ED0C;
+          *aircr = (0x05FA << 16) | 0x1 << 2;
+          while (1) { } // should be unreachable
+      }
+      //...
+  }
+#+end_src
+
+
+从Fault恢复,需要做的工作
+- 清除(W1C)和记录CFSR中的1;
+- 改变异常返回的函数.
+- 复位xPSR寄存器
+
+
+#+begin_src c
+    // Clear any logged faults from the CFSR
+    *cfsr |= *cfsr;
+    // the instruction we will return to when we exit from the exception
+    frame->return_address = (uint32_t)recover_from_task_fault;
+    // the function we are returning to should never branch
+    // so set lr to a pattern that would fault if it did
+    frame->lr = 0xdeadbeef;
+    // reset the psr state and only leave the
+    // "thumb instruction interworking" bit set
+    frame->xpsr = (1 << 24);
+#+end_src
+
+* 辅助工具
+可以利用SVD系统寄存器描述文件和gdb来输出Cortex-M的系统寄存器信息.
+
+** PyCortexMDebug
+- 安装脚本;
+  #+begin_src shell
+    git clone git@github.com:bnahill/PyCortexMDebug.git
+    # Check out Python 2 compatible code
+    $ git checkout 77af54e
+    $ cd PyCortexMDebug
+    $ python setup.py install
+  #+end_src
+- 加载脚本;
+  #+begin_src shell
+    (gdb) source cmdebug/svd_gdb.py
+    (gdb) svd_load cortex-m4-scb.svd # 芯片vendor提供svd
+    (gdb) svd			 # svd指令
+    Available Peripherals:
+        ...
+            SCB:        System control block
+        ...
+    (gdb) svd SCB			 
+    Registers in SCB:
+        ...
+            CFSR_UFSR_BFSR_MMFSR:      524288  Configurable fault status register
+        ...
+    (gdb) svd SCB CFSR_UFSR_BFSR_MMFSR
+    Fields in SCB CFSR_UFSR_BFSR_MMFSR:
+            IACCVIOL:     0  Instruction access violation flag
+            DACCVIOL:     0  Data access violation flag
+            MUNSTKERR:    0  Memory manager fault on unstacking for a return from exception
+            MSTKERR:      0  Memory manager fault on stacking for exception entry.
+            ...
+  #+end_src
+* 案例
+** eXecute Never Fault
+*** 代码
+#+begin_src c
+  int illegal_instruction_execution(void) {
+    int (*bad_instruction)(void) = (void *)0xE0000000;
+    return bad_instruction();
+  }
+#+end_src
+*** 分析
+- 触发异常,并断点
+  #+begin_src shell
+    (gdb) break main
+    (gdb) continue
+    Breakpoint 1, main () at ./cortex-m-fault-debug/main.c:180
+    180	  xQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(unsigned long));
+    (gdb) set g_crash_config=0
+    (gdb) c
+    Continuing.
+  
+    Program received signal SIGTRAP, Trace/breakpoint trap.
+    0x00000218 in my_fault_handler_c (frame=0x200005e8 <ucHeap+1152>) at ./cortex-m-fault-debug/startup.c:91
+    91	  HALT_IF_DEBUGGING();
+    (gdb) bt
+    #0  0x00000218 in my_fault_handler_c (frame=0x200005e8 <ucHeap+1152>) at ./cortex-m-fault-debug/startup.c:91
+    #1  <signal handler called>
+    #2  0x00001468 in prvPortStartFirstTask () at ./cortex-m-fault-debug/freertos_kernel/portable/GCC/ARM_CM4F/port.c:267
+    #3  0x000016e6 in xPortStartScheduler () at ./cortex-m-fault-debug/freertos_kernel/portable/GCC/ARM_CM4F/port.c:379
+    #4  0x1058e476 in ?? ()
+  #+end_src
+
+- 检查CFSR类型
+  #+begin_src shell
+    (gdb) p/x *(uint32_t*)0xE000ED28
+    $3 = 0x1
+    (gdb) svd SCB CFSR_UFSR_BFSR_MMFSR
+    Fields in SCB CFSR_UFSR_BFSR_MMFSR:
+            IACCVIOL:     1  Instruction access violation flag
+    [...]
+  #+end_src
+  
+** Bad Address Read
+*** 代码
+#+begin_src c
+  uint32_t read_from_bad_address(void) {
+    return *(volatile uint32_t *)0xbadcafe;
+  }
+#+end_src
+*** 分析
+- 触发异常,并断点
+  #+begin_src shell
+    (gdb) break main
+    (gdb) continue
+    Breakpoint 1, main () at ./cortex-m-fault-debug/main.c:189
+    189	  xQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(unsigned long));
+    (gdb) set g_crash_config=1
+    (gdb) c
+    Continuing.
+  
+    Program received signal SIGTRAP, Trace/breakpoint trap.
+    0x00000218 in my_fault_handler_c (frame=0x200005e8 <ucHeap+1152>) at ./cortex-m-fault-debug/startup.c:91
+    91	  HALT_IF_DEBUGGING();
+  #+end_src
+- 检查CFSR类型
+  #+begin_src shell
+    (gdb) p/x *(uint32_t*)0xE000ED28
+    $13 = 0x8200
+    (gdb) svd SCB CFSR_UFSR_BFSR_MMFSR
+    Fields in SCB CFSR_UFSR_BFSR_MMFSR:
+    [...]
+    # 表示是一个精确的data bus错误
+        PRECISERR:    1  Precise data bus error
+    [...]
+    # 表示可以读取BFAR寄存器知道mem访问错误地址
+        BFARVALID:    1  Bus Fault Address Register (BFAR) valid flag
+  #+end_src
+- 继续读取BFAR追踪
+  #+begin_src shell
+    (gdb) svd/x SCB BFAR
+    Fields in SCB BFAR:
+            BFAR:  0x0BADCAFE  Bus fault address
+
+    (gdb) p/a *frame
+    $16 = {
+      r0 = 0x1 <g_pfnVectors+1>,
+      r1 = 0x200003c4 <ucHeap+604>,
+      r2 = 0x10000000,
+      r3 = 0xbadcafe,
+      r12 = 0x200001b8 <ucHeap+80>,
+      lr = 0x195 <prvQueuePingTask+52>,
+      return_address = 0x13a <trigger_crash+22>,
+      xpsr = 0x81000000
+    }
+
+    (gdb) info line *0x13a
+    Line 123 of "./cortex-m-fault-debug/main.c" starts at address 0x138 <trigger_crash+20> 
+    and ends at 0x13e <trigger_crash+26>.
+
+    (gdb) list *0x13a
+    0x13a is in trigger_crash (./cortex-m-fault-debug/main.c:123).
+    118	  switch (crash_id) {
+    119	    case 0:
+    120	      illegal_instruction_execution();
+    121	      break;
+    122	    case 1:
+    ===> FAULT HERE
+    123	      read_from_bad_address();
+    124	      break;
+    125	    case 2:
+    126	      access_disabled_coprocessor();
+    127	      break;
+  #+end_src
+** Coprocessor Fault
+*** 代码
+#+begin_src c
+  void access_disabled_coprocessor(void) {
+    // FreeRTOS will automatically enable the FPU co-processor.
+    // Let's disable it for the purposes of this example
+    __asm volatile(
+        "ldr r0, =0xE000ED88 \n"
+        "mov r1, #0 \n"
+        "str r1, [r0]	\n"
+        "dsb \n"
+        "vmov r0, s0 \n"
+        );
+  }
+#+end_src
+*** 分析
+- 触发异常,并断点
+  #+begin_src shell
+    (gdb) break main
+    (gdb) continue
+    Breakpoint 4, main () at ./cortex-m-fault-debug/main.c:180
+    180	  xQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(unsigned long));
+    (gdb) set g_crash_config=2
+    (gdb) c
+    Continuing.
+
+    Program received signal SIGTRAP, Trace/breakpoint trap.
+    0x00000218 in my_fault_handler_c (frame=0x20002d80) at ./cortex-m-fault-debug/startup.c:91
+    91	  HALT_IF_DEBUGGING();
+  #+end_src
+
+- 追踪CFSR
+  #+begin_src shell
+    (gdb) p/x *(uint32_t*)0xE000ED28
+    $13 = 0x8200
+    (gdb) svd SCB CFSR_UFSR_BFSR_MMFSR
+    Fields in SCB CFSR_UFSR_BFSR_MMFSR:
+    [...]
+            NOCP:         1  No coprocessor usage fault.
+    [...]
+  #+end_src
+
+- 追踪栈帧
+  #+begin_src shell
+    (gdb) p/a *frame
+    $27 = {
+      r0 = 0xe000ed88,
+      r1 = 0x0 <g_pfnVectors>,
+      r2 = 0x10000000,
+      r3 = 0x0 <g_pfnVectors>,
+      r12 = 0x200001b8 <ucHeap+80>,
+      lr = 0x199 <prvQueuePingTask+52>,
+      return_address = 0x114 <access_disabled_coprocessor+12>,
+      xpsr = 0x81000000
+    }
+  #+end_src
+- 追踪异常指令
+  #+begin_src shell
+    (gdb) disassemble 0x114
+    Dump of assembler code for function access_disabled_coprocessor:
+       0x00000108 <+0>:	ldr	r0, [pc, #16]	; (0x11c)
+       0x0000010a <+2>:	mov.w	r1, #0
+       0x0000010e <+6>:	str	r1, [r0, #0]
+       0x00000110 <+8>:	dsb	sy
+    ===> FAULT HERE on a Floating Point instruction
+       0x00000114 <+12>:	vmov	r0, s0
+       0x00000118 <+16>:	bx	lr
+  #+end_src
+- 检查CPACR(0xE000ED88)中FPU是否使能.
+  #+begin_src shell
+    (gdb) p/x (*(uint32_t*)0xE000ED88 >> 20) & 0xf
+    $29 = 0x0
+  #+end_src
+** Imprecise Fault
+*** 代码
+#+begin_src c 
+  void bad_addr_double_word_write(void) {
+    volatile uint64_t *buf = (volatile uint64_t *)0x30000000;
+    *buf = 0x1122334455667788;
+  }
+#+end_src
+*** 分析
+- 触发异常,并断点
+  #+begin_src shell
+    (gdb) break main
+    (gdb) continue
+    Breakpoint 4, main () at ./cortex-m-fault-debug/main.c:182
+    182	  xQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(unsigned long));
+    (gdb) set g_crash_config=3
+    (gdb) c
+    Continuing.
+
+    Program received signal SIGTRAP, Trace/breakpoint trap.
+    0x0000021c in my_fault_handler_c (frame=0x200005e8 <ucHeap+1152>) at ./cortex-m-fault-debug/startup.c:91
+    91	  HALT_IF_DEBUGGING();
+  #+end_src
+- 检查CFSR
+  #+begin_src shell
+    (gdb) p/x *(uint32_t*)0xE000ED28
+    $31 = 0x400
+    (gdb) svd SCB CFSR_UFSR_BFSR_MMFSR
+    Fields in SCB CFSR_UFSR_BFSR_MMFSR:
+    [...]
+    # 表示非精确错误
+            IMPRECISERR:  1  Imprecise data bus error
+    [...]
+  #+end_src
+- 检查栈帧:非精确错误表示栈帧指向普通区域,这里发生Fault但不是这个指令
+  导致.
+  #+begin_src shell
+    (gdb) p/a *frame
+    $32 = {
+      r0 = 0x55667788,
+      r1 = 0x11223344,
+      r2 = 0x10000000,
+      r3 = 0x30000000,
+      r12 = 0x200001b8 <ucHeap+80>,
+      lr = 0x199 <prvQueuePingTask+52>,
+      return_address = 0x198 <prvQueuePingTask+52>,
+      xpsr = 0x81000000
+    }
+  #+end_src
+- 检查发生Fault的地址,可以看出没有异常情况,综合分析周边的代码.
+  #+begin_src shell
+    (gdb) list *0x198
+    0x198 is in prvQueuePingTask (./cortex-m-fault-debug/main.c:162).
+    157
+    158	  while (1) {
+    159	    vTaskDelayUntil(&xNextWakeTime, mainQUEUE_SEND_FREQUENCY_MS);
+    160	    xQueueSend(xQueue, &ulValueToSend, 0U);
+    161
+    ==> Crash somewhere around here
+    162	    trigger_crash(g_crash_config);
+    163	  }
+    164	}
+  #+end_src
+- 复位后, 设置ACTLR寄存器禁止Write buffer功能;
+  #+begin_src shell
+    set *(uint32_t*)0xE000E008=(*(uint32_t*)0xE000E008 | 1<<1)
+  #+end_src
+- 重新调查栈帧
+  #+begin_src shell
+    Program received signal SIGTRAP, Trace/breakpoint trap.
+    0x0000021c in my_fault_handler_c (frame=0x200005e8 <ucHeap+1152>) at ./cortex-m-fault-debug/startup.c:91
+    91	  HALT_IF_DEBUGGING();
+    (gdb) p/a *frame
+    $33 = {
+      r0 = 0x55667788,
+      r1 = 0x11223344,
+      r2 = 0x10000000,
+      r3 = 0x30000000,
+      r12 = 0x200001b8 <ucHeap+80>,
+      lr = 0x199 <prvQueuePingTask+52>,
+      return_address = 0xfa <bad_addr_double_word_write+10>,
+      xpsr = 0x81000000
+    }
+  #+end_src
+- 调查错误地址
+  #+begin_src shell
+    (gdb) list *0xfa
+    0xfa is in bad_addr_double_word_write (./cortex-m-fault-debug/main.c:92).
+    90	void bad_addr_double_word_write(void) {
+    91	  volatile uint64_t *buf = (volatile uint64_t *)0x30000000;
+    ==> FAULT HERE
+    92	  *buf = 0x1122334455667788;
+    93	}
+  #+end_src
+** Fault Entry Exception
+STKERR表示在异常入口压栈时发生的错误,没有明显的代码指令展示. STKERR异
+常的调试方法
+- 通过调整和观察一些值,可以找到在异常入口压栈前的栈SP指针.
+- 栈帧可能只有部分有效, 最后一个压栈的值,常常是触发这个Fault的值,其他
+  的通常可用.但是压栈顺序和具体的栈布局常常不一致,需要考虑这个顺序,找
+  出最后压入的这个值.
+*** 代码
+#+begin_src c
+  void stkerr_from_psp(void) {
+    extern uint32_t _start_of_ram[];
+    uint8_t dummy_variable;
+    const size_t distance_to_ram_bottom =
+        (uint32_t)&dummy_variable - (uint32_t)_start_of_ram;
+    /* 大变量需要压栈,这会把数据压入超过RAM的区间 */
+    volatile uint8_t big_buf[distance_to_ram_bottom - 8];
+
+    for (size_t i = 0; i < sizeof(big_buf); i++) {
+      big_buf[i] = i;
+    }
+    /* 产生中断,会有压栈操作 */
+    trigger_irq();
+  }
+#+end_src
+*** 分析
+- 触发异常并中断
+  #+begin_src shell
+    (gdb) break main
+    (gdb) continue
+    Breakpoint 4, main () at ./cortex-m-fault-debug/main.c:182
+    182	  xQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(unsigned long));
+    (gdb) set g_crash_config=4
+    (gdb) c
+    Continuing.
+
+    Program received signal SIGTRAP, Trace/breakpoint trap.
+    0x0000021c in my_fault_handler_c (frame=0x1fffffe0) at ./cortex-m-fault-debug/startup.c:91
+    91	  HALT_IF_DEBUGGING();
+  #+end_src
+- 检查CFSR
+  #+begin_src shell
+    (gdb) p/x *(uint32_t*)0xE000ED28
+    $39 = 0x1000
+    (gdb) svd SCB CFSR_UFSR_BFSR_MMFSR
+    Fields in SCB CFSR_UFSR_BFSR_MMFSR:
+    [...]
+            STKERR:       1  Bus fault on stacking for exception entry
+  #+end_src
+- 检查栈帧,这里的0x1fffffe0已经不在RAM区间(0x20000000以上)
+  #+begin_src shell
+    (gdb) p frame
+    $40 = (sContextStateFrame *) 0x1fffffe0
+  #+end_src
+- 手动寻找可用栈数据
+  #+begin_src shell
+    (gdb) x/a 0x20000000
+    0x20000000 <uxCriticalNesting>:	0x3020100
+    (gdb)
+    0x20000004 <g_crash_config>:	0x7060504
+    (gdb)
+    0x20000008 <xQueue>:	0xb0a0908
+    (gdb)
+    0x2000000c <s_buffer>:	0xf0e0d0c
+    (gdb)
+    0x20000010 <s_buffer+4>:	0x13121110
+    (gdb)
+    0x20000014 <s_buffer+8>:	0x17161514
+    (gdb)
+    0x20000018 <pxCurrentTCB>:	0x1b1a1918
+    (gdb)
+    0x2000001c <pxDelayedTaskList>:	0x1f1e1d1c
+    (gdb)
+    0x20000020 <pxOverflowDelayedTaskList>:	0x23222120
+  #+end_src
+- 在RAM底部附近(0x2000000C)增加一个数据观测点
+  #+begin_src shell
+    (gdb) mon reset
+    (gdb) continue
+    Breakpoint 4, main () at ./cortex-m-fault-debug/main.c:182
+    182	  xQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(unsigned long));
+    (gdb) set g_crash_config=4
+    (gdb) watch *(uint32_t*)0x2000000c
+    Hardware watchpoint 9: *(uint32_t*)0x2000000c
+  #+end_src
+- 继续观察行为
+  #+begin_src shell
+    gdb) continue
+    Hardware watchpoint 9: *(uint32_t*)0x2000000c
+
+    Old value = 0
+    New value = 12
+    0x000000c0 in stkerr_from_psp () at ./cortex-m-fault-debug/main.c:68
+    68	    big_buf[i] = i;
+    (gdb) bt
+    #0  0x000000c0 in stkerr_from_psp () at ./cortex-m-fault-debug/main.c:68
+    #1  0x00000198 in prvQueuePingTask (pvParameters=<optimized out>) at ./cortex-m-fault-debug/main.c:162
+    #2  0x00001488 in ?? () at ./cortex-m-fault-debug/freertos_kernel/portable/GCC/ARM_CM4F/port.c:703
+    Backtrace stopped: previous frame identical to this frame (corrupt stack?)
+  #+end_src
+- 找到点, 一个在栈上的变量被更新时(big_buf[i]=i),导致栈溢出.
+  #+begin_src shell
+    (gdb) list *0xc0
+    0xc0 is in stkerr_from_psp (./cortex-m-fault-debug/main.c:68).
+    63	  extern uint32_t _start_of_ram[];
+    64	  uint8_t dummy_variable;
+    65	  const size_t distance_to_ram_bottom = (uint32_t)&dummy_variable - (uint32_t)_start_of_ram;
+    66	  volatile uint8_t big_buf[distance_to_ram_bottom - 8];
+    67	  for (size_t i = 0; i < sizeof(big_buf); i++) {
+    68	    big_buf[i] = i;
+    69	  }
+    70
+    71	  trigger_irq();
+    72	}
+  #+end_src
+

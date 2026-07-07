@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script src="We%20understand%20the%20protocol%202-wire%20JTAG_files/reactive_library.js"></script><script src="We%20understand%20the%20protocol%202-wire%20JTAG_files/osd.js"></script><script src="We%20understand%20the%20protocol%202-wire%20JTAG_files/show_ads_impl.js" id="google_shimpl"></script><script type="text/javascript" async="" src="We%20understand%20the%20protocol%202-wire%20JTAG_files/watch.js"></script><script type="text/javascript" async="" src="We%20understand%20the%20protocol%202-wire%20JTAG_files/analytics.js"></script><script async="" src="We%20understand%20the%20protocol%202-wire%20JTAG_files/js"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-134931760-1');
+  </script>
+
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>We understand the protocol 2-wire JTAG</title>
+  <link rel="icon" type="image/x-icon" href="https://weekly-geekly.github.io/favicon.ico">
+  <meta name="description" content="2-wire JTAG (aka two-wire JTAG, aka CompactJTAG, aka cJTAG) is a newfangled interface that is part of the IEEE 1149.7-2009 standard. It provides the s...">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="We%20understand%20the%20protocol%202-wire%20JTAG_files/main.css">
+
+  <script src="We%20understand%20the%20protocol%202-wire%20JTAG_files/jquery.js"></script>
+  <script>window.jQuery || document.write('<script src="../../js/vendors/jquery-3.3.1.min.js"><\/script>')</script>
+
+  <script async="" src="We%20understand%20the%20protocol%202-wire%20JTAG_files/adsbygoogle.js"></script>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({
+            google_ad_client: "ca-pub-6974184241884155",
+            enable_page_level_ads: true
+       });
+  </script>
+<link rel="preload" href="We%20understand%20the%20protocol%202-wire%20JTAG_files/integrator.js" as="script"><script type="text/javascript" src="We%20understand%20the%20protocol%202-wire%20JTAG_files/integrator.js"></script><link rel="preload" href="We%20understand%20the%20protocol%202-wire%20JTAG_files/show_ads_impl.js" as="script"></head>
+
+<body class="site-code-wg">
+  <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+  <header class="page-header js-page-header">
+    <a class="page-header-logo-container" href="https://weekly-geekly.github.io/index.html"></a>
+    <div class="page-header-text">Geekly Articles each Day</div>
+  </header>
+  <nav class="page-headings-container js-page-headings-container"></nav>
+  <div class="tools-bar js-tools-bar">
+    <!-- <a href="../../search.html" title="Search">🔎</a> -->
+    <a class="js-list-of-headings-button" data-state="closed" href="#" title="Headings" style="display: none;">📜</a>
+    <a class="js-go-to-top-button" href="#" title="Go to Top">⬆️</a>
+    <a class="js-go-to-bottom-button" href="#" title="Go to Bottom">⬇️</a>
+  </div>
+  <a href="http://bit.ly/donateToWeeklyGeekly" class="donate-btn">DONATE</a>
+  <section class="page js-page"><h1>We understand the protocol 2-wire JTAG</h1><div class="post__text post__text-html js-mediator-article"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/5eda06036f374b0d98989ac1ca674646.png"><br><br>
+  2-wire JTAG (aka two-wire JTAG, aka CompactJTAG, aka cJTAG) is a 
+newfangled interface that is part of the IEEE 1149.7-2009 standard.  It 
+provides the same and even greater functionality as a regular JTAG (IEEE
+ 1149.1), but uses only two signals instead of four. <br><br>  
+Unfortunately, neither the Russian nor the English segments of the 
+Internet have any information about this standard, except for a few 
+articles written by marketers.  Nevertheless, some time ago, I had to 
+deal with this standard on duty, and now you have a unique chance to get
+ acquainted with the results of my research. <br><a name="habracut"></a><br>  I assume that you are familiar with the usual JTAG.  You can refresh your memory here: <a href="http://habrahabr.ru/post/190012/">habrahabr.ru/post/190012</a> 
+      <br>
+        <script async="" src="We%20understand%20the%20protocol%202-wire%20JTAG_files/adsbygoogle.js"></script>
+        <ins class="adsbygoogle" style="display: block; text-align: center; height: 200px;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-6974184241884155" data-ad-slot="8945601208" data-adsbygoogle-status="done"><ins id="aswift_1_expand" style="display:inline-table;border:none;height:200px;margin:0;padding:0;position:relative;visibility:visible;width:1200px;background-color:transparent;"><ins id="aswift_1_anchor" style="display:block;border:none;height:200px;margin:0;padding:0;position:relative;visibility:visible;width:1200px;background-color:transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_1" name="aswift_1" style="left:0;position:absolute;top:0;border:0px;width:1200px;height:200px;" width="1200" height="200" frameborder="0"></iframe></ins></ins></ins>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      <br>
+      It is often believed that IEEE 1149.7 and 2-wire JTAG are 
+synonymous.  In fact, this is not the case, because IEEE 1149.7 includes
+ modes that use both two and four signals.  So 2-wire JTAG is a subset 
+of IEEE 1149.7. <br><br>  Officially, IEEE 1149.7 is called <i>IEEE Standard for Reduced-Pin and Enhanced-Functionality</i>
+ .  Despite the fact that, in addition to the two-conductor nature, IEEE
+ 1149.7 offers still a lot of new features, in my experience it is the 
+opportunity to save two legs on the microcircuit case that attracts 
+developers the most. <br><br>  Unfortunately, the creators of IEEE 
+1149.7 used hard drugs without any measure, so the monstrous document 
+that firmly won first place in my personal hit parade of the most ugly 
+written standards gave birth without any understatement.  Besides the 
+fact that it has grown almost ten times (1037 pages versus 139 for the 
+old JTAG), it is also written in such a way that it is absolutely 
+impossible to understand anything. <br><br>  However, if you once face a
+ chip with a chip that has instead of four JTAG legs (TCK, TMS, TDI and 
+TDO) there are only two (TCKC and TMSC - “C” on the end means 
+“Compact”), and the finished software to work with it will not, then you
+ have to do something. <br><br>  What an engineer usually does when he 
+sees a microchip with an unidentified JTAG port in front of him.  Of 
+course, trying to figure out which devices are connected to it.  You can
+ find out by reading their IDCODE.  For a regular JTAG, the procedure is
+ simple and looks like described by the link <a href="http://www.fpga4fun.com/JTAG3.html">www.fpga4fun.com/JTAG3.html</a> : <br><ol><li>  First we determine the number of devices in the chain: <br><ul><li>  Go to Test Mode Reset </li><li>  Go to Shift-IR </li><li>
+  Via TDI, we push a bunch of units (how many do not mind, for example, 
+1000) in all IRs in the chain.  Now all devices in BYPASS </li><li>  Moving from Shift-IR to Shift-DR </li><li>  Via TDI, we push in a bunch of zeros (how many do not mind, for example, 1000) to all DRs in the chain in order to reset them </li><li>
+  We begin to push units through DRI through TDI.  As soon as we got a 
+unit from TDO, we stop.  The number of devices in the chain is equal to 
+the number of retracted units. </li></ul></li><li>  Then for each device we read IDCODE: <br><ul><li>  Go to Test Mode Reset - as a result, the address of the IDCODE register is recorded in all IRs. </li><li>  Go to Shift-DR </li><li>
+  We read from TDO 32 bits for each device (by the way, for this you 
+have to push something into TDI).  The first 32 bits read from TDO are 
+the IDCODE of the last device in the chain, the next 32 bits are the 
+IDCODE of the penultimate device, etc. </li></ul></li></ol><br>  
+Initially, I wanted to show how to do the same thing using a two-wire 
+JTAG, but it turned out that this procedure is a bit too long for an 
+example.  Therefore, I decided to simplify it by assuming that there is 
+only one device in the JTAG chain, and the address of its IDCODE 
+register is known.  Thus, reading IDCODE will look like this: <br><ol><li>  Write the IDCODE address in the Instruction Register (IR): <br><ul><li>  Go to Shift-IR </li><li>  While in Shift-IR, we push the IDCODE register address into TDI </li></ul></li><li>  We read data from IDCODE: <br><ul><li>  Go to Shift-DR </li><li>  Being in Shift-DR, we push 32 arbitrary bits into TDI and at the same time we get the contents of IDCODE via TDO </li></ul></li></ol><br>
+  Obviously, being able to perform a simplified procedure, you can 
+easily implement a complete one, because they use the same commands.  
+However, without TDI and TDO, which the 2-wire JTAG does not have, none 
+of the above will work.  How is it proposed to do without them?  Very 
+simple: Scan-packets containing TMS, TDI and TDO will be transmitted via
+ TMSC.  This is how two successive packets look like (nTDI means that an
+ inverted TDI is transmitted): <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/d8e42e7a36564e4aa759346bf5f48cbf.png"></div><br>
+  In fact, this is only one of the possible formats described in the 
+standard - it is called OScan1.  There are still JScan, MScan, SScan, 
+and OScan already eight pieces.  However, only JScan0-3, MScan, Oscan0 
+and Oscan1 are mandatory for 2-wire JTAG. <br><br>  Here it should be 
+noted that the TMSC signal, unlike the usual TMS, is bidirectional, 
+because in each packet TMS and TDI are transmitted in one direction, and
+ TDO - in the other. <div style="text-align: center; width: 100%; height: auto; clear: none;" class="google-auto-placed ap_container"><ins style="display: block; margin: auto; background-color: transparent;" data-ad-format="auto" class="adsbygoogle adsbygoogle-noablate" data-ad-client="ca-pub-6974184241884155" data-adsbygoogle-status="done"><ins id="aswift_2_expand" style="display:inline-table;border:none;height:200px;margin:0;padding:0;position:relative;visibility:visible;width:2473px;background-color:transparent;"><ins id="aswift_2_anchor" style="display:block;border:none;height:200px;margin:0;padding:0;position:relative;visibility:visible;width:2473px;background-color:transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_2" name="aswift_2" style="left:0;position:absolute;top:0;border:0px;width:2473px;height:200px;" width="2473" height="200" frameborder="0"></iframe></ins></ins></ins></div><br><br>
+  However, if you try to just start sending OScan-packages, then you 
+will have an unpleasant surprise.  In short, nothing will work.  And all
+ because, by default, any device with IEEE 1149.7 support is in 
+compatibility mode with standard 1149.1 (the so-called “standard mode” -
+ standard mode) and does not accept any such packets.  Therefore, before
+ sending any OSsans, it is necessary to configure such a device to work 
+in the required format and transfer it to “advanced mode” (advanced 
+mode). <br><br>  Before telling how to do this, a small lyrical 
+digression is required.  One of the main goals in the development of 
+IEEE 1149.7 was to ensure compatibility with the existing “iron”, which 
+at all times looked like this: <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/a6d1300b36c94dd18e79f00a3cad5b44.png"></div><br>
+  Instead of requiring chipmakers to remake the entire JTAG logic, the 
+standard suggests adding an adapter that converts a two-wire interface 
+to a regular four-wire: <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/adedff927d0c459f9519f0e5e9f14264.png"></div> <br>
+  This adapter contains its own Test Access Port (TAP), called TAP.7, so
+ that you can distinguish it from a regular TAP (aka TAP.1).  The TAP.7 
+controller inside is exactly the same machine as TAP.1, but there are 
+some differences, for example, it does not have an Instruction Register,
+ but there are many other registers that TAP.1 does not have. <br><br>  
+By default, TAP.7 is “transparent”, i.e.  the TCKC signal is simply 
+directly connected to the TCK, and the TMSC is connected to the TMS.  
+Therefore, all signals sent by the TCKC and TMSC are transmitted without
+ any changes to the TCK and TMS: <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/838df114c5ca4374a356db98780c4b9b.png"></div><br>
+  Obviously, when trying to transmit an Oscan1 packet in this mode, the 
+“nTDI” will be perceived by the TAP.1 controller simply as the first bit
+ transmitted via the TMS line, “TMS” as the second bit, etc.  That is 
+why before transferring the packets, you need to transfer the TAP.7 
+controller to the “advanced mode”.  This is done by writing to one of 
+the TAP.7 internal registers.  At the time of configuration, TCK and TMS
+ are disabled (and TDI and TDO were previously disabled): <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/63c75c51de5d4a5a824749692a97b9fd.png"></div><br>  After the configuration is complete, the TCK, TMS, TDI and TDO are controlled by the controller's internal logic: <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/42ce54b13a374208ac3de0e5e45c3470.png"></div><br>  Thus, the process of switching to "advanced mode" and the subsequent reading of IDCODE looks like this: <br><ol><li>  Initialize the TAP.7 and TAP.1 controllers </li><li>  Disable TCK and TMS </li><li>  Select the desired transfer format </li><li>  If the format is OScan, MScan or SScan, then go to "advanced mode" </li><li>  Connect TCK, TMS, TDI and TDO </li><li>  Write IDCODE address to the Instruction Register </li><li>  Read IDCODE data </li></ol><br><h5>  <b>Initializing TAP.7.</b>  <b>Escape reset</b> </h5><br>
+  Since you can never know what state the TAP.7 and TAP.1 machines are 
+in, you need to reset them before starting.  To reset the TAP.7 
+controller, use the Escape Reset, which is one of the types of escape 
+sequences defined by the standard.  Escape sequences differ from all 
+other JTAG commands in that the TMS values ​​are not read at the leading
+ edge of the TCK, but asynchronously.  The TAP.7 controller counts the 
+number of edges of the TMS signal that came in while the TCKC is 
+unchanged.  The number of fronts determines the appearance of the escape
+ sequence.  For escape escape it must be more than seven: <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/4627752485984dd3b9d326d3eb6eab16.png"></div><br>
+  Also, Escape Reset takes TAP.7 to Test Logic Reset.  The beauty of 
+escape-sequences is that they have absolutely no effect on TAP.1, which 
+simply ignores them.  TAP.1 reads the TMS values ​​only on the leading 
+edge of the TCK, so it doesn’t matter to him what happens to TMS the 
+rest of the time. <br>  This is how the Escape Reset looks on the oscilloscope screen, which transmits the <a href="https://www.digilentinc.com/Products/Detail.cfm%3FProd%3DJTAG-HS2">Digilent HS2</a> USB-JTAG adapter: <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/eed23b7b56c24a648f714022f685f474.jpg"></div><br>
+  As you can see, all eight fronts are in place, but the distance 
+between the sixth and seventh looks suspicious.  I have already 
+complained to Digilent - they promised to fix it. <br><br><h5>  <b>Initializing TAP.1</b> </h5><br>
+  To reset TAP.1 after TAP.7, the standard recommends sending five units
+ via TMSC: they are guaranteed to transfer the TAP controller to the 
+Test-Logic-Reset from absolutely any other state (you can check for 
+yourself): <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/7f0b2946feb44ba2b3dc417c3da2e422.png"></div><br>
+  Since we do not plan to return to Test-Logic-Reset anymore, it makes 
+sense to send a zero followed by five units and thereby transfer the 
+machine to the Run-Test / Idle state.  Let me remind you that the 
+controller reads the TMS values ​​at the time of the leading edge of the
+ TCK and immediately changes the state of the machine in accordance with
+ these values: <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/a0cfa150d0464a46bf8fb12a7f8bf3fb.png"></div><br><h5>  <b>Disable TCK and TMS</b> </h5><br>
+  To disable TCM and TMS, you need to transfer the TAP.7 controller to 
+Control Mode 2. In total, the controller supports eight different 
+Control Mode, numbered from zero to seven.  We are interested in Control
+ Mode 2, since only in it there is access to the controller's service 
+registers, one of which we need to change the format of the packets on 
+OScan1. <br><br>  Switching between control modes is performed 
+sequentially by performing the so-called Zero-bit DR Shift (ZBS).  Each 
+ZBS run increases the Control Mode by one.  Unlike escape sequences, in 
+theory ZBS may affect the TAP.1 controller, but in practice this is 
+highly unlikely.  From the point of view of the IEEE 1149.1 standard, 
+Zero-bit DR Shift makes absolutely no sense, so the developers hoped 
+that neither hardware nor software developed before the advent of 2-wire
+ JTAG should have used ZBS for any of their needs. .  On the timeline, 
+ZBS looks like this: <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/8a75eb662bf840c2816ab087c9d6cb30.png"></div><br>
+  As you can see, ZBS starts and ends in the Run-Test / Idle state, so 
+it’s important not to forget to switch to Run-Test / Idle after Escape 
+Reset and Test-Logic-Reset before sending the first ZBS. <br><br>  When 
+the desired mode is selected, it must be locked (LOCK), after which 
+subsequent ZBS-s will not be able to influence the choice of mode.  LOCK
+ is almost the same as ZBS, only with entering Shift-DR: <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/5959febf4bee473983615ad11ccf42af.png"></div><br>
+  Notice that the state of TAP.1, unlike TAP.7, does not change.  This 
+is because the TCK and TMS are turned off as soon as the Control Mode 
+number becomes equal to two, even if it is not fixed yet. <br>  Thus, to get into Control Mode 2, you need to: <br><ol><li>  Send two zbs </li><li>  Send LOCK </li></ol><br><h5>  <b>Format selection</b> </h5><br>
+  Now that we are in Control Mode 2, we can write to the service 
+registers.  The standard describes a set of registers, the entry in 
+which is made by special teams.  The teams are divided into two groups -
+ two-part (two-part command) and three-part (three-part command), which I
+ will not consider. <br><br>  In the case of two-section commands, the 
+command number is transmitted in the first section, and the data is 
+transmitted in the second section.  Both sections are transmitted in the
+ same way: from the Run-Test / Idle state you need to go to Shift-DR, 
+and then return to Run-Test / Idle.  The value transmitted is equal to 
+the number of clock cycles held in Shift-DR. <div style="text-align: center; width: 100%; height: auto; clear: none;" class="google-auto-placed ap_container"><ins style="display: block; margin: auto; background-color: transparent;" data-ad-format="auto" class="adsbygoogle adsbygoogle-noablate" data-ad-client="ca-pub-6974184241884155" data-adsbygoogle-status="done"><ins id="aswift_3_expand" style="display:inline-table;border:none;height:200px;margin:0;padding:0;position:relative;visibility:visible;width:2473px;background-color:transparent;"><ins id="aswift_3_anchor" style="display:block;border:none;height:200px;margin:0;padding:0;position:relative;visibility:visible;width:2473px;background-color:transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_3" name="aswift_3" style="left:0;position:absolute;top:0;border:0px;width:2473px;height:200px;" width="2473" height="200" frameborder="0"></iframe></ins></ins></ins></div><br>
+  We are interested in the command number three - STFMT (Store Scan 
+Format), which writes the number of the desired format (for OScan1 it is
+ equal to nine), transmitted in the second section, to the register 
+SCNFMT (Scan Format). <br><br>  Thus, in the first section we need to 
+transfer the top three, and in the second - the nine.  First, we write 
+down the command number, for which we are waiting for three cycles in 
+the Shift-DR state (the TAP.1 state is not shown, since it does not 
+change): <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/2e0f050c651b4d039769bfc3827272cf.png"></div><br>  Then we write the data (nine clock cycles in the Shift-DR state): <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/1014cd40fe674aa3b11f2d3682e351bc.png"></div><br>
+  Writing to the SCNFMT register itself does not change the format.  In 
+order for the controller to switch the format, you need to send a 
+special check packet (check packet). <br><br><h5>  <b>Check packet</b> </h5><br>
+  The test package checks the correctness of the settings, and if 
+everything is in order, the controller switches the format and, if 
+necessary, switches to the “advanced mode”.  Like everything else in 
+IEEE 1149.7, the test package has a bunch of different options.  You 
+will have to take my word for it that we need a package with an END 
+directive (and do not ask what this means), which looks like this: <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/287ced3fadb449c5a8a80e7cc3f8bd91.png"></div><br>
+  Hooray, now we are in "advanced mode" and we can finally use OScan1!  
+To return to the "standard mode", just go to Test-Logic-Reset. <br><br><h5>  <b>Connecting TCK, TMS, TDI and TDO</b> </h5><br>
+  So, we are in “advanced mode”, but still in Control Mode 2, which 
+means that TAP.1 is still disabled, and we cannot read IDCODE from it.  
+The standard describes four ways to exit Control Mode: <br><ol><li>  Go to Test Logic Reset </li><li>  Go to Select-IR-Scan </li><li>  Write one to ECL (Exit Control Level) using a two-section STMC command </li><li>  To do something unknown, associated with the synchronization of TAP.7-controllers </li></ol><br>
+  In Test-Logic-Reset we can not, and then the controller will return to
+ the "standard mode".  Two-team command to send a long time.  But to go 
+to Select-IR-Scan and return to Run-Test / Idle, without going through 
+Test-Logic-Reset, is quite simple - you just need to send the sequence 
+011011 by TMS (it is not necessary to enter Shift-IR).  Remember that in
+ JTAG, the least significant bit is always transmitted first: <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/a14f2a5336864382bbe01f1e401c3020.png"></div><br>
+  Red dots mark the places where the controller reads the TMS bits from 
+the TMSC input.  Zeros are transmitted via TDI (i.e., in all packets, 
+the nTDI bits are equal to one), although they are still ignored, since 
+we do not go into the Shift-IR state. <br><br>  By the way, unlike 
+“standard mode”, the state of TAP.7 does not change immediately after 
+receiving a new TMS bit, but on the third (last) leading edge of TCKC in
+ the OScan1 packet (in the figure these points are shown by black 
+arrows) - this is done for In order for the controller to insert the TDO
+ bit into OScan1-packet and send it to the host (in this particular 
+case, the controller returns zeroes via TDO). <br><br><h5>  <b>Reading IDCODE</b> </h5><br>  Now that TAP.1 is again connected to TAP.7, we can finally read the contents of the IDCODE register. <br><br>
+  The address of the IDCODE register is not described in the standard, 
+therefore in all controllers it is different (in my case it is four-bit 
+and is equal to 0xC).  To make life easier for users, the Instruction 
+Register is initialized with an IDCODE address in the Test-Logic-Reset 
+state.  However, in the Capture-IR state, the contents of the 
+Instruction Register are overwritten with the number 0x1 (regardless of 
+the length of the Instruction Register, its low-order bit is set to one,
+ and all the others to zero) so that an open circuit can be detected 
+during testing.  Since we entered Capture-IR in the previous step, the 
+IDCODE address is already overwritten, so you first need to overwrite 
+it. <div style="text-align: center; width: 100%; height: auto; clear: none;" class="google-auto-placed ap_container"><ins style="display: block; margin: auto; background-color: transparent;" data-ad-format="auto" class="adsbygoogle adsbygoogle-noablate" data-ad-client="ca-pub-6974184241884155" data-adsbygoogle-status="done"><ins id="aswift_4_expand" style="display:inline-table;border:none;height:200px;margin:0;padding:0;position:relative;visibility:visible;width:2473px;background-color:transparent;"><ins id="aswift_4_anchor" style="display:block;border:none;height:200px;margin:0;padding:0;position:relative;visibility:visible;width:2473px;background-color:transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_4" name="aswift_4" style="left:0;position:absolute;top:0;border:0px;width:2473px;height:200px;" width="2473" height="200" frameborder="0"></iframe></ins></ins></ins></div><br><br>
+  To write the register address, you must enter the Shift-IR state and 
+push the address (0xC) along the TDI in the low-order bit.  In this 
+case, the value that was in the Instruction Register before, i.e.  0x1 
+(again, the low bit forward).  In the case of a conventional four-wire 
+IEEE 1149.1 JTAG, it would look like this: <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/f728dd8f1da249bc941e2003b8bc21c5.png"></div><br>  And this is how it looks when using OScan1 packages: <br><br><div style="text-align:center;"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/0a744377a67b411b9592a81fae797f7f.png"></div><br>
+  Red dots mark the places where the controller reads the TMS bits, and 
+the green dots show the nTDI bits from the TMSC input.  Purple dots mark
+ the places where the controller reads the TDO bits before inserting 
+them into OScan1 packets. <br>  The arrows show some dependencies, for 
+example, the TMS and TDI signals vary along the corresponding edges of 
+the TCKC, and the TDO signal changes along the falling edge of the TCK. <div style="text-align: center; width: 100%; height: auto; clear: none;" class="google-auto-placed ap_container"><ins style="display: block; margin: auto; background-color: transparent;" data-ad-format="auto" class="adsbygoogle adsbygoogle-noablate" data-ad-client="ca-pub-6974184241884155" data-adsbygoogle-status="done"><ins id="aswift_5_expand" style="display:inline-table;border:none;height:200px;margin:0;padding:0;position:relative;visibility:visible;width:2473px;background-color:transparent;"><ins id="aswift_5_anchor" style="display:block;border:none;height:200px;margin:0;padding:0;position:relative;visibility:visible;width:2473px;background-color:transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_5" name="aswift_5" style="left:0;position:absolute;top:0;border:0px;width:2473px;height:200px;" width="2473" height="200" frameborder="0"></iframe></ins></ins></ins></div><br><br>
+  Now it only remains to go to the Shift-DR state, push 32 arbitrary 
+bits on TDI and read 32 bits from TDO, which will contain IDCODE.  With 
+your permission, I will not provide a temporary IDCODE reading diagram. <br><br><h5>  <b>Conclusion</b> </h5><br>
+  I have described about 5% of the IEEE 1149.7 capability.  
+Nevertheless, I hope that you have some understanding of the principles 
+underlying it. <br><br>  All diagrams in this article are tested on real
+ hardware using the Digilent HS2 USB-JTAG adapter, a commercial 2-wire 
+JTAG controller, to the source codes of which I have access, a debugging
+ board with FPGA and a Xilinx ChipScope logic analyzer. <br><br>  The 
+program for generating sequences was written using the API for HS2 based
+ on an example, which can be downloaded along with the <a href="https://www.digilentinc.com/Products/Detail.cfm%3FNavPath%3D2,66,828%26Prod%3DADEPT2">Digilent Adept SDK</a> and worked fine under both Linux and Windows. </div><p>Source: <a href="https://habr.com/ru/post/237885/">https://habr.com/ru/post/237885/</a></p>
+<section class="more-articles-navigation-panel js-more-articles-navigation-panel">
+<h4>More articles:</h4>
+<nav class="list-of-articles-container js-list-of-articles-container"><ul class="list-of-pages js-list-of-pages">
+<li><a href="https://weekly-geekly.github.io/articles/237875/index.html">SALT: smart beacon protects wallet and phone</a></li>
+<li><a href="https://weekly-geekly.github.io/articles/237877/index.html">RailsClub'Moscow 2014: interview with Kirill Timofeev</a></li>
+<li><a href="https://weekly-geekly.github.io/articles/237879/index.html">JetBrains distributes free products to students</a></li>
+<li><a href="https://weekly-geekly.github.io/articles/237881/index.html">Guide to creating startups, part 4: the most important thing for a startup</a></li>
+<li><a href="https://weekly-geekly.github.io/articles/237883/index.html">Welcome to the 23rd Moscow Django Meetup</a></li>
+<li><a href="https://weekly-geekly.github.io/articles/237887/index.html">Backblaze updated HDD reliability statistics</a></li>
+<li><a href="https://weekly-geekly.github.io/articles/237889/index.html">ORM or how to forget about database design</a></li>
+<li><a href="https://weekly-geekly.github.io/articles/237891/index.html">WGDC Competition: Latest Recommendations and Jury Composition</a></li>
+<li><a href="https://weekly-geekly.github.io/articles/237893/index.html">The main types of search queries that online store users use, is your website ready for them? (Part 1)</a></li>
+<li><a href="https://weekly-geekly.github.io/articles/237899/index.html">Using SmtpClient to send mail via Yandex SMTP server with SSL</a></li>
+</ul></nav>
+</section><br>
+<a href="https://weekly-geekly.github.io/allArticles.html"><strong>All Articles</strong></a>
+<script src="We%20understand%20the%20protocol%202-wire%20JTAG_files/main.js"></script>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+  (function (d, w, c) {
+      (w[c] = w[c] || []).push(function() {
+          try {
+              w.yaCounter52496797 = new Ya.Metrika({
+                  id:52496797,
+                  clickmap:true,
+                  trackLinks:true,
+                  accurateTrackBounce:true,
+                  webvisor:true
+              });
+          } catch(e) { }
+      });
+
+      var n = d.getElementsByTagName("script")[0],
+          s = d.createElement("script"),
+          f = function () { n.parentNode.insertBefore(s, n); };
+      s.type = "text/javascript";
+      s.async = true;
+      s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+      if (w.opera == "[object Opera]") {
+          d.addEventListener("DOMContentLoaded", f, false);
+      } else { f(); }
+  })(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/52496797" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
+<!-- Google Analytics -->
+  <script>
+    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
+    ga('create', 'UA-134931760-1', 'auto'); ga('send', 'pageview')
+  </script>
+  <script src="We%20understand%20the%20protocol%202-wire%20JTAG_files/analytics.js" async="" defer="defer"></script>
+
+</section>
+
+  <div class="apn">This site may contain Advertising and Affiliate Program links. As an Amazon Associate I earn from qualifying purchases.</div><iframe style="width: 100%; border: medium none; display: inline-block; height: 2296px;" class="js-next-page-holder" src="We%20understand%20the%20protocol%202-wire%20JTAG_files/index_002.html"></iframe><div class="spinner-container"></div><iframe style="width: 100%; border: medium none; display: inline-block; height: 3745px;" class="js-next-page-holder" src="We%20understand%20the%20protocol%202-wire%20JTAG_files/index_002.html"></iframe><footer class="page-footer">
+    <div class="page-footer-legal-info-container page-footer-element">
+      <p>
+        Weekly-Geekly | <span class="page-footer-legal-info-year js-page-footer-legal-info-year">2019</span>
+      </p>
+    </div>
+    <div class="page-footer-counters-container page-footer-element">
+      <a class="page-footer-counter-clustrmap" href="#" title="Visit tracker"><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/map_v2.png"></a>
+    </div>
+  </footer>
+
+
+<div class="amazon-side-widget is-closed"><div class="amazon-side-widget-title">Books for geeks:</div><iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" src="We%20understand%20the%20protocol%202-wire%20JTAG_files/q.html" frameborder="0"></iframe><div class="amazon-side-widget-prev-btn amazon-side-widget-nav-btn"><i class="fa fa-chevron-circle-left"></i></div><div class="amazon-side-widget-next-btn amazon-side-widget-nav-btn"><i class="fa fa-chevron-circle-right"></i></div><a class="amazon-side-widget-more-btn" href="https://www.amazon.com/gp/search?ie=UTF8&amp;tag=geeksworld0d-20&amp;linkCode=ur2&amp;linkId=44eac47bbe0d7de17a768bb6a00fcdf2&amp;camp=1789&amp;creative=9325&amp;index=books&amp;keywords=geeks">More Books</a><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/ir.gif" alt="" style="border:none !important; margin:0px !important;" width="1" height="1" border="0"><div class="amazon-side-widget-close-btn"><i class="fa fa-angle-double-right"></i></div></div><div id="amazingaudioplayer-9" class="is-closed" style="display:block;width:320px;">
+          <ul class="amazingaudioplayer-audios" style="display:none;">
+              <li data-link="http://bit.ly/2HcAWST" data-artist="pinkzebra" data-title="Summer Field Ambient Sounds" data-album="AudioJungle" data-info="" data-image="https://amazingaudioplayer.com/wp-content/uploads/amazingaudioplayer/9/audios/golden-wheat-field.jpg" data-duration="154">
+                  <div class="amazingaudioplayer-source" data-src="path-to-mp3" data-type="audio/mpeg">
+                  <div class="amazingaudioplayer-source" data-src="path-to-ogg" data-type="audio/ogg">
+              </div></div></li>
+              <li data-link="https://ambient-geek.github.io/?title=Fairy%20Forest&amp;img=https%3A%2F%2Fec.europa.eu%2Fjrc%2Fsites%2Fjrcsh%2Ffiles%2Fstyles%2Fnormal-responsive%2Fpublic%2Ffotolia-92027264european-day-forest-green-forest.jpg&amp;sound_5981496554353192_name=Forest%20Birds&amp;sound_5981496554353192_loop=1&amp;sound_5981496554353192_volume=0.5&amp;sound_5981496554353192_mute=0&amp;sound_5981496554353192_chance=50%25&amp;sound_5981496554353192_freq=60&amp;sound_5981496554353192_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F2%2F4%2F6%2F246c9b9e68883ff1252bca3e677a629e.ogg&amp;sound_45145390916036954_name=Wind%20in%20Trees&amp;sound_45145390916036954_loop=1&amp;sound_45145390916036954_volume=0.37&amp;sound_45145390916036954_mute=0&amp;sound_45145390916036954_chance=50%25&amp;sound_45145390916036954_freq=60&amp;sound_45145390916036954_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F8%2F7%2F7%2F87724ac3b9acf76806f8080163fa9f41.ogg&amp;sound_19877813398719502_name=Wind%20in%20Leaves&amp;sound_19877813398719502_loop=1&amp;sound_19877813398719502_volume=0.23&amp;sound_19877813398719502_mute=0&amp;sound_19877813398719502_chance=50%25&amp;sound_19877813398719502_freq=60&amp;sound_19877813398719502_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fb%2F3%2F4%2Fb3434ca41c5be0c8dcac37a157023596.ogg&amp;sound_6767452863540013_name=Nightingale%20Call&amp;sound_6767452863540013_loop=0&amp;sound_6767452863540013_volume=0.5&amp;sound_6767452863540013_mute=0&amp;sound_6767452863540013_chance=50%25&amp;sound_6767452863540013_freq=60&amp;sound_6767452863540013_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fc%2F2%2F8%2Fc28e5323bc5d211123212205fb47cfd7.ogg&amp;sound_8345927346884083_name=Nightingale%20Song&amp;sound_8345927346884083_loop=0&amp;sound_8345927346884083_volume=0.5&amp;sound_8345927346884083_mute=0&amp;sound_8345927346884083_chance=50%25&amp;sound_8345927346884083_freq=60&amp;sound_8345927346884083_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F2%2Fd%2Fb%2F2db85b0e86d85f0807ed72ed176cb9b0.ogg&amp;sound_5416786606433335_name=Woodpeeker&amp;sound_5416786606433335_loop=0&amp;sound_5416786606433335_volume=0.5&amp;sound_5416786606433335_mute=0&amp;sound_5416786606433335_chance=50%25&amp;sound_5416786606433335_freq=60&amp;sound_5416786606433335_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F4%2Fa%2F6%2F4a667aa824e3c22bd26a36318841cb09.ogg&amp;sound_4388927441755508_name=Woodpeeker&amp;sound_4388927441755508_loop=0&amp;sound_4388927441755508_volume=0.29&amp;sound_4388927441755508_mute=0&amp;sound_4388927441755508_chance=50%25&amp;sound_4388927441755508_freq=60&amp;sound_4388927441755508_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fb%2F9%2F1%2Fb9154fe9d40e9803256045ea0797c572.ogg&amp;sound_010821338840110828_name=Deer&amp;sound_010821338840110828_loop=0&amp;sound_010821338840110828_volume=0.14&amp;sound_010821338840110828_mute=0&amp;sound_010821338840110828_chance=50%25&amp;sound_010821338840110828_freq=60&amp;sound_010821338840110828_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fb%2F5%2Fb%2Fb5b498d5dba43af664c11ac58ccc32a7.ogg" data-artist="pinkzebra" data-title="Fairy Forest Ambience" data-album="AudioJungle" data-info="" data-image="https://ec.europa.eu/jrc/sites/jrcsh/files/styles/normal-responsive/public/fotolia-92027264european-day-forest-green-forest.jpg" data-duration="137">
+                  <div class="amazingaudioplayer-source" data-src="path-to-mp3" data-type="audio/mpeg">
+                  <div class="amazingaudioplayer-source" data-src="path-to-ogg" data-type="audio/ogg">
+              </div></div></li>
+              <li data-link="https://ambient-geek.github.io/?title=Winter%20Countryside%20Evening&amp;img=https%3A%2F%2Flive.staticflickr.com%2F680%2F30809491283_80e7517a36_b.jpg&amp;sound_93539308059575_name=Winter%20Wind&amp;sound_93539308059575_loop=1&amp;sound_93539308059575_volume=0.1&amp;sound_93539308059575_mute=0&amp;sound_93539308059575_chance=50%25&amp;sound_93539308059575_freq=60&amp;sound_93539308059575_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Ff%2F3%2F8%2Ff384d85f72e1d10e42f8bc4e46898ad9.ogg&amp;sound_6093665406563449_name=Bird%20(that%20makes%20whoo-whoo)&amp;sound_6093665406563449_loop=0&amp;sound_6093665406563449_volume=0.5&amp;sound_6093665406563449_mute=0&amp;sound_6093665406563449_chance=50%25&amp;sound_6093665406563449_freq=60&amp;sound_6093665406563449_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F5%2Fe%2F4%2F5e4a0358832f2d2191bf274f09cec3dd.ogg&amp;sound_8583123307634601_name=Crook&amp;sound_8583123307634601_loop=0&amp;sound_8583123307634601_volume=0.34&amp;sound_8583123307634601_mute=0&amp;sound_8583123307634601_chance=50%25&amp;sound_8583123307634601_freq=60&amp;sound_8583123307634601_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Ff%2F6%2F7%2Ff6755e830994d84f0dba2fc8ea0c0683.ogg&amp;sound_4238629549640862_name=Bird%20at%20Night&amp;sound_4238629549640862_loop=0&amp;sound_4238629549640862_volume=1&amp;sound_4238629549640862_mute=0&amp;sound_4238629549640862_chance=50%25&amp;sound_4238629549640862_freq=60&amp;sound_4238629549640862_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F7%2F0%2Fb%2F70b25985243b80624be56c667ad975a2.ogg&amp;sound_5997939327286363_name=Wind%20and%20Birds&amp;sound_5997939327286363_loop=1&amp;sound_5997939327286363_volume=0.25&amp;sound_5997939327286363_mute=0&amp;sound_5997939327286363_chance=50%25&amp;sound_5997939327286363_freq=60&amp;sound_5997939327286363_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F8%2Ff%2Fc%2F8fca6479b1196df8eb1a0be813367874.ogg&amp;sound_49487025087361536_name=Owl&amp;sound_49487025087361536_loop=0&amp;sound_49487025087361536_volume=0.5&amp;sound_49487025087361536_mute=0&amp;sound_49487025087361536_chance=50%25&amp;sound_49487025087361536_freq=60&amp;sound_49487025087361536_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F5%2F9%2Fe%2F59e103de094e52890b877e343d2e10ef.ogg&amp;sound_6578537594953129_name=Distant%20Wind&amp;sound_6578537594953129_loop=1&amp;sound_6578537594953129_volume=0.5&amp;sound_6578537594953129_mute=0&amp;sound_6578537594953129_chance=50%25&amp;sound_6578537594953129_freq=60&amp;sound_6578537594953129_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F5%2F7%2F9%2F5795eeba907028e38a72281d34bee414.ogg&amp;sound_9726281381309192_name=Wolfs&amp;sound_9726281381309192_loop=0&amp;sound_9726281381309192_volume=0.04&amp;sound_9726281381309192_mute=0&amp;sound_9726281381309192_chance=50%25&amp;sound_9726281381309192_freq=180&amp;sound_9726281381309192_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F0%2F2%2F9%2F0291810084744cc9bca2ba6bfc7dd690.ogg" data-artist="pinkzebra" data-title="Winter Countryside Evening" data-album="AudioJungle" data-info="" data-image="https://live.staticflickr.com/680/30809491283_80e7517a36_b.jpg" data-duration="129">
+                  <div class="amazingaudioplayer-source" data-src="path-to-mp3" data-type="audio/mpeg">
+                  <div class="amazingaudioplayer-source" data-src="path-to-ogg" data-type="audio/ogg">
+              </div></div></li>
+              <li data-link="https://ambient-geek.github.io/?title=Amazon%20Rain%20and%20Thunder&amp;img=https%3A%2F%2Fwww.markey.senate.gov%2FGlobalWarming%2Fimpactzones%2Famazon%2Fadmin%2Fpages%2Ffiles%2F0001.jpg&amp;sound_7992268241979394_name=Birds&amp;sound_7992268241979394_loop=1&amp;sound_7992268241979394_volume=0.5&amp;sound_7992268241979394_mute=0&amp;sound_7992268241979394_chance=50%25&amp;sound_7992268241979394_freq=60&amp;sound_7992268241979394_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F5%2Fe%2Fd%2F5edf5d06600d7f3d6d6d3af4cc60a080.ogg&amp;sound_49378653699197095_name=Water%20Drops&amp;sound_49378653699197095_loop=0&amp;sound_49378653699197095_volume=0.5&amp;sound_49378653699197095_mute=0&amp;sound_49378653699197095_chance=50%25&amp;sound_49378653699197095_freq=60&amp;sound_49378653699197095_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F3%2Fe%2Ff%2F3ef541225a491ac7ca82438143bf6f04.ogg&amp;sound_1312878818401244_name=Rain%20on%20Leaves&amp;sound_1312878818401244_loop=1&amp;sound_1312878818401244_volume=0.5&amp;sound_1312878818401244_mute=0&amp;sound_1312878818401244_chance=50%25&amp;sound_1312878818401244_freq=60&amp;sound_1312878818401244_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F9%2F3%2Fa%2F93a7eaf2484b6fab8358e6d72fdcc53e.ogg&amp;sound_5196198052458101_name=Insects&amp;sound_5196198052458101_loop=1&amp;sound_5196198052458101_volume=0.5&amp;sound_5196198052458101_mute=0&amp;sound_5196198052458101_chance=50%25&amp;sound_5196198052458101_freq=60&amp;sound_5196198052458101_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fa%2F0%2Fd%2Fa0d68a64dc202b180ff1b0a287ffa3ef.ogg&amp;sound_8100599553319807_name=Wind%20in%20Leaves&amp;sound_8100599553319807_loop=1&amp;sound_8100599553319807_volume=0.15&amp;sound_8100599553319807_mute=0&amp;sound_8100599553319807_chance=50%25&amp;sound_8100599553319807_freq=60&amp;sound_8100599553319807_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fe%2Fe%2F0%2Fee01612f615ef95ebac95712bd479a02.ogg&amp;sound_3972437604465584_name=Wind&amp;sound_3972437604465584_loop=1&amp;sound_3972437604465584_volume=0.19&amp;sound_3972437604465584_mute=0&amp;sound_3972437604465584_chance=50%25&amp;sound_3972437604465584_freq=60&amp;sound_3972437604465584_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Ff%2Fe%2F1%2Ffe13b27768c6f5656b476ba3bc66d02a.ogg&amp;sound_15482181937091521_name=Heavy%20Rain&amp;sound_15482181937091521_loop=0&amp;sound_15482181937091521_volume=0.5&amp;sound_15482181937091521_mute=0&amp;sound_15482181937091521_chance=50%25&amp;sound_15482181937091521_freq=60&amp;sound_15482181937091521_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F8%2Fd%2F3%2F8d3321765d0141f6527db6bfb3d1cde9.ogg&amp;sound_8204577640172444_name=Frogs&amp;sound_8204577640172444_loop=0&amp;sound_8204577640172444_volume=0.36&amp;sound_8204577640172444_mute=0&amp;sound_8204577640172444_chance=50%25&amp;sound_8204577640172444_freq=60&amp;sound_8204577640172444_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F8%2F1%2F5%2F815c430c335d2735a6178752f5afd9ce.ogg" data-artist="pinkzebra" data-title="Amazon Rain and Thunder" data-album="AudioJungle" data-info="" data-image="https://www.markey.senate.gov/GlobalWarming/impactzones/amazon/admin/pages/files/0001.jpg" data-duration="133">
+                  <div class="amazingaudioplayer-source" data-src="path-to-mp3" data-type="audio/mpeg">
+                  <div class="amazingaudioplayer-source" data-src="path-to-ogg" data-type="audio/ogg">
+              </div></div></li>
+              <li data-link="https://ambient-geek.github.io/?title=Beach%20at%20Night&amp;img=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FI%2F71e-ndFLn9L._SX425_.jpg&amp;sound_8080916363519433_name=Sea&amp;sound_8080916363519433_loop=1&amp;sound_8080916363519433_volume=0.34&amp;sound_8080916363519433_mute=0&amp;sound_8080916363519433_chance=50%25&amp;sound_8080916363519433_freq=60&amp;sound_8080916363519433_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fc%2F9%2F4%2Fc94ff3533e3c743e06950d37f6a183e5.ogg&amp;sound_7887720780425127_name=Silence&amp;sound_7887720780425127_loop=1&amp;sound_7887720780425127_volume=0.5&amp;sound_7887720780425127_mute=0&amp;sound_7887720780425127_chance=50%25&amp;sound_7887720780425127_freq=60&amp;sound_7887720780425127_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F5%2Ff%2Fc%2F5fca151171eac55e0c56d556256a0d06.ogg&amp;sound_04201257878359743_name=Distant%20Thunder&amp;sound_04201257878359743_loop=0&amp;sound_04201257878359743_volume=0.5&amp;sound_04201257878359743_mute=0&amp;sound_04201257878359743_chance=50%25&amp;sound_04201257878359743_freq=60&amp;sound_04201257878359743_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fe%2Fa%2Fb%2Feabd35238f1fe4d6cb39a1090137754c.ogg&amp;sound_344966483947198_name=Rolling%20Thunder&amp;sound_344966483947198_loop=0&amp;sound_344966483947198_volume=0.5&amp;sound_344966483947198_mute=0&amp;sound_344966483947198_chance=50%25&amp;sound_344966483947198_freq=60&amp;sound_344966483947198_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F1%2F5%2Fb%2F15bbdfcd303e3d7d28d97c782b2e9e3d.ogg&amp;sound_8620893858872665_name=Thunder%20Above&amp;sound_8620893858872665_loop=0&amp;sound_8620893858872665_volume=0.5&amp;sound_8620893858872665_mute=0&amp;sound_8620893858872665_chance=50%25&amp;sound_8620893858872665_freq=60&amp;sound_8620893858872665_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Ff%2F2%2Fe%2Ff2e1395203cccfb491dcce531df5d89b.ogg&amp;sound_859692562177413_name=Waves&amp;sound_859692562177413_loop=1&amp;sound_859692562177413_volume=0.33&amp;sound_859692562177413_mute=0&amp;sound_859692562177413_chance=50%25&amp;sound_859692562177413_freq=60&amp;sound_859692562177413_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F6%2F0%2Fa%2F60a70ef4156dab834668fb24abb29f1e.ogg&amp;sound_09627640217845324_name=Wind%20in%20Sand&amp;sound_09627640217845324_loop=0&amp;sound_09627640217845324_volume=0.5&amp;sound_09627640217845324_mute=0&amp;sound_09627640217845324_chance=50%25&amp;sound_09627640217845324_freq=60&amp;sound_09627640217845324_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fe%2Fe%2F0%2Fee01612f615ef95ebac95712bd479a02.ogg" data-artist="pinkzebra" data-title="Beach at Night" data-album="AudioJungle" data-info="" data-image="https://images-na.ssl-images-amazon.com/images/I/71e-ndFLn9L._SX425_.jpg" data-duration="130">
+                  <div class="amazingaudioplayer-source" data-src="path-to-mp3" data-type="audio/mpeg">
+                  <div class="amazingaudioplayer-source" data-src="path-to-ogg" data-type="audio/ogg">
+              </div></div></li>
+              <li data-link="https://ambient-geek.github.io/?title=Server%20Room&amp;img=https%3A%2F%2Fvignette.wikia.nocookie.net%2Fresidentevil%2Fimages%2Fd%2Fd0%2FRE2_remake_Server_Room.jpg&amp;sound_9139431273921452_name=Orders&amp;sound_9139431273921452_loop=0&amp;sound_9139431273921452_volume=0.5&amp;sound_9139431273921452_mute=0&amp;sound_9139431273921452_chance=56%25&amp;sound_9139431273921452_freq=120&amp;sound_9139431273921452_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fd%2F7%2F4%2Fd74d175834d1046cf3d9428634d8e76a.ogg&amp;sound_08459470722957585_name=Fan&amp;sound_08459470722957585_loop=1&amp;sound_08459470722957585_volume=0.5&amp;sound_08459470722957585_mute=0&amp;sound_08459470722957585_chance=50%25&amp;sound_08459470722957585_freq=60&amp;sound_08459470722957585_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F7%2Fd%2Fa%2F7dae91803d17ae7dd4a08a240cfe9832.ogg&amp;sound_28843974091265046_name=Old%20Monitor&amp;sound_28843974091265046_loop=0&amp;sound_28843974091265046_volume=0.5&amp;sound_28843974091265046_mute=0&amp;sound_28843974091265046_chance=50%25&amp;sound_28843974091265046_freq=60&amp;sound_28843974091265046_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F8%2F4%2Fd%2F84d3fec02a694f02bf9dc3ca14c04569.ogg&amp;sound_006145521012960176_name=Beep&amp;sound_006145521012960176_loop=1&amp;sound_006145521012960176_volume=0.5&amp;sound_006145521012960176_mute=0&amp;sound_006145521012960176_chance=50%25&amp;sound_006145521012960176_freq=60&amp;sound_006145521012960176_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fc%2F9%2Fd%2Fc9dc90a1a9efe001669fa8ec5ac4b2f4.ogg&amp;sound_5279644501522882_name=Silence&amp;sound_5279644501522882_loop=1&amp;sound_5279644501522882_volume=0.5&amp;sound_5279644501522882_mute=0&amp;sound_5279644501522882_chance=50%25&amp;sound_5279644501522882_freq=60&amp;sound_5279644501522882_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F2%2Fe%2Fd%2F2ed718e4974165b25fdb43b0fffe6885.ogg&amp;sound_3381913677614816_name=Alarm&amp;sound_3381913677614816_loop=0&amp;sound_3381913677614816_volume=0.12&amp;sound_3381913677614816_mute=0&amp;sound_3381913677614816_chance=50%25&amp;sound_3381913677614816_freq=120&amp;sound_3381913677614816_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F3%2Fb%2Fc%2F3bcb91349de07bb871ea589bc9a20adb.ogg&amp;sound_8732546862658903_name=Ventilation&amp;sound_8732546862658903_loop=1&amp;sound_8732546862658903_volume=0.5&amp;sound_8732546862658903_mute=0&amp;sound_8732546862658903_chance=50%25&amp;sound_8732546862658903_freq=60&amp;sound_8732546862658903_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F5%2F2%2F0%2F5203c0124d08af7ba8d79d9a67db7eb7.ogg" data-artist="pinkzebra" data-title="Server Room" data-album="AudioJungle" data-info="" data-image="https://vignette.wikia.nocookie.net/residentevil/images/d/d0/RE2_remake_Server_Room.jpg" data-duration="130">
+                  <div class="amazingaudioplayer-source" data-src="path-to-mp3" data-type="audio/mpeg">
+                  <div class="amazingaudioplayer-source" data-src="path-to-ogg" data-type="audio/ogg">
+              </div></div></li>
+              <li data-link="https://ambient-geek.github.io/?title=Urban%20Wastelands&amp;img=https%3A%2F%2Fpm1.narvii.com%2F6545%2Fa40533721fb04dfb9933875e36548490e44326a5_00.jpg&amp;sound_8929631069361241_name=Wind&amp;sound_8929631069361241_loop=1&amp;sound_8929631069361241_volume=0.5&amp;sound_8929631069361241_mute=0&amp;sound_8929631069361241_chance=50%25&amp;sound_8929631069361241_freq=60&amp;sound_8929631069361241_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F7%2Fd%2F3%2F7d38483e779c219c91a0529f8e8fe60b.ogg&amp;sound_1639121113300861_name=Distant%20Radar%20Signal&amp;sound_1639121113300861_loop=0&amp;sound_1639121113300861_volume=0.5&amp;sound_1639121113300861_mute=0&amp;sound_1639121113300861_chance=50%25&amp;sound_1639121113300861_freq=60&amp;sound_1639121113300861_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F7%2Fc%2Fd%2F7cd0c306b34ff56656c779ab4bbbe846.ogg&amp;sound_9466084536317594_name=Running%20Man&amp;sound_9466084536317594_loop=0&amp;sound_9466084536317594_volume=0.13&amp;sound_9466084536317594_mute=0&amp;sound_9466084536317594_chance=50%25&amp;sound_9466084536317594_freq=60&amp;sound_9466084536317594_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F3%2Ff%2F1%2F3f18ac0e0d35198fca0887bed53dcf9a.ogg&amp;sound_7314480994292132_name=Wind%20in%20Metal&amp;sound_7314480994292132_loop=1&amp;sound_7314480994292132_volume=0.37&amp;sound_7314480994292132_mute=0&amp;sound_7314480994292132_chance=50%25&amp;sound_7314480994292132_freq=60&amp;sound_7314480994292132_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F1%2F3%2F3%2F1332ba14162737560ecfcccec511b8ba.ogg&amp;sound_453357248152062_name=Unknown%20Sound&amp;sound_453357248152062_loop=0&amp;sound_453357248152062_volume=0.5&amp;sound_453357248152062_mute=0&amp;sound_453357248152062_chance=50%25&amp;sound_453357248152062_freq=60&amp;sound_453357248152062_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Ff%2F5%2F4%2Ff54c738900b87fed83c16e4c2bded882.ogg&amp;sound_039421292649326256_name=Water%20Drips&amp;sound_039421292649326256_loop=1&amp;sound_039421292649326256_volume=0.18&amp;sound_039421292649326256_mute=0&amp;sound_039421292649326256_chance=50%25&amp;sound_039421292649326256_freq=60&amp;sound_039421292649326256_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fb%2F9%2Fc%2Fb9c634d5d338a29536820ecfb6637ac4.ogg&amp;sound_5186294293314477_name=Ultrasound&amp;sound_5186294293314477_loop=0&amp;sound_5186294293314477_volume=0.13&amp;sound_5186294293314477_mute=0&amp;sound_5186294293314477_chance=50%25&amp;sound_5186294293314477_freq=60&amp;sound_5186294293314477_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fa%2Fd%2F1%2Fad1d8a8c3fb24d02f7c0703e80d62dc5.ogg&amp;sound_497267001133443_name=Electrical%20Lamp&amp;sound_497267001133443_loop=0&amp;sound_497267001133443_volume=0.16&amp;sound_497267001133443_mute=0&amp;sound_497267001133443_chance=50%25&amp;sound_497267001133443_freq=60&amp;sound_497267001133443_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F5%2F2%2Fb%2F52b6529149913d88b6dd82f79a2068bc.ogg&amp;sound_9507995372162905_name=Bird&amp;sound_9507995372162905_loop=0&amp;sound_9507995372162905_volume=0.5&amp;sound_9507995372162905_mute=0&amp;sound_9507995372162905_chance=50%25&amp;sound_9507995372162905_freq=60&amp;sound_9507995372162905_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F8%2F4%2F6%2F8468f303aae01840d0c670a74fc96ead.ogg&amp;sound_8486431990647869_name=Bird&amp;sound_8486431990647869_loop=0&amp;sound_8486431990647869_volume=0.4&amp;sound_8486431990647869_mute=0&amp;sound_8486431990647869_chance=50%25&amp;sound_8486431990647869_freq=60&amp;sound_8486431990647869_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F6%2F8%2Fb%2F68bf799fc34728b72c5d1afa083fd03e.ogg" data-artist="pinkzebra" data-title="Urban Wastelands" data-album="AudioJungle" data-info="" data-image="https://pm1.narvii.com/6545/a40533721fb04dfb9933875e36548490e44326a5_00.jpg" data-duration="130">
+                  <div class="amazingaudioplayer-source" data-src="path-to-mp3" data-type="audio/mpeg">
+                  <div class="amazingaudioplayer-source" data-src="path-to-ogg" data-type="audio/ogg">
+              </div></div></li>
+              <li data-link="https://ambient-geek.github.io/?title=Future%20City&amp;img=https%3A%2F%2Fassets.bwbx.io%2Fimages%2Fusers%2FiqjWHBFdfxIU%2Fi3pUZx5V5gMs%2Fv1%2F-1x-1.jpg&amp;sound_636178675922296_name=People&amp;sound_636178675922296_loop=1&amp;sound_636178675922296_volume=0.5&amp;sound_636178675922296_mute=0&amp;sound_636178675922296_chance=50%25&amp;sound_636178675922296_freq=60&amp;sound_636178675922296_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fc%2F4%2F4%2Fc44bec9d82526d47593a8bdb03c52b79.ogg&amp;sound_16036474123217048_name=Rain&amp;sound_16036474123217048_loop=1&amp;sound_16036474123217048_volume=0.5&amp;sound_16036474123217048_mute=1&amp;sound_16036474123217048_chance=50%25&amp;sound_16036474123217048_freq=60&amp;sound_16036474123217048_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F1%2F7%2F5%2F1752d0d8689f1d54714c0aa460efed77.ogg&amp;sound_2132357048247573_name=Heavy%20Transport&amp;sound_2132357048247573_loop=0&amp;sound_2132357048247573_volume=0.5&amp;sound_2132357048247573_mute=0&amp;sound_2132357048247573_chance=50%25&amp;sound_2132357048247573_freq=60&amp;sound_2132357048247573_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fe%2F3%2Fd%2Fe3dc5ce020c323e7921f144caef39c65.ogg&amp;sound_051064619113571075_name=Light%20Transport&amp;sound_051064619113571075_loop=0&amp;sound_051064619113571075_volume=0.5&amp;sound_051064619113571075_mute=0&amp;sound_051064619113571075_chance=50%25&amp;sound_051064619113571075_freq=60&amp;sound_051064619113571075_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F3%2F0%2F1%2F301231ff42907860005be93f0460b157.ogg&amp;sound_034273409870756444_name=Police&amp;sound_034273409870756444_loop=0&amp;sound_034273409870756444_volume=0.5&amp;sound_034273409870756444_mute=0&amp;sound_034273409870756444_chance=50%25&amp;sound_034273409870756444_freq=60&amp;sound_034273409870756444_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fa%2Fb%2Fd%2Fabd52d4e017e03016a95967f9985f4b2.ogg&amp;sound_6626742689144431_name=Train&amp;sound_6626742689144431_loop=0&amp;sound_6626742689144431_volume=0.5&amp;sound_6626742689144431_mute=0&amp;sound_6626742689144431_chance=50%25&amp;sound_6626742689144431_freq=60&amp;sound_6626742689144431_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F8%2F1%2F6%2F816257a6b847f771a76c2f9af0e5673e.ogg&amp;sound_08302303596348382_name=Broadcasting&amp;sound_08302303596348382_loop=0&amp;sound_08302303596348382_volume=0.5&amp;sound_08302303596348382_mute=0&amp;sound_08302303596348382_chance=50%25&amp;sound_08302303596348382_freq=60&amp;sound_08302303596348382_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F2%2Ff%2F1%2F2f1bee07109712b3663cfccc8334ae8c.ogg&amp;sound_07143529442726826_name=Ventilation&amp;sound_07143529442726826_loop=1&amp;sound_07143529442726826_volume=0.5&amp;sound_07143529442726826_mute=0&amp;sound_07143529442726826_chance=50%25&amp;sound_07143529442726826_freq=60&amp;sound_07143529442726826_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F6%2Ff%2F4%2F6f4a6094e0949d5cc1fc1e0e68537fca.ogg" data-artist="pinkzebra" data-title="Future City" data-album="AudioJungle" data-info="" data-image="https://assets.bwbx.io/images/users/iqjWHBFdfxIU/i3pUZx5V5gMs/v1/-1x-1.jpg" data-duration="130">
+                  <div class="amazingaudioplayer-source" data-src="path-to-mp3" data-type="audio/mpeg">
+                  <div class="amazingaudioplayer-source" data-src="path-to-ogg" data-type="audio/ogg">
+              </div></div></li>
+              <li data-link="https://ambient-geek.github.io/?title=Medieval%20Town&amp;img=https%3A%2F%2Fimages-wixmp-ed30a86b8c4ca887773594c2.wixmp.com%2Ff%2F00705a87-531a-447b-848a-6272f615f3f1%2Fdadlr1p-6fffb8fa-9e28-4265-a719-a42d62b3bf33.jpg%2Fv1%2Ffill%2Fw_1287%2Ch_621%2Cq_70%2Cstrp%2Fgrand_square__concept_street__by_solarsouth_dadlr1p-pre.jpg%3Ftoken%3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NzcyIiwicGF0aCI6IlwvZlwvMDA3MDVhODctNTMxYS00NDdiLTg0OGEtNjI3MmY2MTVmM2YxXC9kYWRscjFwLTZmZmZiOGZhLTllMjgtNDI2NS1hNzE5LWE0MmQ2MmIzYmYzMy5qcGciLCJ3aWR0aCI6Ijw9MTYwMCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.CH_EPE3FR69OawmnYcNm2vSwynb05a5-Med1kx_-0nM&amp;sound_909007053657688_name=Wind&amp;sound_909007053657688_loop=0&amp;sound_909007053657688_volume=0.25&amp;sound_909007053657688_mute=0&amp;sound_909007053657688_chance=50%25&amp;sound_909007053657688_freq=60&amp;sound_909007053657688_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F5%2Fe%2F1%2F5e1be3237e639f514256d64af728bd26.ogg&amp;sound_7481349543148801_name=Fire&amp;sound_7481349543148801_loop=0&amp;sound_7481349543148801_volume=0.5&amp;sound_7481349543148801_mute=0&amp;sound_7481349543148801_chance=50%25&amp;sound_7481349543148801_freq=60&amp;sound_7481349543148801_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F7%2Fe%2F3%2F7e37766887d6a72d14033293ec7535e9.ogg&amp;sound_19268624781878008_name=Road&amp;sound_19268624781878008_loop=1&amp;sound_19268624781878008_volume=0.5&amp;sound_19268624781878008_mute=0&amp;sound_19268624781878008_chance=50%25&amp;sound_19268624781878008_freq=60&amp;sound_19268624781878008_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F5%2Fe%2F0%2F5e089e9995a33fcc7188503dfd066e38.ogg&amp;sound_4537627673701925_name=Blacksmith&amp;sound_4537627673701925_loop=0&amp;sound_4537627673701925_volume=0.5&amp;sound_4537627673701925_mute=0&amp;sound_4537627673701925_chance=50%25&amp;sound_4537627673701925_freq=60&amp;sound_4537627673701925_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F7%2Fa%2F9%2F7a9dc9dc196a92769ed53035514f3279.ogg&amp;sound_3330438212585116_name=Monk%20with%20Papers&amp;sound_3330438212585116_loop=0&amp;sound_3330438212585116_volume=0.5&amp;sound_3330438212585116_mute=0&amp;sound_3330438212585116_chance=50%25&amp;sound_3330438212585116_freq=60&amp;sound_3330438212585116_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Ff%2Fa%2Fe%2Ffaec570806a07aff23bc7ce9c7b54ad5.ogg&amp;sound_8323811239050272_name=Masonry&amp;sound_8323811239050272_loop=0&amp;sound_8323811239050272_volume=0.5&amp;sound_8323811239050272_mute=0&amp;sound_8323811239050272_chance=50%25&amp;sound_8323811239050272_freq=60&amp;sound_8323811239050272_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fc%2Fd%2Ff%2Fcdf18e801b2f39968f55e8a4ffa68260.ogg&amp;sound_8191550159259964_name=Sharpening&amp;sound_8191550159259964_loop=0&amp;sound_8191550159259964_volume=0.5&amp;sound_8191550159259964_mute=0&amp;sound_8191550159259964_chance=50%25&amp;sound_8191550159259964_freq=60&amp;sound_8191550159259964_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fa%2Fd%2F1%2Fad1ebc43007f3723f0fb83e175012908.ogg&amp;sound_9187543315669084_name=People&amp;sound_9187543315669084_loop=0&amp;sound_9187543315669084_volume=0.5&amp;sound_9187543315669084_mute=0&amp;sound_9187543315669084_chance=50%25&amp;sound_9187543315669084_freq=120&amp;sound_9187543315669084_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F7%2Fd%2F3%2F7d3dc85323ab56983bc715324b4e15e1.ogg&amp;sound_9644018171316844_name=Children&amp;sound_9644018171316844_loop=0&amp;sound_9644018171316844_volume=0.15&amp;sound_9644018171316844_mute=0&amp;sound_9644018171316844_chance=50%25&amp;sound_9644018171316844_freq=60&amp;sound_9644018171316844_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2Fe%2F9%2Fc%2Fe9c8664edd39983007dd9f295992f9f3.ogg&amp;sound_21457304584008874_name=Crowd&amp;sound_21457304584008874_loop=1&amp;sound_21457304584008874_volume=0.25&amp;sound_21457304584008874_mute=0&amp;sound_21457304584008874_chance=50%25&amp;sound_21457304584008874_freq=60&amp;sound_21457304584008874_src=https%3A%2F%2Fxml.ambient-mixer.com%2Faudio%2F1%2Fb%2Fc%2F1bc0363f6aa5cafb555a1c16eb3b1868.ogg" data-artist="pinkzebra" data-title="Medieval Town" data-album="AudioJungle" data-info="" data-image="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/00705a87-531a-447b-848a-6272f615f3f1/dadlr1p-6fffb8fa-9e28-4265-a719-a42d62b3bf33.jpg/v1/fill/w_1287,h_621,q_70,strp/grand_square__concept_street__by_solarsouth_dadlr1p-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NzcyIiwicGF0aCI6IlwvZlwvMDA3MDVhODctNTMxYS00NDdiLTg0OGEtNjI3MmY2MTVmM2YxXC9kYWRscjFwLTZmZmZiOGZhLTllMjgtNDI2NS1hNzE5LWE0MmQ2MmIzYmYzMy5qcGciLCJ3aWR0aCI6Ijw9MTYwMCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.CH_EPE3FR69OawmnYcNm2vSwynb05a5-Med1kx_-0nM" data-duration="130">
+                  <div class="amazingaudioplayer-source" data-src="path-to-mp3" data-type="audio/mpeg">
+                  <div class="amazingaudioplayer-source" data-src="path-to-ogg" data-type="audio/ogg">
+              </div></div></li>
+          </ul>
+          <div class="ap-close-btn js-ap-close-btn">Continue listening <i class="fa fa-play-circle"></i></div>
+      <div class="amazingaudioplayer-player-wrapper"><div class="amazingaudioplayer-image" style="width: 100px; height: 100px; display: block;"><div class="amazingaudioplayer-image-space" style="display:inline-block;vertical-align:middle;height:100%;"></div><img src="We%20understand%20the%20protocol%202-wire%20JTAG_files/golden-wheat-field.jpg" style="width:100%;max-width:100%;vertical-align:middle;"></div><div class="amazingaudioplayer-image-clear"></div><div class="amazingaudioplayer-text"><div class="amazingaudioplayer-title">Summer Field Ambient Sounds</div><div class="amazingaudioplayer-title-clear"></div><div class="amazingaudioplayer-info">By pinkzebra AudioJungle<br></div><div class="amazingaudioplayer-info-clear"></div></div><div class="amazingaudioplayer-text-clear"></div><div class="amazingaudioplayer-bar"><div class="amazingaudioplayer-playpause" style="display: block;"><div class="amazingaudioplayer-play" style="display: block; width: 48px; height: 48px; background-image: url(&quot;https://amazingaudioplayer.com/wp-content/uploads/amazingaudioplayer/9/audioplayerengine/playpause-48-48-1.png&quot;); background-repeat: no-repeat; background-position: left top; cursor: pointer;"></div><div class="amazingaudioplayer-pause" style="display: none; width: 48px; height: 48px; background-image: url(&quot;https://amazingaudioplayer.com/wp-content/uploads/amazingaudioplayer/9/audioplayerengine/playpause-48-48-1.png&quot;); background-repeat: no-repeat; background-position: right top; cursor: pointer;"></div></div><div class="amazingaudioplayer-prev" style="display: block; width: 48px; height: 48px; background-image: url(&quot;https://amazingaudioplayer.com/wp-content/uploads/amazingaudioplayer/9/audioplayerengine/prevnext-48-48-1.png&quot;); background-repeat: no-repeat; background-position: left top; cursor: pointer;"></div><div class="amazingaudioplayer-next" style="display: block; width: 48px; height: 48px; background-image: url(&quot;https://amazingaudioplayer.com/wp-content/uploads/amazingaudioplayer/9/audioplayerengine/prevnext-48-48-1.png&quot;); background-repeat: no-repeat; background-position: right top; cursor: pointer;"></div><div class="amazingaudioplayer-loop" style="display: block; width: 24px; height: 24px; background-image: url(&quot;https://amazingaudioplayer.com/wp-content/uploads/amazingaudioplayer/9/audioplayerengine/loop-24-24-0.png&quot;); background-repeat: no-repeat; background-position: center top; cursor: pointer;"></div><div class="amazingaudioplayer-volume" style="display: block;"><div class="amazingaudioplayer-volume-button" style="display: block; position: relative; width: 24px; height: 24px; background-image: url(&quot;https://amazingaudioplayer.com/wp-content/uploads/amazingaudioplayer/9/audioplayerengine/volume-24-24-0.png&quot;); background-repeat: no-repeat; background-position: left top; cursor: pointer;"></div><div class="amazingaudioplayer-volume-bar" style="display: none; position: absolute; box-sizing: content-box; padding: 8px; margin: 0px; z-index: 1; left: 0px; bottom: 100%; width: 8px; height: 56px;"><div class="amazingaudioplayer-volume-bar-adjust" style="display: block; position: relative; width: 100%; height: 100%; cursor: pointer;"><div class="amazingaudioplayer-volume-bar-adjust-active" style="display: block; position: absolute; left: 0px; bottom: 0px; width: 100%; height: 100%;"></div></div></div></div><div class="amazingaudioplayer-progress" style="display: block; cursor: pointer; overflow: hidden; height: 8px;"><div class="amazingaudioplayer-progress-loaded" style="display: block; position: absolute; left: 0px; top: 0px; height: 100%;"></div><div class="amazingaudioplayer-progress-played" style="display: block; position: absolute; left: 0px; top: 0px; height: 100%; width: 0%;"></div></div><div class="amazingaudioplayer-bar-buttons-clear"></div></div><div class="amazingaudioplayer-bar-clear"></div></div><div class="amazingaudioplayer-tracklist" style="display: block; height: auto;"><div class="amazingaudioplayer-tracklist-container"><div class="amazingaudioplayer-tracks-wrapper" style="overflow: hidden;"><ul class="amazingaudioplayer-tracks" style="display: block;"><li class="amazingaudioplayer-track-item amazingaudioplayer-track-item-active">1. Summer Field Ambient Sounds <span style="position:absolute;top:0;right:0;"><a href="https://amazingaudioplayer.com/demo-checkout/?id=1">Buy Now</a></span></li><li class="amazingaudioplayer-track-item">2. Fairy Forest Ambience <span style="position:absolute;top:0;right:0;"><a href="https://amazingaudioplayer.com/demo-checkout/?id=2">Buy Now</a></span></li><li class="amazingaudioplayer-track-item">3. Winter Countryside Evening <span style="position:absolute;top:0;right:0;"><a href="https://amazingaudioplayer.com/demo-checkout/?id=3">Buy Now</a></span></li><li class="amazingaudioplayer-track-item">4. Amazon Rain and Thunder <span style="position:absolute;top:0;right:0;"><a href="https://amazingaudioplayer.com/demo-checkout/?id=4">Buy Now</a></span></li><li class="amazingaudioplayer-track-item">5. Beach at Night <span style="position:absolute;top:0;right:0;"><a href="https://amazingaudioplayer.com/demo-checkout/?id=5">Buy Now</a></span></li><li class="amazingaudioplayer-track-item">6. Server Room <span style="position:absolute;top:0;right:0;"><a href="https://amazingaudioplayer.com/demo-checkout/?id=6">Buy Now</a></span></li><li class="amazingaudioplayer-track-item">7. Urban Wastelands <span style="position:absolute;top:0;right:0;"><a href="https://amazingaudioplayer.com/demo-checkout/?id=7">Buy Now</a></span></li><li class="amazingaudioplayer-track-item">8. Future City <span style="position:absolute;top:0;right:0;"><a href="https://amazingaudioplayer.com/demo-checkout/?id=8">Buy Now</a></span></li><li class="amazingaudioplayer-track-item">9. Medieval Town <span style="position:absolute;top:0;right:0;"><a href="https://amazingaudioplayer.com/demo-checkout/?id=9">Buy Now</a></span></li></ul></div></div></div><div class="amazingaudioplayer-tracklist-clear"></div><audio preload="auto"><source src="We%20understand%20the%20protocol%202-wire%20JTAG_files/path-to-mp3.html" type="audio/mpeg"><source src="We%20understand%20the%20protocol%202-wire%20JTAG_files/path-to-ogg.html" type="audio/ogg"></audio></div><div class="ad-click-notification js-ad-click-notification" style="display: block;">Please click on Ads to support the site</div><div class="new-site-notification js-new-site-notification" style="display: block;">Try my new website - <a href="https://ambient-geek.github.io/popular.html">Ambient-Geek.github.io</a></div><ins class="adsbygoogle adsbygoogle-noablate" style="display: none !important;" data-adsbygoogle-status="done"><ins id="aswift_0_expand" style="display:inline-table;border:none;height:0px;margin:0;padding:0;position:relative;visibility:visible;width:0px;background-color:transparent;"><ins id="aswift_0_anchor" style="display:block;border:none;height:0px;margin:0;padding:0;position:relative;visibility:visible;width:0px;background-color:transparent;"><iframe marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;border:0px;width:0px;height:0px;" frameborder="0"></iframe></ins></ins></ins><iframe id="google_osd_static_frame_3876886245057" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;"></iframe></body><iframe id="google_esf" name="google_esf" src="We%20understand%20the%20protocol%202-wire%20JTAG_files/zrt_lookup.html" style="display: none;" data-ad-client="ca-pub-6974184241884155"></iframe></html>

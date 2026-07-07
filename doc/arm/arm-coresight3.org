@@ -1,0 +1,261 @@
+#+title: AARCH64调试架构与CoreSight技术演进
+# #+subtitle: 
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+* CoreSight不只是调试,是系统的“神经监控网络”
+CoreSight常常被理解为“一堆调试模块”，但其实它更像是一套完整的片上神经
+系统。它不只关注CPU核心本身，而是打通了处理器、外设、内存子系统之间的
+信息壁垒，实现真正的全栈行为追踪。
+** DAP（调试访问端口）：通往芯片内部的“第一道门”
+所有外部调试工具(J-Link/CMSIS-DAP/OpenOCD)都必须通过调试访问端口（DAP）
+才能进入芯片内部。可以把它想象成一栋大楼的安保中心，所有的访客（调试器）
+都要在这里登记身份、领取通行证。
+#+begin_src c
+  // 示例：使用libswd通过SWD协议读取组件ID
+  int read_coresight_component_id(swd_ctx_t *ctx, uint32_t apsel, uint32_t addr) 
+  {
+      uint32_t id_reg;
+      int result;
+      // 选择目标AP
+      result = libswd_dp_ap_sel_write(ctx, apsel);  
+      if (result < 0) return result;
+      // 发起读操作
+      result = libswd_apb_ap_read(ctx, addr, &id_reg);  
+      if (result < 0) return result;
+
+      printf("Component ID: 0x%08X\n", id_reg);
+      return 0;
+  }
+#+end_src
+这段代码看似简单，但它揭示了一个关键机制：统一寻址+分层访问。每个
+CoreSight组件都被映射到一个固定的4KB地址空间中，首四个字节必须返回其
+PIDR（外设ID）和CIDR（组件ID），这是自动发现的基础。现代SoC往往有多个
+DAP实例，分别服务于应用处理器、GPU、安全世界甚至电源管理单元。这意味着
+你可以独立调试某个子系统而不影响其他部分.
+
+
+DAP内部支持两种主要的访问端口（AP）.
+|--------+-----+----------------------|
+| AP类型  | 协议 | 用途                  |
+|--------+-----+----------------------|
+|--------+-----+----------------------|
+| APB-AP | APB | 控制类寄存器（低速）    |
+| AXI-AP | AXI | 高带宽数据传输（如TMC） |
+|--------+-----+----------------------|
+比如ETM这类控制寄存器就走APB总线，而像TMC（Trace Memory Controller）这
+种需要搬运大量追踪数据的，则会连接AXI以获得更高吞吐量。
+
+
+DAP还支持“多跳访问”,在一个JTAG链上串联多个DAP，适用于多die封装或
+Chiplet架构。这就像一栋摩天大楼里的多个楼层都有独立安保岗亭，但它们共
+享一套中央管理系统。
+** ETM：CPU的“行车记录仪”
+ETM记录每一条指令的轨迹, 如果说DAP是入口，那执行跟踪宏单元（ETM） 就是
+最核心的数据采集器，堪称CPU的“行车记录仪”。它直接监听处理器流水线中的
+PC值，在几乎不干扰程序运行的情况下，完整记录指令执行路径。
+#+begin_src shell
+  # 使用GDB+OpenOCD配置ETM追踪main函数
+  (gdb) monitor reset halt
+  (gdb) monitor etm start
+  (gdb) monitor etm config range 0x400D1000 0x400D2000   # 设置追踪区间
+  (gdb) monitor etm trigger on hwbreak 1                 # 触发条件：硬件断点命中
+  (gdb) continue
+  ...
+  (gdb) monitor etm stop
+  (gdb) monitor etm dump > trace.bin
+#+end_src
+ETM的工作原理可以分为几个阶段：
+- 地址过滤：用户定义感兴趣区域（如特定函数范围），只有落在该区间的PC才
+  会被记录；
+- 事件触发：结合数据观察点、性能计数器溢出等条件动态启停追踪；
+- 压缩编码：采用差分编码等方式大幅减少数据量；
+- 同步包插入：定期插入Sync Packet，帮助解码工具重建时间轴。 
+
+
+最厉害的是，ETM支持多种工作模式.
+|---------------------+---------------+-------------|
+| 模式                 | 特性说明        | 典型应用场景  |
+|---------------------+---------------+-------------|
+|---------------------+---------------+-------------|
+| Full Trace          | 记录所有指令地址 | 精细故障诊断  |
+| Branch Only         | 仅记录跳转目标   | 控制流分析    |
+| Cycle-Accurate      | 包含周期计数    | 性能瓶颈定位  |
+| Context-ID Tracking | 标记任务/进程ID | 多任务调度分析 |
+|---------------------+---------------+-------------|
+** ETB/TPIU/SWO：三种不同的“数据出口策略”
+有了数据源（ETM），接下来就得考虑怎么把这些高速数据送出去。CoreSight提供了三种主流方式，各有适用场景：
+|------+-------------+---------------+-------+-----------------|
+| 组件  | 存储方式      | 带宽           | 实时性 | 用途             |
+|------+-------------+---------------+-------+-----------------|
+|------+-------------+---------------+-------+-----------------|
+| ETB  | 片上RAM      | 中等           | 后验   | 小规模闭环调试     |
+| SWO  | 异步串行      | 低（≤12MHz）   | 高     | 日志输出、轻量追踪 |
+| TPIU | 并行/高速串行 | 高（≥200Mbps） | 高     | 多核全速追踪      |
+|------+-------------+---------------+-------+-----------------|
+	
+其中，SWO是SWD接口的一个扩展功能，复用SWO引脚发送少量结构化数据。配合
+ITM（Instrumentation Trace Macrocell），可以实现类似printf但完全非阻塞
+的日志输出。
+#+begin_src c
+  #define ITM_STIMULUS_PORT (*(volatile uint32_t*)0xE0000000)
+  #define ITM_ENABLE_REG    (*(volatile uint32_t*)0xE0000E00)
+  void itm_printf(const char* str) {
+      if (!(ITM_ENABLE_REG & 1)) return;
+
+      while (*str) {
+          while (!(ITM_STIMULUS_PORT & 1));  // 等待通道空闲
+          ITM_STIMULUS_PORT = (uint32_t)(*str | (1 << 31));
+          str++;
+      }
+  }
+#+end_src
+这段代码实现了零延迟日志输出，配合Keil ULINK或J-Link RTT，几毫秒内就能看到结果.
+而TMC（Trace Memory Controller）则更进一步，它统一管理ETB和TPIU的行为，
+支持三种模式：
+- Buffer Mode：数据写入片上RAM（即ETB）
+- Streaming Mode：直连TPIU输出，绕过存储
+- FIFO Mode：先缓存再批量读出
+* ATB总线+CTI矩阵：让整个系统“联动起来”
+如果说前面这些是“感官器官”，那么先进追踪总线（ATB）和交叉触发矩阵（CTI）
+就是连接它们的“神经网络”。
+** ATB协议：专为高吞吐追踪设计的“高速公路”
+ATB不是普通的AMBA总线（如AXI/AHB），它是专门为追踪数据优化的点对点或星
+型互连协议。典型信号包括：
+- ATDATA[31:0]：数据总线
+- ATVALID：发送方声明有效
+- ATREADY：接收方反馈就绪 
+
+这是一种标准的双握手机制，确保无损传输。数据以“包”为单位传送，基本结构
+如下：
+|---------+-------+---------------------------|
+| 字段     | 宽度   | 含义                       |
+|---------+-------+---------------------------|
+|---------+-------+---------------------------|
+| Header  | 4-bit | 包类型（Normal/Sync/Error） |
+| Payload | 可变   | 实际数据（地址、事件码等）    |
+| Parity  | 1-bit | 奇偶校验                    |
+|---------+-------+---------------------------|
+为了聚合多路数据流，CoreSight还引入了两个关键组件：
+- Funnel：多输入单输出，用于合并来自多个ETM的数据
+- Replicator：单输入多输出，用于广播同一数据流 
+
+
+于是我们可以构建出这样的追踪链,全程无需CPU干预，真正实现零负载追踪。
+#+begin_example
+  ETM->ATB Funnel->TMC(Streaming Mode)->TPIU->外部探针
+#+end_example
+** CTI：跨模块事件联动的“中枢开关”
+这才是CoreSight最强大的地方之一。 交叉触发矩阵（CTI）允许不同组件之间
+传递触发信号，形成“事件连锁反应”。想象一下这个场景：当CPU0遇到断点时，
+自动暂停GPU和DSP；或者DMA传输完成时通知CPU开始处理。这些都不是软件回调
+能做到的,CTI的响应时间通常小于10个时钟周期.
+
+
+它的本质是一个N×M的电子开关阵列，通过寄存器配置映射关系.
+#+begin_src c
+  cti_write(CHINCAR, 0x01);  // 使能输入通道0（来自ETM的FAULT事件）
+  cti_write(CHOUTCAR, 0x07); // 使能输出通道0~2（对应Core0~2的HALT请求）
+  cti_write(TRIGINSEL, 0x00); // 输入0绑定到外部事件0
+  cti_write(TRIGOUTSEL, 0x00); // 输出0连接至halt信号
+#+end_src
+一旦配置完成，硬件就会自动响应，无需任何CPU参与。这对于构建可靠的自动
+化测试平台极为重要。而且，CTI还支持菊花链连接多个实例，形成更大规模的
+触发网络。比如在服务器级SoC中，可以把CPU集群、NPU、IO控制器全部互联，
+实现全局事件协调。
+** 时间一致性：如何保证“谁先发生”的判断准确？
+在多核或多源追踪环境中，如果没有统一的时间基准，即使抓到了所有数据也没
+法还原真实行为顺序。CoreSight通过三大机制解决这个问题：
+- 全局时间戳计数器：所有组件共享同一个高精度自由运行计数器；
+- 周期性同步包：ETM、ITM等每隔一段时间插入一个Sync Packet，包含当前时
+  间戳；
+- 延迟补偿机制：TMC等中间组件会记录路径延迟并附加修正信息。 
+
+  
+如在双核系统中, 虽然两路数据到达时间不同，但通过匹配Sync包的时间戳，解
+码工具就能准确重建并发行为。此外，CoreSight还支持异步时钟域处理。若ETM
+运行在CPU时钟域，而TPIU运行在系统时钟域，则需使用异步FIFO进行跨时钟传
+递，并通过格雷码指针避免亚稳态。
+#+begin_example
+  Core0 Trace:
+    [TS=1000] PC=0x400D1000
+    [TS=1005] Branch to 0x400D1010
+    [Sync TS=1010]
+
+  Core1 Trace:
+    [TS=1002] PC=0x400D2000
+    [Sync TS=1010]
+#+end_example
+** 自动发现机制：ROM表与CMSIS-DAP的完美协作
+为了让调试器能自动识别硬件拓扑，CoreSight定义了一套标准的ROM表（ROM
+Table）机制。ROM表位于预定义基地址（如0x80000000），采用链式结构组织.
+#+begin_src c
+  void parse_rom_table(uint32_t base_addr) {
+      uint32_t offset = 0;
+      while (1) {
+          uint32_t entry = *(volatile uint32_t*)(base_addr + offset);
+          if ((entry & 0xFF) == 0xFF) break;  // 结束标志
+
+          uint32_t comp_base = base_addr + (entry >> 12) * 0x1000;
+          uint8_t class = (entry >> 8) & 0xF;
+          printf("Found component @ 0x%08X, Class=0x%X\n", comp_base, class);
+          offset += 4;
+      }
+  }
+#+end_src
+每个条目4字节，格式如下.
+|-------------+-----------+-----------|
+| Bits[31:12] | Bits[11:8] | Bits[7:0] |
+|-------------+-----------+-----------|
+|-------------+-----------+-----------|
+| 组件地址偏移  | 类别码     | 下一项指针  |
+|-------------+-----------+-----------|
+遍历完成后，调试器就能知道：“哦，这里有ETMv4、CTI、TPIU……我可以启用哪
+些功能了。”而CMSIS-DAP则是这套机制的软件实现标准。它基于USB HID协议，
+统一各类调试适配器的行为，使得Keil、Arm DS-5、pyOCD等工具都能无缝接入。
+典型流程如下：
+- 主机枚举CMSIS-DAP设备；
+- 查询支持的功能（DAP_Info）；
+- 选择SWD模式（DAP_Connect）；
+- 读写寄存器（DAP_ReadRegister / DAP_WriteRegister）；
+- 结合GDB远程协议实现高级调试。 
+
+
+最终用户只需一句"target remote :3333"就能完成所有底层通信的抽象.
+** Linux内核集成：从裸机调试迈向操作系统级性能分析
+自Linux 4.1起，主线内核正式引入Coresight子系统，标志着CoreSight从专用
+调试工具走向通用基础设施。相关驱动位于：
+#+begin_example
+  drivers/hwtracing/coresight/
+  ├ – coresight-etm.ko
+  ├ - coresight-tpiu.ko
+  ├ - coresight-tmc.ko
+  └ - coresight-cti.ko
+#+end_example
+用户可通过sysfs接口灵活配置追踪路径：
+#+begin_src shell
+  # 启用Core0的ETM追踪
+  echo 1 > /sys/bus/coresight/devices/etm0/enable
+
+  # 设置输出目标为ETB
+  echo "outport0" > /sys/bus/coresight/devices/funnel0/input0
+  echo "inport0"  > /sys/bus/coresight/devices/tmc0/mode
+
+  # 开始采集
+  echo 1 > /sys/bus/coresight/devices/tmc0/curr_sink
+#+end_src
+并且perf工具链已经原生支持CoreSight.
+#+begin_src shell
+  perf record -e cs_etm/@cpu0/u --per-thread ./my_app
+  perf script
+#+end_src
+
+这条命令将录制CPU0上的指令流，并在perf.data中保存解码后的执行轨迹，后
+续甚至可以用火焰图分析热点路径。这意味着，你可以在生产环境中开启低开销
+追踪，事后离线分析性能问题，真正做到“不影响用户体验的同时掌握系统真相”。
+

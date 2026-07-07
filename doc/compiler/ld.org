@@ -1,0 +1,1834 @@
+#+title: 链接脚本
+# #+subtitle: 
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+* 概述
+每个链接都由链接器脚本控制。此脚本以链接器命令语言编写。链接器脚本的主
+要目的是描述输入文件中的内容应如何映射到输出文件中，并控制输出文件的内
+存布局。大多数链接器脚本仅此而已。但是，必要时，链接器脚本还可以使用下
+面描述的命令指示链接器执行许多其他操作。
+
+
+链接器始终使用链接器脚本。如果自己不提供链接器脚本，链接器将使用编译到
+链接器可执行文件中的默认脚本。可以使用ld --verbose命令行选项显示默认链
+接器脚本。某些命令行选项(例如-r或-N)会影响默认链接器脚本。
+
+
+可以使用-T命令行选项提供自己的链接器脚本。当执行此操作时，链接器脚本将
+替换默认链接器脚本。还可以通过将链接器脚本命名为链接器的输入文件来隐式
+使用链接器脚本，就好像它们是要链接的文件一样。
+* 基本概念
+链接器将输入文件组合成单个输出文件。输出文件和每个输入文件都采用一种称
+为目标文件格式(object file format)的特殊数据格式。每个文件都称为目标文
+件(object file)。输出文件通常称为可执行文件，但为了我们的目的，我们也
+将其称为目标文件。每个目标文件都包含一系列内容。我们有时将输入文件中的
+内容称为输入部分(input section)；同样，输出文件中的内容称为输出部分
+(output section)。
+
+
+目标文件中的每个section都有名称和大小。大多数section还具有关联的数据块，
+称为section contents。section可能被标记为可加载（下载），这意味着在运
+行输出文件时应将内容加载（下载）到内存中。没有内容的section可能是可分
+配的，这意味着应该留出内存中的某个区域，但不应在那里加载（下载）任何特
+定内容(在某些情况下，必须将该内存清零)。既不可加载（下载）也不可分配的
+section通常包含某种调试信息。
+
+
+每个可加载（下载）或可分配的输出节都有两个地址。第一个是 VMA 或虚拟内
+存地址。这是运行输出文件时section将具有的地址。第二个是 LMA 或加载（下
+载）内存地址。这是将加载（下载）节的地址。在大多数情况下，这两个地址是
+相同的。它们可能不同的一个例子是当数据节被加载（下载）到 ROM 中，然后
+在程序启动时复制到 RAM 中时(这种技术通常用于初始化基于 ROM 的系统中全
+局变量)。在这种情况下，ROM 地址将是 LMA，而 RAM 地址将是 VMA。可以使用
+带有-h选项的 objdump 程序查看目标文件中的节。
+
+
+每个目标文件还有一个符号列表，称为符号表。符号可能是已定义的或未定义的。
+每个符号都有一个名称，每个已定义的符号都有一个地址，以及其他信息。如果
+将 C 或 C++ 程序编译为目标文件，则每个“已定义函数”和“全局”或“静态变量”
+都会获得一个已定义符号。输入文件中引用的每个未定义函数或全局变量都将成
+为未定义符号。可以使用 nm 程序或使用带有-t选项的 objdump 程序查看目标
+文件中的符号。
+* 脚本命令
+链接器脚本是文本文件。链接器脚本是一系列命令。每个命令要么是关键字，后
+面可能跟有参数，要么是符号赋值。可以使用分号分隔命令。空格通常会被忽略。
+
+
+字符串(例如文件或格式名称)通常可以直接输入。如果文件名包含逗号等字符
+(否则将用于分隔文件名)，则可以将文件名放在双引号中。文件名中不能使用双
+引号字符。
+
+
+链接器脚本中可以包含注释，就像在 C 中一样，注释由/*和*/分隔。与 C 一样，
+注释在语法上等同于空格。
+
+
+许多链接器脚本相当简单。最简单的链接器脚本只有一个命令：“SECTIONS”。可
+以使用SECTIONS命令来描述输出文件的内存布局。SECTIONS命令是一个功能强大
+的命令。这里我们将描述它的简单用法。假设程序仅包含代码、初始化数据和未
+初始化数据。这些将分别位于.text、.data和.bss部分中。让我们进一步假设这
+些是输入文件中出现的唯一部分。对于此示例，假设代码应加载（下载）到地址
+0x10000，数据应从地址 0x8000000 开始。以下是将执行此操作的链接器脚本：
+#+begin_src shell
+  SECTIONS
+  {
+    . = 0x10000;
+    //输出section: {输入section}
+    .text: { *(.text) }
+    . = 0x8000000;
+    .data: { *(.data) }
+    .bss: { *(.bss) }
+  }
+
+#+end_src
+可以将SECTIONS命令写为关键字SECTIONS，后跟一系列用花括号括起来的符号分
+配和输出section描述。
+- 第一行设置特殊符号"."的值，即位置计数器。如果未以其他方式指定输出
+  section的地址(其他方式稍后介绍)，则地址将从位置计数器的当前值设置。
+  然后，位置计数器将增加输出section的大小。在SECTIONS命令的开头，位置
+  计数器的值为0。
+- 第二行定义输出部分“.text”。冒号是必需的语法，目前可以忽略。在输出部
+  分名称后的花括号内，可以列出应放入此输出部分的输入部分的名称。*是与
+  任何文件名匹配的通配符。表达式*(.text)表示所有输入文件中的所有.text
+  输入部分。
+- 由于定义输出部分.text时位置计数器为0x10000，因此链接器将输出文件
+  中.text部分的地址设置为0x10000。
+- 其余行定义输出文件中的.data和.bss部分。链接器将.data输出部分放置在地
+  址0x8000000处。链接器放置.data输出部分后，位置计数器的值将为
+  0x8000000加上.data输出部分的大小。结果是链接器将.bss输出部分放置在内
+  存中.data输出部分之后。
+- 链接器将确保每个输出部分都具有所需的对齐，如有必要，将通过增加位置计
+  数器来实现。在此示例中，.text 和 .data 部分的指定地址可能满足任何对
+  齐约束，但链接器可能必须在 .data 和 .bss 部分之间创建一个小间隙。
+** 设置进入点
+程序中第一条要执行的指令被称为入口点(entry point)。可以使用链接器脚本
+命令 ENTRY 来设置入口点。该命令的参数是一个符号名：ENTRY(symbol)。有几
+种方法可以设置入口点。链接器将按照以下顺序尝试每种方法，直到其中一种成
+功为止：
+- 命令行选项 -e 指定的入口点；
+- 链接器脚本中的 ENTRY(symbol) 命令；
+- 目标特定符号的值(如果已定义)。对于许多目标，这个符号是 start，但对于
+  基于 PE 和 BeOS 的系统，链接器会检查一个可能的入口符号列表，并匹配找
+  到的第一个符号；(PE（Portable Executable）是 Windows 操作系统使用的
+  可执行文件格式，而 BeOS 是一个已经停止开发的操作系统。)
+- 如果存在代码段且正在创建可执行文件，则使用代码段的第一个字节的地址。
+  代码段通常是 ‘.text’，但也可以是其他名称；如果没有通过其他方式指定入
+  口点，链接器会默认使用地址 0 作为入口点。。
+** 处理文件的命令
+*** INCLUDE
+INCLUDE filename，此时包含链接器脚本文件名。将在当前目录和使用 -L 选项
+指定的任何目录中搜索该文件。可以将对 INCLUDE 的调用嵌套最多 10 层。可
+以将 INCLUDE 指令放在
+- 顶层
+- MEMORY
+- SECTIONS 命令中
+- 输出部分描述中。
+*** INPUT 
+INPUT(file, file, …)或INPUT(file file …)，INPUT 命令指示链接器将命名的
+文件包含在链接中，就像它们在命令行中命名一样。例如，如果总是希望在每次
+进行链接时都包含 subr.o，但又懒得在每个链接命令行上都放上它，那么可以
+在链接器脚本中放入INPUT (subr.o)。事实上，可以在链接器脚本中列出所有输
+入文件，然后仅使用-T选项调用链接器。
+
+
+如果配置了 sysroot 前缀，并且文件名以/字符开头，并且正在处理的脚本位于
+sysroot 前缀内，则将在 sysroot前缀中查找文件名。 还可以通过将 = 指定为
+文件名路径中的第一个字符或在文件名路径前加上 $SYSROOT 来强制使用
+sysroot 前缀。如果未使用 sysroot 前缀，则链接器将尝试打开包含链接器脚
+本的目录中的文件。如果未找到，则链接器将搜索当前目录。如果仍未找到，则
+链接器将搜索存档库搜索路径。
+
+
+如果使用INPUT (-lfile)，ld 会将名称转换为 libfile.a，就像使用命令行参
+数-l一样。
+
+
+当在隐式链接器脚本中使用 INPUT 命令时，在链接器脚本文件的位置文件就会
+包含进来。这可能会影响存档搜索。
+*** GROUP
+GROUP(文件，文件，…)或GROUP(文件文件…)，GROUP 命令类似于 INPUT，不同之
+处在于命名的文件应全部为档案，并且会重复搜索它们，直到没有创建新的未定
+义引用。
+*** AS_NEEDED
+AS_NEEDED(file, file, …)或AS_NEEDED(file file …)，此构造只能出现在
+INPUT 或 GROUP 命令中，以及其他文件名中。列出的文件将被视为直接出现在
+INPUT 或 GROUP 命令中，但 ELF 共享库除外，这些共享库仅在实际需要时才会
+添加。此构造实质上为其中列出的所有文件启用 --as-needed 选项，然后恢复
+之前的 --as-needed 和 --no-as-needed 设置。
+*** OUTPUT
+OUTPUT(filename)，OUTPUT 命令命名输出文件。在链接器脚本中使用
+OUTPUT(filename) 与在命令行上使用-o filename完全相同。如果同时使用两者，
+则命令行选项优先。可以使用 OUTPUT 命令为输出文件定义一个默认名称，而不
+是通常的默认名称a.out。
+*** SEARCH_DIR
+SEARCH_DIR(path)，SEARCH_DIR 命令将 path 添加到 ld 查找存档库的路径列
+表中。使用 SEARCH_DIR(path) 与在命令行上使用-L path完全相同。如果同时
+使用两者，则链接器将搜索这两个路径。首先搜索使用命令行选项指定的路径。
+*** STARTUP
+STARTUP(filename)，STARTUP 命令与 INPUT 命令一样，不同之处在于
+filename 将成为要链接的第一个输入文件，就像在命令行上首先指定它一样。
+当使用入口点始终是第一个文件的开头的系统时，这可能很有用。
+** 处理目标文件格式的命令
+*** OUTPUT_FORMAT
+链接器脚本中有几个命令用于处理目标文件格式。OUTPUT_FORMAT(bfdname)或
+OUTPUT_FORMAT(default, big, little)，OUTPUT_FORMAT 命令指定输出文件的
+BFD 格式。使用 OUTPUT_FORMAT(bfdname) 与在命令行中使用 --oformat
+bfdname 选项完全相同。如果两者都使用，则命令行选项优先。可以使用带有三
+个参数的 OUTPUT_FORMAT 命令，根据 -EB 和 -EL 命令行选项使用不同的格式。
+这允许链接器脚本根据所需的字节序设置输出格式。如果既没有使用 -EB 也没
+有使用 -EL，则输出格式将是第一个参数 default。如果使用了 -EB，输出格式
+将是第二个参数 big。如果使用了 -EL，输出格式将是第三个参数 little。例
+如，MIPS ELF 目标的默认链接器脚本使用以下命令：
+#+begin_src shell
+  OUTPUT_FORMAT(elf32-bigmips, elf32-bigmips, elf32-littlemips)
+#+end_src
+
+这表示输出文件的默认格式为 elf32-bigmips，但如果用户使用 -EL 命令行选
+项，则输出文件将以 elf32-littlemips 格式创建。
+*** TARGET
+TARGET(bfdname),TARGET 命令指定读取输入文件时使用的 BFD 格式。它会影响
+后续的 INPUT 和 GROUP 命令。此命令类似于在命令行上使用 -b bfdname。如
+果使用了 TARGET 命令但没有使用 OUTPUT_FORMAT，则最后一个 TARGET 命令也
+用于设置输出文件的格式。参见 BFD。
+** 为内存区域分配别名
+可以为使用 MEMORY Command 命令创建的现有内存区域添加别名。每个名称最多
+对应一个内存区域。REGION_ALIAS(alias, region), REGION_ALIAS 函数为内存
+区域区域创建别名alias。这允许灵活地将输出部分映射到内存区域。
+
+
+假设我们有一个用于嵌入式系统的应用程序，它带有各种内存存储设备。所有设
+备都具有通用的易失性内存RAM，允许执行代码或存储数据。有些可能具有只读
+的非易失性内存 ROM，允许执行代码和只读数据访问。最后一种变体是只读的非
+易失性内存 ROM2，具有只读数据访问功能，没有代码执行功能。我们有四个输
+出部分：
+- .text: program code;
+- .rodata: read-only data;
+- .data: read-write initialized data;
+- .bss: read-write zero initialized data.
+
+
+目标是提供一个链接器命令文件，其中包含一个定义输出部分的系统独立部分和
+一个将输出部分映射到系统上可用的内存区域的系统相关部分。我们的嵌入式系
+统有三种不同的内存设置 A、B 和 C：
+#+begin_src shell
+  Section	Variant A	Variant B	Variant C
+  .text	RAM	        ROM	        ROM
+  .rodata	RAM	        ROM	        ROM2
+  .data	RAM	        RAM/ROM         RAM/ROM2
+  .bss	RAM	        RAM	        RAM
+#+end_src
+RAM/ROM 或 RAM/ROM2 符号表示此部分分别加载(下载)到区域 ROM 或 ROM2 中。
+请注意，.data 部分的加载地址在所有三个变体中都从 .rodata 部分末尾开始。
+
+
+处理输出部分的基本链接器脚本如下。它包括描述内存布局的系统相关
+linkcmds.memory 文件：
+#+begin_src shell
+  INCLUDE linkcmds.memory
+
+  SECTIONS
+  {
+      .text :
+        {
+          *(.text)
+        } > REGION_TEXT
+      .rodata :
+        {
+          *(.rodata)
+          rodata_end = .;
+        } > REGION_RODATA
+      .data : AT (rodata_end)
+        {
+          data_start = .;
+          *(.data)
+        } > REGION_DATA
+      data_size = SIZEOF(.data);
+      data_load_start = LOADADDR(.data);
+      .bss :
+        {
+          *(.bss)
+        } > REGION_BSS
+  }
+#+end_src
+现在我们需要三个不同的 linkcmds.memory 文件来定义内存区域和别名。A、B
+和 C 三个变体的 linkcmds.memory 内容如下：
+- A 这里所有内容都进入 RAM。
+  #+begin_src shell
+    MEMORY
+      {
+        RAM : ORIGIN = 0, LENGTH = 4M
+      }
+    REGION_ALIAS("REGION_TEXT", RAM);
+    REGION_ALIAS("REGION_RODATA", RAM);
+    REGION_ALIAS("REGION_DATA", RAM);
+    REGION_ALIAS("REGION_BSS", RAM);
+  #+end_src
+- B 程序代码和只读数据进入ROM, 读写数据进入RAM, 初始化数据的映像加载到
+  ROM中, 并在系统启动时复制到RAM中.
+  #+begin_src shell
+    MEMORY
+      {
+        ROM : ORIGIN = 0, LENGTH = 3M
+        RAM : ORIGIN = 0x10000000, LENGTH = 1M
+      }
+    REGION_ALIAS("REGION_TEXT", ROM);
+    REGION_ALIAS("REGION_RODATA", ROM);
+    REGION_ALIAS("REGION_DATA", RAM);
+    REGION_ALIAS("REGION_BSS", RAM);
+  #+end_src
+- C 程序代码进入ROM, 只读数据进入ROM2, 读写数据进入RAM, 初始化数据的映
+  像加载(下载)到ROM2中, 并在系统启动时复制到RAM 中.
+  #+begin_src shell
+    MEMORY
+      {
+        ROM : ORIGIN = 0, LENGTH = 2M
+        ROM2 : ORIGIN = 0x10000000, LENGTH = 1M
+        RAM : ORIGIN = 0x20000000, LENGTH = 1M
+      }
+
+    REGION_ALIAS("REGION_TEXT", ROM);
+    REGION_ALIAS("REGION_RODATA", ROM2);
+    REGION_ALIAS("REGION_DATA", RAM);
+    REGION_ALIAS("REGION_BSS", RAM);
+  #+end_src
+
+  
+可以编写一个通用的系统初始化例程，以便在必要时将 .data 部分从 ROM 或
+ROM2 复制到 RAM 中：
+#+begin_src c
+  #include <string.h>
+  extern char data_start [];
+  extern char data_size [];
+  extern char data_load_start [];
+
+  void copy_data(void)
+  {
+    if (data_start != data_load_start)
+      {
+        memcpy(data_start, data_load_start, (size_t) data_size);
+      }
+  }
+#+end_src
+
+** 其他链接描述文件命令
+*** ASSERT(exp, message)
+确保 exp 非零。如果为零，则使用错误代码退出链接器并打印消息。请注意，
+在链接的最后阶段之前会检查断言。这意味着，如果用户未设置这些符号的值，
+则涉及节定义内提供的符号的表达式将失败。此规则的唯一例外是仅引用点的提
+供符号。因此，断言如下：
+#+begin_src shell
+  .stack :
+  {
+      PROVIDE (__stack = .);
+      PROVIDE (__stack_size = 0x100);
+      ASSERT ((__stack > (_end + __stack_size)), "Error: No room left for the stack");
+  }
+#+end_src
+
+如果 __stack_size 未在其他地方定义，则将失败。在节定义之外提供的符号会
+更早被评估，因此它们可以在 assertions 内部使用。如下所示：
+#+begin_src shell
+  PROVIDE (__stack_size = 0x100);
+  .stack :
+  {
+    PROVIDE (__stack = .);
+    ASSERT ((__stack > (_end + __stack_size)), "Error: No room left for the stack");
+  }
+#+end_src
+*** EXTERN(symbol symbol …)
+强制将符号作为未定义符号输入到输出文件中。例如，这样做可能会触发从标准
+库链接其他模块。可以为每个 EXTERN 列出多个符号，也可以多次使用 EXTERN。
+此命令与-u命令行选项具有相同的效果。
+*** FORCE_COMMON_ALLOCATION
+此命令与-d命令行选项具有相同的效果：即使指定了可重定位输出文件(-r)，也
+让 ld 为公共符号分配空间。
+*** INHIBIT_COMMON_ALLOCATION
+此命令与--no-define-common命令行选项具有相同的效果：使 ld 即使对于不可
+重定位的输出文件也省略对公共符号的地址分配。
+*** FORCE_GROUP_ALLOCATION
+此命令与--force-group-allocation命令行选项具有相同的效果：使 ld 将节组
+成员像普通输入节一样放置，并且即使指定了可重定位输出文件(-r)也删除节组。
+*** INSERT [ AFTER | BEFORE ] output_section
+此命令通常用于由-T指定的脚本中，以使用覆盖等方式扩充默认 SECTIONS。它
+会在 output_section 之后(或之前)插入所有先前的链接器脚本语句，并且还会
+导致-T不覆盖默认链接器脚本。确切的插入点与孤立节相同。请参阅位置计数器。
+插入发生在链接器将输入节映射到输出节之后。在插入之前，由于-T脚本在默认
+链接器脚本之前解析，因此-T脚本中的语句出现在脚本的内部链接器表示中的默
+认链接器脚本语句之前。特别是，输入节分配将在默认脚本中的输入节分配之前
+分配给-T输出节。以下是使用 INSERT 的-T脚本的示例：
+#+begin_src shell
+  SECTIONS
+  {
+    OVERLAY :
+    {
+      .ov1 { ov1*(.text) }
+      .ov2 { ov2*(.text) }
+    }
+  }
+  INSERT AFTER .text;
+#+end_src
+
+请注意，当使用两次-T时，一次用于覆盖默认脚本，一次用于使用 INSERT 扩充
+该脚本，解析和节分配的顺序与默认脚本相同。应首先在命令行上指定带有
+INSERT 的脚本。
+*** NOCROSSREFS(section section …)
+此命令可用于告诉 ld 发出有关某些输出部分之间任何引用的错误。在某些类型
+的程序中，特别是在使用覆盖的嵌入式系统中，当一个部分加载到内存中时，另
+一个部分不会加载。两个部分之间的任何直接引用都将是错误。例如，如果一个
+部分中的代码调用另一个部分中定义的函数，则会出现错误。NOCROSSREFS 命令
+采用输出部分名称列表。如果 ld 检测到部分之间的任何交叉引用，它会报告错
+误并返回非零退出状态。请注意，NOCROSSREFS 命令使用输出部分名称，而不是
+输入部分名称。
+*** NOCROSSREFS_TO(tosection fromsection …)
+此命令可用于告诉 ld 发出有关对来自其他部分列表的一个部分的任何引用的错
+误。NOCROSSREFS 命令在确保两个或多个输出部分完全独立但在某些情况下需要
+单向依赖时很有用。例如，在多核应用程序中，可能存在可以从每个核心调用的
+共享代码，但为了安全起见，绝不能回调。NOCROSSREFS_TO 命令采用输出部分
+名称列表。第一部分不能从任何其他部分引用。如果 ld 检测到任何其他部分对
+第一部分的任何引用，它会报告错误并返回非零退出状态。请注意，
+NOCROSSREFS_TO 命令使用输出部分名称，而不是输入部分名称。
+*** OUTPUT_ARCH(bfdarch)
+指定特定的输出机器架构。该参数是 BFD 库使用的名称之一。您可以使用带有-f选
+项的 objdump 程序查看对象文件的架构。
+*** LD_FEATURE(string)
+此命令可用于修改 ld 行为。如果字符串为SANE_EXPR，则脚本中的绝对符号和
+数字在任何地方都被视为数字。
+* 为符号分配值
+** 简单赋值
+可以使用任何 C 赋值运算符来赋值给符号：
+#+begin_src c
+  symbol = expression ;
+  symbol += expression ;
+  symbol -= expression ;
+  symbol *= expression ;
+  symbol /= expression ;
+  symbol <<= expression ;
+  symbol >>= expression ;
+  symbol &= expression ;
+  symbol |= expression ;
+#+end_src
+第一种情况将符号定义为表达式的值。在其他情况下，符号必须已经定义，并且
+值将相应调整。特殊符号名称"."表示位置计数器。只能在 SECTIONS 命令中使
+用它。表达式后面的分号是必需的。可以将符号赋值写为命令本身，也可以写为
+SECTIONS 命令中的语句，也可以写为 SECTIONS 命令中输出部分描述的一部分。
+符号的部分将从表达式的部分设置；以下是一个示例，显示了可以使用符号赋值
+的三个不同位置：
+#+begin_src shell
+  floating_point = 0;
+  SECTIONS
+  {
+      .text :
+      {
+          *(.text)
+          _etext = .;
+      }
+      _bdata = (. + 3) & ~ 3;
+      .data :
+      {
+          *(.data)
+      }
+  }
+#+end_src
+在此示例中，符号floating_point将被定义为零。符号_etext将被定义为最后一
+个.text输入部分后面的地址。符号_bdata将被定义为向上对齐到 4 字节边界
+的.text输出部分后面的地址。
+** 隐藏符号(HIDDEN)
+对于 ELF 目标端口，定义一个将被隐藏且不会被导出的符号。语法为
+HIDDEN(symbol = expression)。以下是来自简单分配的示例，在这种情况下，
+这三个符号都不会在该模块之外可见。
+#+begin_src shell
+  HIDDEN(floating_point = 0);
+  SECTIONS
+  {
+    .text :
+      {
+        *(.text)
+        HIDDEN(_etext = .);
+      }
+    HIDDEN(_bdata = (. + 3) & ~ 3);
+    .data : { *(.data) }
+  }
+#+end_src
+** 定义符号(PROVIDE)
+在某些情况下，链接器脚本最好仅在引用符号且未由链接中包含的任何对象定义
+符号时才定义符号。例如，传统链接器定义了符号etext。但是，ANSI C 要求用
+户能够使用etext作为函数名称而不会遇到错误。仅当引用但未定义符号时，才
+可以使用 PROVIDE 关键字来定义符号(例如etext)。语法为 PROVIDE(symbol =
+expression)。以下是使用 PROVIDE 定义etext的示例：
+#+begin_src shell
+  SECTIONS
+  {
+      .text :
+      {
+          *(.text)
+          _etext = .;
+          PROVIDE(etext = .);
+      }
+  }
+#+end_src
+在此示例中，如果程序定义了_etext(带有前导下划线)，则链接器将给出多重定
+义诊断。另一方面，如果程序定义了etext(没有前导下划线)，则链接器将默默
+地使用程序中的定义。如果程序引用etext但未定义它，则链接器将使用链接器
+脚本中的定义。注意，PROVIDE指令认为已定义通用符号，即使此类符号可以与
+PROVIDE将创建的符号组合。在考虑构造函数和析构函数列表符号（例
+如__CTOR_LIST__)时，这一点尤为重要，因为这些符号通常被定义为通用符号。
+
+
+PROVIDE_HIDDEN 与 PROVIDE 类似。对于 ELF 目标端口，该符号将被隐藏，并
+且不会被导出。
+** 源代码参考
+从源代码访问链接器脚本定义的变量并不直观。特别是，链接器脚本符号不等同
+于高级语言中的变量声明，而是一个没有值的符号。在进一步讨论之前，重要的
+是要注意，当它们存储在符号表中时，编译器经常将源代码中的名称转换为不同
+的名称。例如，Fortran 编译器通常在前面或后面添加下划线，而 C++ 执行广
+泛的“名称修改”。因此，源代码中使用的变量名称与链接器脚本中定义的相同变
+量的名称之间可能存在差异。例如，在 C 中，链接器脚本变量可能被称为：
+extern int foo;但在链接脚本中它可能被定义为：_foo = 1000;然而，在其余
+示例中，假设没有发生名称转换。当使用高级语言(例如 C)声明符号时，会发生
+两件事。第一，编译器在程序的内存中保留足够的空间来保存符号的值。第二，
+编译器在程序的符号表中创建一个条目，该条目保存符号的地址。即，符号表包
+含保存符号值的内存块的地址。例如，在文件范围内的以下 C 声明：int foo=
+1000;在符号表中创建一个名为“foo”的条目。该条目保存“int”大小的内存块的
+地址，数字 1000 最初存储在该内存块中。当程序引用符号时，编译器会生成代
+码，该代码首先访问符号表以查找符号内存块的地址，然后生成代码以从该内存
+块读取值。所以：foo = 1;在符号表中查找符号foo，获取与该符号关联的地址，
+然后将值1写入该地址。而：int * a = &foo;在符号表中查找符号foo，获取其
+地址，然后将该地址复制到与变量a关联的内存块中。相比之下，链接器脚本符
+号声明在符号表中创建一个条目，但不为其分配任何内存。因此，它们是没有值
+的地址。例如，链接器脚本定义：foo = 1000;在符号表中创建一个名为foo的条
+目，该条目保存内存位置 1000 的地址，但地址 1000 处没有存储任何特殊内容。
+这意味着无法访问链接器脚本定义符号的值，它没有值，所能做的就是访问链接
+器脚本定义符号的地址。因此，当在源代码中使用链接器脚本定义符号时，应该
+始终获取符号的地址，而不要尝试使用它的值。例如，假设想将名为 .ROM 的内
+存部分的内容复制到名为 .FLASH 的部分中，并且链接器脚本包含以下声明：
+#+begin_src shell
+  start_of_ROM   = .ROM;
+  end_of_ROM     = .ROM + sizeof (.ROM);
+  start_of_FLASH = .FLASH;
+#+end_src
+那么执行复制的 C 源代码将是：
+#+begin_src c
+  extern char start_of_ROM, end_of_ROM, start_of_FLASH;
+  memcpy (& start_of_FLASH, & start_of_ROM, & end_of_ROM - & start_of_ROM);
+#+end_src
+请注意&运算符的使用。这些是正确的。或者，可以将符号视为向量或数组的名
+称，然后代码将再次按预期工作，请注意，使用此方法不需要使用&运算符。
+#+begin_src c
+  extern char start_of_ROM[], end_of_ROM[], start_of_FLASH[];
+  memcpy (start_of_FLASH, start_of_ROM, end_of_ROM - start_of_ROM);
+#+end_src
+* SECTIONS 命令
+SECTIONS 命令告诉链接器如何将输入节映射到输出节，以及如何将输出节放置
+在内存中。SECTIONS 命令的格式为：
+#+begin_src shell
+  SECTIONS
+  {
+    sections-command
+    sections-command
+    …
+  }
+#+end_src
+
+每个节命令可能是以下之一：
+- ENTRY 命令
+- 符号赋值
+- 输出节描述
+- 覆盖描述
+
+
+允许在 SECTIONS 命令内使用 ENTRY 命令和符号分配，以方便使用这些命令中
+的位置计数器。这还可以使链接器脚本更容易理解，因为可以在输出文件布局中
+有意义的位置使用这些命令。
+
+
+如果在链接器脚本中不使用 SECTIONS 命令，则链接器将按照节在输入文件中首
+次遇到的顺序将每个输入节放入同名的输出节中。例如，如果所有输入节都存在
+于第一个文件中，则输出文件中节的顺序将与第一个输入文件中的顺序匹配。第
+一个节将位于地址零。
+** 输出部分描述
+输出部分的完整描述如下：
+#+begin_src shell
+  section [address] [(type)] :
+    [AT(lma)]
+    [ALIGN(section_align) | ALIGN_WITH_INPUT]
+    [SUBALIGN(subsection_align)]
+    [constraint]
+    {
+      output-section-command
+      output-section-command
+      …
+    } [>region] [AT>lma_region] [:phdr :phdr …] [=fillexp] [,]
+#+end_src
+大多数输出部分不使用大多数可选部分属性。部分周围的空格是必需的，以便部
+分名称明确。冒号和花括号也是必需的。如果使用fillexp并且下一个部分命
+令看起来像表达式的延续，则末尾的逗号可能是必需的。换行符和其他空格是可
+选的。每个输出节命令可能是以下之一：
+- 符号赋值
+- 输入节描述
+- 要直接包含的数据值
+- 特殊输出节关键字
+** 输出部分名称
+输出节的名称是 section。section 必须满足输出格式的限制。在仅支持有限数
+量节的格式(如 a.out)中，名称必须是该格式支持的名称之一(例如，a.out 仅
+允许.text、.data或.bss）。如果输出格式支持任意数量的节，但包含数字而不
+是名称(如 Oasys 的情况)，则名称应以带引号的数字字符串形式提供。节名称
+可以由任何字符序列组成，但包含任何不常见字符(如逗号)的名称必须用引号引
+起来。
+
+
+输出节名称/DISCARD/很特殊；输出节丢弃。
+** 输出段地址
+地址是输出节的 VMA(虚拟内存地址)的表达式。此地址是可选的，但如果提供了，
+则输出地址将完全按照指定的方式设置。
+
+
+如果未指定输出地址，则将根据以下启发式方法为该节选择一个地址。将调整此
+地址以符合输出节的对齐要求。对齐要求是输出节中包含的任何输入节的最严格
+对齐。输出节地址启发式方法如下：
+- 如果为该节设置了输出内存区域，则将其添加到此区域，其地址将是该区域中
+  的下一个空闲地址。
+- 如果已使用 MEMORY 命令创建内存区域列表，则选择具有与该节兼容的属性的
+  第一个区域来包含它。该节的输出地址将是该区域中的下一个空闲地址；
+  MEMORY 命令。
+- 如果没有指定内存区域，或者没有与该节匹配的内存区域，则输出地址将基于
+  位置计数器的当前值。
+  
+
+例如：
+#+begin_src shell
+  .text . : { *(.text) }
+  .text   : { *(.text) }
+#+end_src
+略有不同。第一个将把.text输出节的地址设置为位置计数器的当前值。第二个
+将把它设置为与任何.text输入节的最严格对齐方式对齐的位置计数器的当前值。
+
+
+地址可以是任意表达式；链接器脚本中的表达式。例如，如果要将节对齐到0x10
+字节边界，以便节地址的最低四位为零，则可以执行以下操作,这是可行的，因
+为 ALIGN 返回向上对齐到指定值的当前位置计数器。为某个部分指定地址将更
+改位置计数器的值，前提是该部分非空，(空部分将被忽略)。
+#+begin_src shell
+  .text ALIGN(0x10) : { *(.text) }
+#+end_src
+** 基础输入部分描述
+输入节描述由文件名组成，后面可选地跟着括号中的节名列表。文件名和节名可
+以是通配符模式。最常见的输入节描述是将所有具有特定名称的输入节包含在输
+出节中。例如，要包含所有输入.text节，可以这样写：*(.text)，此处的*是与
+任何文件名匹配的通配符。要排除与文件名通配符匹配的文件列表，可以使用
+EXCLUDE_FILE 来匹配除 EXCLUDE_FILE 列表中指定的文件之外的所有文件。例
+如：EXCLUDE_FILE (*crtend.o *otherfile.o) *(.ctors)，将导致除 crtend.o
+和 otherfile.o 之外的所有文件的所有 .ctors 节都被包含。 EXCLUDE_FILE
+也可以放在节列表内：*(EXCLUDE_FILE (*crtend.o *otherfile.o) .ctors)此
+结果与上一个示例相同。如果节列表包含多个节，则支持 EXCLUDE_FILE 的两种
+语法很有用，如下所述。有两种方法可以包含多个节：
+#+begin_src shell
+  *(.text .rdata)
+  *(.text) *(.rdata)
+#+end_src
+两者之间的区别在于.text和.rdata输入节在输出节中出现的顺序。在第一个示
+例中，它们将混合在一起，以与在链接器输入中找到的顺序相同的顺序出现。在
+第二个示例中，所有.text输入节将首先出现，然后是所有.rdata输入节。当使
+用 EXCLUDE_FILE 处理多个部分时，如果排除在部分列表内，则排除仅适用于紧
+随其后的部分，例如：*(EXCLUDE_FILE (*somefile.o) .text .rdata)
+
+将导致除 somefile.o 之外的所有文件的所有.text部分被包含，而包括
+somefile.o 在内的所有文件的所有.rdata部分将被包含。要从 somefile.o 中
+排除.rdata部分，可以将示例修改为：
+#+begin_src shell
+  *(EXCLUDE_FILE (*somefile.o) .text EXCLUDE_FILE (*somefile.o) .rdata)
+#+end_src
+或者，将 EXCLUDE_FILE 放在部分列表之外，在输入文件选择之前，将导致排除
+适用于所有部分。因此，前面的示例可以改写为：EXCLUDE_FILE (*somefile.o)
+*(.text .rdata)，可以指定文件名以包含特定文件中的部分。如果一个或多个
+文件包含需要位于内存中特定位置的特殊数据，则可以执行此操作。例如：
+data.o(.data)，要根据输入节的节标志优化包含的节，可以使用
+INPUT_SECTION_FLAGS。
+
+
+以下是使用节头标志作为 ELF 节的简单示例：
+#+begin_src shell
+  SECTIONS {
+      .text :{INPUT_SECTION_FLAGS (SHF_MERGE & SHF_STRINGS) *(.text) }
+      .text2:{INPUT_SECTION_FLAGS (!SHF_WRITE) *(.text) }
+  }
+#+end_src
+在此示例中，输出节.text将由与名称 *(.text) 匹配且节头标志 SHF_MERGE 和
+SHF_STRINGS 已设置的任何输入节组成。输出节.text2将由与名称 *(.text) 匹
+配且节头标志 SHF_WRITE 已清除的任何输入节组成。
+
+
+还可以通过编写与档案匹配的模式、冒号，然后编写与文件匹配的模式来指定档
+案中的文件，冒号周围没有空格。
+- archive:file，匹配档案中的文件
+- archive，匹配整个档案
+- :file，匹配文件但不匹配档案中的文件
+
+archive 和 file 中的一个或两个都可以包含 shell 通配符。在基于 DOS 的文
+件系统上，链接器将假定单个字母后跟冒号是驱动器说明符，因此 c:myfile.o
+是一个简单的文件规范，而不是名为 c 的档案中的 myfile.o。archive:file
+文件规范也可以在 EXCLUDE_FILE 列表中使用，但不得出现在其他链接器脚本上
+下文中。例如，不能在 INPUT 命令中使用 archive:file 从档案中提取文件。
+如果使用不带节列表的文件名，则输入文件中的所有节都将包含在输出节中。这
+种情况并不常见，但有时可能有用。例如：data.o。当使用不是archive:file说
+明符且不包含任何通配符的文件名时，链接器将首先查看是否还在链接器命令行
+或 INPUT 命令中指定了文件名。如果没有，链接器将尝试将文件作为输入文件
+打开，就像它出现在命令行中一样。请注意，这与 INPUT 命令不同，因为链接
+器不会在存档搜索路径中搜索文件。
+** 输入部分通配符模式
+在输入节描述中，文件名或节名或两者均可为通配符模式。在许多示例中看到的
+文件名*是文件名的简单通配符模式。通配符模式与 Unix shell 使用的通配符
+模式类似。
+- *匹配任意数量的字符
+- ?匹配任何单个字符
+- [chars]匹配任何字符的单个实例；-字符可用于指定字符范围，如[a-z]匹配
+  任何小写字母
+- \引用以下字符
+
+文件名通配符模式仅匹配在命令行或 INPUT 命令中明确指定的文件。链接器不
+会搜索目录来扩展通配符。如果文件名与多个通配符模式匹配，或者文件名明确
+出现并且也与通配符模式匹配，则链接器将使用链接器脚本中的第一个匹配项。
+例如，此输入部分描述序列可能有误，因为不会使用 data.o 规则：
+#+begin_src shell
+  .data : { *(.data) }
+  .data1: { data.o(.data) }
+#+end_src
+
+- SORT_BY_NAME:通常，链接器会按照链接期间出现的顺序放置与通配符匹配的
+  文件和部分。可以使用 SORT_BY_NAME 关键字来更改此顺序，该关键字出现在
+  括号中的通配符模式之前（例如，SORT_BY_NAME(.text*)）。使用
+  SORT_BY_NAME 关键字时，链接器会按名称对文件或部分进行升序排序，然后
+  再将它们放入输出文件中。
+- SORT_BY_ALIGNMENT: 与SORT_BY_NAME 类似。SORT_BY_ALIGNMENT 会按降序排
+  列部分，然后再将它们放入输出文件中。将较大的对齐放在较小的对齐之前可
+  以减少所需的填充量。
+- SORT_BY_INIT_PRIORITY: 也类似于SORT_BY_NAME。SORT_BY_INIT_PRIORITY
+  会将各节按节名中编码的 GCC init_priority 属性的升序数字顺序排序，然
+  后再将它们放入输出文件中。在 .init_array.NNNNN 和 .fini_array.NNNNN
+  中，NNNNN 是 init_priority。在 .ctors.NNNNN 和 .dtors.NNNNN 中，
+  NNNNN 是 65535 减去 init_priority。
+- SORT: 是 SORT_BY_NAME 的别名。
+- REVERSE: 表示应反转排序。如果单独使用，则 REVERSE 暗示 SORT_BY_NAME，
+  否则它将反转封闭的 SORT.. 命令。注意，目前不支持对齐的反向排序。
+
+
+注意，排序命令仅接受单个通配符模式。因此，例如，以下代码将不起作用：
+*(REVERSE(.text* .init*))，要解决此问题，请单独列出模式，如下所示：
+#+begin_src shell
+  *(REVERSE(.text*))
+  *(REVERSE(.init*))
+#+end_src
+注意，可以将 EXCLUDE_FILE 命令放在排序命令中，但不能反过来。例如：
+*(SORT_BY_NAME(EXCLUDE_FILE(foo) .text*))，将起作用，但：
+*(EXCLUDE_FILE(foo) SORT_BY_NAME(.text*))，将不起作用。
+
+
+当链接器脚本中有嵌套的节排序命令时，节排序命令最多可以有 1 层嵌套，所
+有其他嵌套节排序命令均无效。
+- SORT_BY_NAME (SORT_BY_ALIGNMENT (通配符节模式))。它将首先按名称对输
+  入节进行排序，如果两个节具有相同的名称，则按对齐方式排序。
+- SORT_BY_ALIGNMENT (SORT_BY_NAME (通配符节模式))。它将首先按对齐方式
+  对输入节进行排序，如果两个节具有相同的对齐方式，则按名称排序。
+- SORT_BY_NAME (SORT_BY_NAME (通配符节模式)) 与 SORT_BY_NAME (通配符节
+  模式) 的处理方式相同。
+- SORT_BY_ALIGNMENT (SORT_BY_ALIGNMENT (通配符节模式)) 与
+  SORT_BY_ALIGNMENT (通配符节模式) 的处理方式相同。
+- SORT_BY_NAME (REVERSE (通配符节模式)) 按名称反向排序。
+- REVERSE (SORT_BY_NAME (通配符节模式)) 按名称反向排序。
+- SORT_BY_INIT_PRIORITY (REVERSE (通配符节模式)) 按初始化优先级反向排序。
+
+
+当同时使用命令行节排序选项和链接器脚本节排序命令时，节排序命令始终优先
+于命令行选项。如果链接器脚本中的节排序命令未嵌套，则命令行选项将使节排
+序命令被视为嵌套排序命令。带有 --sort-sections 对齐的 SORT_BY_NAME (通
+配符节模式) 相当于 SORT_BY_NAME (SORT_BY_ALIGNMENT (通配符节模式))。
+SORT_BY_ALIGNMENT (通配符节模式) 和 --sort-section name 等效于
+SORT_BY_ALIGNMENT (SORT_BY_NAME (通配符节模式))。如果链接器脚本中的节
+排序命令是嵌套的，则命令行选项将被忽略。SORT_NONE 通过忽略命令行节排序
+选项来禁用节排序。如果对输入节的去向感到困惑，请使用-M链接器选项生成映
+射文件。
+
+
+映射文件精确显示了输入节如何映射到输出节。此示例显示了如何使用通配符模
+式对文件进行分区。此链接器脚本指示链接器将所有.text节放在.text中，将所
+有.bss节放在.bss中。链接器会将所有以大写字母开头的文件中的.data节放
+在.DATA中；对于所有其他文件，链接器会将.data部分放在.data中。
+#+begin_src shell
+  SECTIONS {
+    .text : { *(.text) }
+    .DATA : { [A-Z]*(.data) }
+    .data : { *(.data) }
+    .bss : { *(.bss) }
+  }
+#+end_src
+** 常用符号的输入部分
+公共符号需要特殊符号，因为在许多目标文件格式中，公共符号没有特定的输入
+部分。链接器将公共符号视为位于名为COMMON的输入部分中。可以将文件名与
+COMMON部分一起使用，就像任何其他输入部分一样。可以使用它将特定输入文件
+中的公共符号放在一个部分中，而将其他输入文件中的公共符号放在另一个部分
+中。在大多数情况下，输入文件中的公共符号将放置在输出文件的.bss部分中。
+例如：.bss { *(.bss) *(COMMON) }。某些目标文件格式具有多种类型的公共符
+号。例如，MIPS ELF 目标文件格式区分标准公共符号和小公共符号。在这种情
+况下，链接器将对其他类型的公共符号使用不同的特殊部分名称。在 MIPS ELF
+的情况下，链接器对标准公共符号使用COMMON，对小公共符号使用.scommon。这
+允许您将不同类型的通用符号映射到内存的不同位置。有时会在旧的链接器脚本
+中看到[COMMON]。此符号现在已过时。它相当于*(COMMON)。
+** 输入部分和垃圾收集
+当使用链接时垃圾回收(--gc-sections)时，标记不应消除的部分通常很有用。
+这可以通过用 KEEP() 包围输入部分的通配符条目来实现，例如
+KEEP(*(.init)) 或 KEEP(SORT_BY_NAME(*)(.ctors))。
+** 输入部分示例
+以下示例是完整的链接器脚本。它告诉链接器从文件 all.o 读取所有部分，并
+将它们放在输出部分outputa的开头，该部分从位置0x10000开始。文件 foo.o
+中.input1紧随其后，位于同一输出部分中。foo.o 中.input2进入输出部分
+outputb，然后是 foo1.o中.input1。任何文件中的所有剩余.input1和.input2
+部分都写入输出部分outputc。
+#+begin_src shell
+  SECTIONS
+  {
+      outputa 0x10000 :
+      {
+          all.o
+          foo.o (.input1)
+      }
+      outputb :
+      {
+          foo.o (.input2)
+          foo1.o (.input1)
+      }
+      outputc :
+      {
+          *(.input1)
+          *(.input2)
+      }
+  }
+#+end_src
+如果输出节的名称与输入节的名称相同，并且可以表示为 C 标识符，则链接器
+将自动看到 PROVIDE 两个符号：__start_SECNAME 和 __stop_SECNAME，其中
+SECNAME 是节的名称。它们分别表示输出节的起始地址和结束地址。注意：大多
+数节名称不能表示为 C 标识符，因为它们包含.字符。
+** 输出部分数据
+可以使用 BYTE、SHORT、LONG、QUAD 或 SQUAD 作为输出部分命令，在输出部分
+中包含显式数据字节。每个关键字后面都跟一个括号中的表达式，提供要存储的
+值。表达式的值存储在位置计数器的当前值中。BYTE、SHORT、LONG 和 QUAD 命
+令分别存储一个、两个、四个和八个字节。存储字节后，位置计数器将增加存储
+的字节数。例如，这将存储字节 1，后跟符号addr的四字节值：
+#+begin_src shell
+  BYTE(1)
+  LONG(addr)
+#+end_src
+当使用 64 位主机或目标时，QUAD 和 SQUAD 相同；它们都存储 8 字节或 64
+位值。当主机和目标都是 32 位时，表达式将计算为 32 位。在这种情况下，
+QUAD 存储一个 32 位值，该值以零扩展为 64 位，而 SQUAD 存储一个 32 位值，
+该值以符号扩展为 64 位。
+
+
+如果输出文件的目标文件格式具有明确的字节序(这是正常情况)，则该值将以该
+字节序存储。 当目标文件格式没有明确的字节序时(例如，S 记录就是这样)，
+该值将以第一个输入目标文件的字节序存储。
+
+
+可以使用ASCIZ在输出部分中包含以零结尾的字符串。 关键字后跟一个字符串，
+该字符串存储在位置计数器的当前值中，并在末尾添加一个零字节。 如果字符
+串包含空格，则必须用双引号括起来。 字符串可能包含 \n、\r、\t 和八进制
+数。 不支持十六进制数。例如，这个 16 个字符的字符串将创建一个 17 字节
+的区域
+#+begin_src shell
+  ASCIZ "This is 16 bytes"
+#+end_src
+
+注意，这些命令仅在节描述内部起作用，而不是在它们之间起作用，因此以下内
+容将导致链接器出错：
+#+begin_src shell
+  SECTIONS {
+      .text : { *(.text) }
+      LONG(1)
+      .data : { *(.data) }
+  }
+  # 而这将起作用：
+  SECTIONS {
+      .text : {
+          *(.text) ;
+          LONG(1)
+      }
+      .data : { *(.data) }
+  }
+#+end_src
+
+可以使用 FILL 命令设置当前节的填充模式。它后面跟着一个括号中的表达式。
+节内任何其他未指定的内存区域(例如，由于输入节需要对齐而留下的间隙)都将
+用表达式的值填充，并根据需要重复。FILL 语句覆盖节定义中出现该语句的位
+置之后的内存位置；通过包含多个 FILL 语句，可以在输出部分的不同部分使用
+不同的填充模式。此示例显示如何使用值“0x90”填充未指定的内存区域：
+FILL(0x90909090)
+
+
+FILL 命令类似于=fillexp输出部分属性，但它仅影响 FILL 命令后面的部分，
+而不是整个部分。如果同时使用，则 FILL 命令优先。有关填充表达式的详细信
+息，请参阅输出部分填充。
+
+
+注意，通常，表达式的值在用于填充间隙时会扩展到 4 个字节。因此，
+FILL(144)将使用模式0 0 0 144的重复来填充区域。该值被视为大端数字，例如，
+FILL(22 * 256 + 23)将使用模式0 0 22 23的重复来填充区域。如果表达式产生
+的值有超过 4 个有效字节，则只会使用该值的最少 4 个字节。
+
+
+当表达式是简单的十六进制数时，上述规则不适用。在这种情况下，不执行零扩
+展，所有字节都有效。因此，FILL(0x90)将用重复的0x90填充一个区域，其中没
+有零字节，而FILL(0x9192)将用重复的0x91 0x92填充该区域。十六进制表达式
+中的零字节即使在开头也是有效的，因此FILL(0x0090)将用重复的0x00 0x90填
+充一个区域。
+
+
+十六进制数可以长于 4 个字节，并且所有字节都有效，因此
+FILL(0x123456789a)将用重复的 5 字节序列0x12 0x34 0x56 0x78 0x9a填充一
+个区域。十六进制值中超出区域大小的多余字节将被忽略。
+
+
+以上仅适用于指定为0x[0-9][a-f][A-F]的十六进制数。以$前缀或h、H、x或X后
+缀指定的十六进制数将遵循正常的填充值规则。这也适用于涉及十六进制数的表
+达式以及具有数值后缀的十六进制数。
+
+
+LINKER_VERSION 命令插入一个字符串，其中包含当前点的链接器版本。注意，
+默认情况下，此指令被禁用并且不会执行任何操作。只有使用
+--enable-linker-version 命令行选项时，它才会变为活动状态。
+
+
+基于 ELF 的目标的内置链接器脚本已在其.comment部分中包含此指令。
+** 输出部分关键字
+有几个关键字可以作为输出部分命令出现。
+
+- CREATE_OBJECT_SYMBOLS:该命令告诉链接器为每个输入文件创建一个符号。每
+  个符号的名称将是相应输入文件的名称。每个符号的部分将是
+  CREATE_OBJECT_SYMBOLS 命令出现的输出部分。这对于 a.out 对象文件格式
+  来说是常规的。它通常不用于任何其他对象文件格式。
+- CONSTRUCTORS:当使用 a.out 对象文件格式进行链接时，链接器使用不寻常的
+  集合构造来支持 C++ 全局构造函数和析构函数。当链接不支持任意部分的对
+  象文件格式（例如 ECOFF 和 XCOFF）时，链接器将自动通过名称识别 C++ 全
+  局构造函数和析构函数。对于这些对象文件格式，CONSTRUCTORS 命令告诉链
+  接器将构造函数信息放在 CONSTRUCTORS 命令出现的输出部分中。对于其他对
+  象文件格式，CONSTRUCTORS 命令将被忽略。
+  
+
+符号 __CTOR_LIST__ 标记全局构造函数的开始，符号 __CTOR_END__ 标记结束。
+同样，__DTOR_LIST__ 和 __DTOR_END__ 标记全局析构函数的开始和结束。列表
+中的第一个字是条目数，后面是每个构造函数或析构函数的地址，后面是零字。
+编译器必须安排实际运行代码。对于这些目标文件格式，GNU C++ 通常从子例程
+__main 调用构造函数；对 __main 的调用会自动插入到 main 的启动代码中。
+GNU C++ 通常使用 atexit 或直接从函数出口运行析构函数。
+
+
+对于支持任意节名的目标文件格式（如 COFF 或 ELF），GNU C++ 通常会安排将
+全局构造函数和析构函数的地址放入 .ctors 和 .dtors 节中。将以下序列放入
+链接器脚本中将构建 GNU C++ 运行时代码期望看到的表类型。
+#+begin_src shell
+  __CTOR_LIST__ = .;
+  LONG((__CTOR_END__ - __CTOR_LIST__) / 4 - 2)
+  *(.ctors)
+  LONG(0)
+  __CTOR_END__ = .;
+  __DTOR_LIST__ = .;
+  LONG((__DTOR_END__ - __DTOR_LIST__) / 4 - 2)
+  *(.dtors)
+  LONG(0)
+  __DTOR_END__ = .;
+#+end_src
+如果使用 GNU C++ 对初始化优先级的支持(该支持对全局构造函数的运行顺序提
+供了一些控制)，则必须在链接时对构造函数进行排序，以确保它们以正确的顺
+序执行。使用 CONSTRUCTORS 命令时，请改用SORT_BY_NAME(CONSTRUCTORS)。使
+用 .ctors 和 .dtors 部分时，请使用*(SORT_BY_NAME(.ctors))和
+*(SORT_BY_NAME(.dtors))，而不是仅仅使用*(.ctors)和*(.dtors)。
+
+
+通常，编译器和链接器会自动处理这些问题，无需担心。但是，如果您使用 C++
+并编写自己的链接器脚本，则可能需要考虑这一点。
+** 输出部分丢弃
+链接器通常不会创建没有内容的输出节。这是为了方便引用可能存在于或不存在
+于任何输入文件中的输入节。例如：.foo : { *(.foo) }。仅当至少一个输入文
+件中有.foo节，并且输入节并非全部为空时，才会在输出文件中创建.foo节。在
+输出节中分配空间的其他链接脚本指令也会创建输出节。即使赋值不会创建空间，
+对点的赋值也是如此，但. = 0、. = . + 0、. = sym、. = . + sym 和. =
+ALIGN (. != 0, expr, 1) 除外，此时sym是脚本中定义的值为 0 的绝对符号。
+这允许使用. = .强制输出空节。
+
+
+链接器将忽略已丢弃输出节上的地址分配，除非链接器脚本在输出节中定义了符
+号。在这种情况下，链接器将遵循地址分配，即使该节被丢弃，也可能前进点。
+特殊输出节名称/DISCARD/可用于丢弃输入节。分配给名为/DISCARD/的输出节的
+任何输入节均不包含在输出文件中。这可用于丢弃标有 ELF 标志
+SHF_GNU_RETAIN 的输入节，否则这些输入节将被从链接器垃圾收集中保存下来。
+请注意，与/DISCARD/输出节匹配的节将被丢弃，即使它们位于具有其他未被丢
+弃的成员的 ELF 节组中。这是故意的。丢弃优先于分组。
+** 输出部分类型
+每个输出节可能有一个类型。类型是括号中的关键字。定义了以下类型：
+- NOLOAD：该节应标记为不可加载，以便在程序运行时不会将其加载到内存中。
+- READONLY：该节应标记为只读。
+- DSECT / COPY / INFO / OVERLAY：这些类型名称是为了向后兼容而支持的，
+  很少使用。它们都具有相同的效果：该节应标记为不可分配，以便在程序运行
+  时不会为该节分配内存。
+  
+
+TYPE = type，将节类型设置为整数类型。生成 ELF 输出文件时，类型名称
+SHT_PROGBITS、SHT_STRTAB、SHT_NOTE、SHT_NOBITS、SHT_INIT_ARRAY、
+SHT_FINI_ARRAY 和 SHT_PREINIT_ARRAY 也允许用于类型。用户有责任确保满足
+部分类型的任何特殊要求。注意，仅当部分的部分或所有内容没有自己的隐式类
+型时才使用 TYPE。如下，将把.foo部分的类型设置为输入文件中.bar部分的类
+型，这可能不是 SHT_PROGBITS 类型。
+#+begin_src shell
+  .foo . TYPE=SHT_PROGBITS
+  {
+      *(.bar)
+  }
+#+end_src
+
+而如下，将把.foo的类型设置为SHT_PROGBBITS。
+#+begin_src shell
+  .foo . TYPE=SHT_PROGBITS
+  {
+      BYTE(1)
+  }
+#+end_src
+如果需要覆盖传入部分的类型并强制输出部分类型，则需要额
+外的无类型数据，如下，此语法形式将READONLY类型与type指定的类型相结合。
+#+begin_src shell
+  .foo . TYPE = SHT_PROGBITS
+  {
+      BYTE(1);
+      *(.bar)
+  }
+  READONLY (TYPE=type)
+#+end_src
+
+链接器通常根据映射到输出部分的输入部分来设置输出部分的属性。可以使用部
+分类型覆盖此设置。例如，在下面的脚本示例中，ROM部分位于内存位置0，并且
+在程序运行时无需加载。
+#+begin_src shell
+  SECTIONS {
+      ROM 0 (NOLOAD) :
+      {
+          …
+      }
+      …
+  }
+#+end_src
+** 输出部分 LMA
+每个节都有一个虚拟地址 (VMA) 和一个加载地址 (LMA)。
+- VMA:由前面所述的输出节地址指定。
+- LMA由AT或AT>关键字指定。指定LMA是可选的。
+  + AT关键字以表达式作为参数。这指定了节的确切LMA。
+  + AT>关键字以内存区域的名称作为参数。节的LMA设置为区域中的下一个空闲
+    地址，与节的对齐要求对齐。
+  + 如果没有为可分配节指定 AT 或 AT>，则链接器将使用以下启发式方法来确
+    定LMA：
+    1. 如果节具有特定的 VMA 地址，则这也用作 LMA 地址。
+    2. 如果节不可分配，则其 LMA 设置为其 VMA。否则，如果可以找到与当前
+       部分兼容的内存区域，并且该区域至少包含一个部分，则设置 LMA，以
+       便 VMA 和 LMA 之间的差异与所定位区域中最后一个部分的 VMA 和 LMA
+       之间的差异相同。
+    3. 如果未声明任何内存区域，则在上一步中使用覆盖整个地址空间的默认区域。
+    4. 如果找不到合适的区域，或者没有前一个部分，则将LMA设置为等于VMA。
+       
+       
+此功能旨在使构建ROM映像变得容易。例如，以下链接器脚本创建三个输出部分：
+- .text输出段：从 0x1000 开始；
+- .mdata输出段：即使其 VMA 为 0x2000，也会加载到.text部分的末尾
+- .bss输出段：用于保存地址 0x3000 处的未初始化数据。符号 _data 的定义
+  值为 0x2000，这表明位置计数器保存的是 VMA值，而不是 LMA 值。
+
+#+begin_src shell
+    SECTIONS
+    {
+        .text 0x1000:
+        {
+            *(.text)
+            _etext = . ;
+        }
+        .mdata 0x2000:AT(ADDR(.text) + SIZEOF(.text))
+        {
+            _data = . ;
+            *(.data);
+            _edata = . ;
+        }
+        .bss 0x3000 :
+        {
+            _bstart = . ;
+            *(.bss)
+            *(COMMON) ;
+            _bend = . ;
+        }
+    }
+#+end_src
+
+
+使用此链接器脚本生成的程序使用的运行时初始化代码将包括以下内容，用于将
+初始化数据从 ROM 映像复制到其运行时地址。请注意此代码如何利用链接器脚
+本定义的符号。
+#+begin_src c
+  extern char _etext, _data, _edata, _bstart, _bend;
+  char *src = &_etext;
+  char *dst = &_data;
+  /* ROM has data at end of text; copy it.  */
+  while (dst < &_edata)
+    *dst++ = *src++;
+  /* Zero bss.  */
+  for (dst = &_bstart; dst< &_bend; dst++)
+    *dst = 0;
+#+end_src
+** 强制对齐
+- 可以使用 ALIGN 增加输出部分的对齐;
+- 可以使用 ALIGN_WITH_INPUT 属性强制 VMA 和 LMA 之间的差异在整个输出部
+  分中保持不变。
+- 可以使用 SUBALIGN 强制在输出部分内对齐输入部分。指定的值将覆盖输入部
+  分给出的任何对齐，无论大于还是小于。
+** 输出部分约束
+可以分别使用关键字 ONLY_IF_RO 和 ONLY_IF_RW 来指定仅当所有输入部分都是
+只读或所有输入部分都是读写时才创建输出部分。
+** 输出部分区域
+可以使用>region将某个部分分配给先前定义的内存区域。这是一个简单示例：
+#+begin_src shell
+  MEMORY
+  {
+      rom: ORIGIN = 0x1000, LENGTH = 0x1000
+  }
+  SECTIONS
+  {
+      ROM:
+      {
+          *(.text)
+      }>rom
+  }
+#+end_src
+** 输出部分Phdr
+可以使用:phdr将一个部分分配给先前定义的程序段。如果将一个部分分配给一
+个或多个段，则所有后续分配的部分也将分配给这些段，除非它们使用明确的
+:phdr 修饰符。可以使用 :NONE 告诉链接器不要将该部分放在任何段中。这是
+一个简单的例子：
+#+begin_src shell
+  PHDRS
+  {
+      text PT_LOAD ;
+  }
+  SECTIONS
+  {
+      .text:
+      {
+          *(.text)
+      } :text
+  }
+#+end_src
+** 输出部分填充
+可以使用=fillexp设置整个部分的填充模式。fillexp 是一个表达式。输出部分
+中任何其他未指定的内存区域(例如，由于输入部分需要对齐而留下的间隙)都将
+用该值填充，并根据需要重复。如果填充表达式是一个简单的十六进制数字，即
+以0x开头且没有尾随k或M的十六进制数字字符串，则可以使用任意长的十六进制
+数字序列来指定填充模式；前导零也成为模式的一部分。对于所有其他情况，包
+括额外的括号或一元+，填充模式是表达式值的四个最低有效字节。如果值的大
+小小于四个字节，则它将被零扩展为四个字节。在所有情况下，数字都是大端的。
+|--------+-------------|
+|  填充值 | 填充模式      |
+|--------+-------------|
+|   0x90 | 90 90 90 90 |
+| 0x0090 | 00 90 00 90 |
+|    144 | 00 00 00 90 |
+|--------+-------------|
+
+还可以使用输出部分命令中的 FILL 命令更改填充值。这是一个简单示例：
+#+begin_src shell
+  SECTIONS
+  {
+      .text:
+      {
+          *(.text)
+      } =0x90909090
+  }
+#+end_src
+** 叠加描述
+覆盖描述提供了一种简单的方法来描述将作为单个内存映像的一部分加载但将在
+同一内存地址运行的部分。在运行时，某种覆盖管理器将根据需要将覆盖的部分
+复制到运行时内存地址中或从中复制出来，可能只需操纵寻址位即可。例如，当
+某个内存区域比另一个内存区域更快时，这种方法很有用。使用 OVERLAY 命令
+描述覆盖。OVERLAY 命令在 SECTIONS 命令中使用，就像输出部分描述一样。
+OVERLAY 命令的完整语法如下：
+#+begin_src shell
+  OVERLAY [start] : [NOCROSSREFS] [AT ( ldaddr )]
+  {
+      secname1
+      {
+          output-section-command
+          output-section-command
+          …
+      } [:phdr…] [=fill]
+      secname2
+      {
+          output-section-command
+          output-section-command
+          …
+      } [:phdr…] [=fill]
+      …
+  } [>region] [:phdr…] [=fill] [,]
+#+end_src
+除了 OVERLAY(关键字)之外，其他都是可选的，并且每个部分都必须有一个名称
+(上面的 secname1 和 secname2)。OVERLAY 构造中的部分定义与一般 SECTIONS
+构造中的定义相同，只是 OVERLAY 中的不能定义地址和内存区域。如果使用填
+充，并且下一个部分命令看起来像表达式的延续，则可能需要末尾的逗号。
+
+
+所有部分都使用相同的起始地址定义。 该部分的LMA排列为从整个 OVERLAY 使
+用的LMA开始在内存中连续（与普通部分定义一样，LMA是可选的，默认为起始地
+址；起始地址也是可选的，默认为位置计数器的当前值）。
+
+
+如果使用 NOCROSSREFS 关键字，并且部分之间存在任何引用，则链接器将报告
+错误。由于所有部分都在同一地址运行，因此一个部分直接引用另一个部分通常
+没有意义。
+
+
+对于 OVERLAY 中的每个部分，链接器都会自动提供两个符号。符号
+__load_start_secname 定义为该部分的起始LMA。符号 __load_stop_secname
+定义为该部分的最终LMA。secname 中任何在 C 标识符中不合法的字符都将被删
+除。C(或汇编程序)代码可以根据需要使用这些符号来移动覆盖的部分。在覆盖
+的末尾，位置计数器的值设置为覆盖的起始地址加上最大部分的大小。这是一个
+例子。请记住，这将出现在 SECTIONS 构造中。
+#+begin_src shell
+  OVERLAY 0x1000 : AT (0x4000)
+  {
+      .text0
+      {
+          o1/*.o(.text)
+      }
+      .text1
+      {
+          o2/*.o(.text)
+      }
+  }
+#+end_src
+这将定义.text0和.text1从地址 0x1000 开始。.text0将在地址 0x4000 处加
+载，.text1将在.text0之后立即加载。如果引用，将定义以下符
+号：
+- __load_start_text0
+- __load_stop_text0
+- __load_start_text1
+- __load_stop_text1
+
+
+将.text1复制到覆盖区域的 C 代码可能如下所示。
+#+begin_src c
+  extern char __load_start_text1, __load_stop_text1;
+  memcpy ((char *) 0x1000,
+          &__load_start_text1,
+          &__load_stop_text1 - &__load_start_text1);
+#+end_src
+
+请注意，OVERLAY 命令只是语法糖，因为它所做的一切都可以使用更基本的命令来完成。上述示例可以按如下方式编写。
+#+begin_src shell
+  .text0 0x1000 : AT (0x4000)
+  {
+      o1/*.o(.text)
+  }
+  PROVIDE(__load_start_text0 = LOADADDR (.text0));
+  PROVIDE(__load_stop_text0 = LOADADDR (.text0) + SIZEOF (.text0));
+  .text1 0x1000 : AT (0x4000 + SIZEOF (.text0))
+  {
+      o2/*.o(.text)
+  }
+  PROVIDE(__load_start_text1 = LOADADDR (.text1));
+  PROVIDE(__load_stop_text1 = LOADADDR (.text1) + SIZEOF (.text1));
+  . = 0x1000 + MAX (SIZEOF (.text0), SIZEOF (.text1));
+#+end_src
+* MEMORY命令
+MEMORY 命令描述目标中内存块的位置和大小。可以使用它来描述链接器可以使
+用哪些内存区域，以及必须避免使用哪些内存区域。然后，可以将部分分配给特
+定的内存区域。链接器将根据内存区域设置部分地址，并警告过满的区域。链接
+器不会将部分重新排列以适应可用区域。链接器脚本可能包含 MEMORY 命令的许
+多用途，但是，定义的所有内存块都被视为在单个 MEMORY 命令中指定的。
+MEMORY 的语法是：
+#+begin_src shell
+  MEMORY
+  {
+      name [(attr)] : ORIGIN = origin, LENGTH = len
+      ......
+  }
+#+end_src
+名称是链接器脚本中用于引用区域的名称。区域名称在链接器脚本之外没有任何
+意义。区域名称存储在单独的名称空间中，不会与符号名称、文件名或节名称冲
+突。每个内存区域在 MEMORY 命令中都必须具有不同的名称。但是，可以使用将
+别名分配给内存区域命令将以后的别名添加到现有内存区域。
+
+
+attr 字符串是一个可选的属性列表，用于指定是否将特定内存区域用于未在链
+接器脚本中明确映射的输入节。如 SECTIONS 命令中所述，如果没有为某些输入
+节指定输出节，则链接器将创建一个与输入节同名的输出节。如果定义了区域属
+性，则链接器将使用它们来选择它创建的输出节的内存区域。属性字符串必须仅
+由以下字符组成：
+- R，只读部分
+- W，读/写部分
+- X，可执行部分
+- A，可分配部分
+- I，已初始化部分
+- L，与I相同
+- !，反转后面任何属性的含义
+
+如果未映射部分与!以外的任何列出的属性匹配，它将被放置在内存区域中。!属
+性反转后面字符的测试，因此，只有当未映射部分与后面列出的任何属性都不匹
+配时，它才会被放置在内存区域中。因此，属性字符串RW!X将匹配具有R和W属性
+之一或两者的任何未映射部分，但前提是该部分不具有X属性。
+
+
+原点是内存区域起始地址的数值表达式。表达式必须计算为常量，并且不能包含
+任何符号。
+- 关键字 ORIGIN 可以缩写为 org 或 o（但不能缩写为 ORG）。
+- len 是内存区域大小(以字节为单位)的表达式。与 origin 表达式一样，该表
+  达式必须仅为数值，并且必须计算为常量。关键字 LENGTH 可以缩写为 len
+  或 l。
+  
+
+在以下示例中，我们指定有两个内存区域可供分配：一个从“0”开始，大小为
+256 千字节，另一个从“0x40000000”开始，大小为 4 兆字节。链接器会将每个
+未明确映射到内存区域且为只读或可执行的部分放入“rom”内存区域。链接器会
+将其他未明确映射到内存区域的部分放入“ram”内存区域。
+#+begin_src shell
+  MEMORY
+  {
+      rom (rx) : ORIGIN = 0, LENGTH = 256K
+      ram (!rx) : org = 0x40000000, l = 4M
+  }
+#+end_src
+
+
+定义内存区域后，可以使用>region输出部分属性指示链接器将特定输出部分放
+入该内存区域。例如，如果有一个名为mem的内存区域，则可在输出部分定义中
+使用>mem。如果没有为输出部分指定地址，则链接器会将地址设置为内存区域内
+的下一个可用地址。如果指向内存区域的组合输出部分对于该区域来说太大，则
+链接器将发出错误消息。可以通过 ORIGIN(memory) 和 LENGTH(memory) 函数访
+问表达式中内存的原点和长度：_fstack = ORIGIN(ram) + LENGTH(ram) - 4;
+* PHDRS命令
+ELF 目标文件格式使用程序头，也称为段。程序头描述了程序应如何加载到内存
+中。可以使用带有-p选项的 objdump 程序将它们打印出来。在本机 ELF 系统上
+运行 ELF 程序时，系统加载器会读取程序头以找出如何加载程序。这只有在正
+确设置程序头的情况下才会起作用。本手册未描述系统加载器如何解释程序头的
+详细信息；链接器将默认创建合理的程序头。但是，在某些情况下，可能需要更
+精确地指定程序头。可以为此目的使用 PHDRS 命令。当链接器在链接器脚本中
+看到 PHDRS 命令时，它不会创建除指定程序头之外的任何程序头。链接器仅在
+生成 ELF 输出文件时才关注 PHDRS 命令。在其他情况下，链接器将简单地忽略
+PHDRS。这是 PHDRS 命令的语法。PHDRS、FILEHDR、AT 和 FLAGS 是关键字。
+- PT_NULL (0)，表示未使用的程序头。
+- PT_LOAD (1)，表示此程序头描述了要从文件加载的段。
+- PT_DYNAMIC (2)，表示可以找到动态链接信息的段。
+- PT_INTERP (3)，表示可以找到程序解释器名称的段。
+- PT_NOTE (4)，表示保存注释信息的段。
+- PT_SHLIB (5)，保留的程序头类型，由 ELF ABI 定义但未指定。
+- PT_PHDR (6)，表示可以找到程序头的段。
+- PT_TLS (7)，表示包含线程本地存储的段。
+- expression，给出程序头的数字类型的表达式。这可用于上面未定义的类型。
+
+可以使用 AT 表达式指定应将段加载到内存中的特定地址。这与用作输出节属性
+的 AT 命令相同。程序头的 AT 命令会覆盖输出节属性。链接器通常会根据组成
+段的节来设置段标志。可以使用 FLAGS 关键字来明确指定段标志。标志的值必
+须是整数。它用于设置程序头的 p_flags 字段。以下是 PHDRS 的示例。这显示
+了在本机 ELF 系统上使用的一组典型程序头。
+#+begin_src shell
+  PHDRS
+  {
+      headers PT_PHDR PHDRS ;
+      interp PT_INTERP ;
+      text PT_LOAD FILEHDR PHDRS ;
+      data PT_LOAD ;
+      dynamic PT_DYNAMIC ;
+  }
+
+  SECTIONS
+  {
+      . = SIZEOF_HEADERS;
+      .interp :
+      {
+          *(.interp)
+      } :text :interp
+      .text :
+      {
+          *(.text)
+      } :text
+      .rodata :
+      {
+          *(.rodata)
+      } /* defaults to :text */
+      …
+      . = . + 0x1000; /* move to a new page in memory */
+      .data :
+      {
+          *(.data)
+      } :data
+      .dynamic :
+      {
+          *(.dynamic)
+      } :data :dynamic
+      ......
+  }
+#+end_src
+* 符号版本命令
+除了手动使用编译器属性设置符号可见性和版本之外。还可以通过LD链接器的脚
+本来控制外部符号可见性。
+#+begin_src shell
+  # 动态库文件版本信息文件
+  SD_VERSION_FILE =$(TOP_DIR)/version.s
+  SO_LD_FLAGS += -Wl,--version-script=$(SD_VERSION_FILE)
+
+  #version.s是专门编译的版本控制脚本文件，如下:
+  # 库版本控制脚本, 详细信息参考以下文档:
+  # https://sourceware.org/binutils/docs/ld/VERSION.html
+  VERS_1.1 {
+      global:
+          foo1;
+      local:
+          old*;
+          original*;
+          new*;
+  };
+
+  VERS_1.2 {
+      foo2;
+  } VERS_1.1;
+
+  VERS_2.0 {
+      bar1; bar2;
+      extern "C++" {
+          ns::*;
+          "f(int, double)";
+      };
+  } VERS_1.2;
+#+end_src
+
+版本脚本定义了一个版本节点树。在版本脚本中指定节点名称和相互依赖关系。
+可以指定哪些符号绑定到哪些版本节点，并且可以将指定的符号集减少到局部作
+用域，以便它们在共享库之外不全局可见。这个示例版本脚本定义了三个版本节
+点。定义的第一个版本节点是VERS_1.1；它没有其他依赖项。该脚本将符号foo1
+绑定到 VERS_1.1。它将一些符号减少到局部作用域，以便它们在共享库之外不
+可见;这是使用通配符模式完成的，因此任何名称以old， original或new开头的
+符号都将被匹配。可用的通配符模式与shell中匹配文件名时使用的通配符模式
+相同(也称为globbing)。但是，如果在双引号内指定符号名称，则该名称将被视
+为文字，而不是glob模式。接下来，版本脚本定义节点VERS_1.2。该节点依赖于
+VERS_1.1。该脚本将符号foo2绑定到版本节点VERS_1.2。最后，版本脚本定义节
+点VERS_2.0。该节点依赖于VERS_1.2。脚本将符号bar1和bar2绑定到版本节点
+VERS_2.0。
+
+
+当链接器发现在库中定义的符号没有明确绑定到版本节点时，它将有效地将其绑
+定到库的未指定基本版本。你可以在版本脚本的某个地方使用global: *;将所有
+未指定的符号绑定到给定的版本节点。注意，在全局规范中使用通配符有点疯狂，
+最后一个版本节点除外。在其他地方，全局通配符可能会意外地将符号添加到为
+旧版本导出的集合中。这是错误的，因为旧版本应该有一套固定的符号。版本节
+点的名称除了可能向阅读它们的人暗示的含义外，没有其他特定含义。2.0版本
+也可能出现在1.1和1.2之间。然而，这将是一个令人困惑的方式来编写版本脚本。
+节点名称可以省略，前提是它是版本脚本中唯一的版本节点。这样的版本脚本不
+为符号分配任何版本，只选择哪些符号将全局可见，哪些符号不可见。
+{global: foo; bar; local: *; };当将应用程序链接到具有版本化符号的共享
+库时，应用程序本身知道它需要的每个符号的哪个版本，并且还知道它需要链接
+到的每个共享库中的哪个版本节点。因此，在运行时，动态加载器可以进行快速
+检查，以确保所链接的库实际上提供了应用程序解析所有动态符号所需的所有版
+本节点。通过这种方式，动态链接器可以确定地知道它需要的所有外部符号都是
+可解析的，而不必搜索每个符号引用。编译成动态库之后，可以通过readelf
+--wide -s xxx.so可查看目标库的符号情况。
+* 链接器脚本中的表达式
+链接器脚本语言中的表达式语法与 C 表达式的语法相同，只是在某些地方需要
+空格来解决语法歧义。所有表达式都以整数计算。所有表达式都以相同的大小计
+算，如果主机和目标都是 32 位，则为 32 位，否则为 64 位。可以在表达式中
+使用和设置符号值。链接器定义了几个用于表达式的特殊用途内置函数。
+** 常量
+所有常量都是整数。与 C 语言一样，链接器将以0开头的整数视为八进制，将以
+0x或0X开头的整数视为十六进制。或者，链接器接受后缀h或H表示十六进制、o
+或O表示八进制、b或B表示二进制、d或D表示十进制。任何没有前缀或后缀的整
+数值都被视为十进制。此外，您可以使用后缀 K 和 M 分别将常量缩放 1024 或
+1024*1024。例如，以下都指同一数量,注意，K 和 M 后缀不能与上面提到的基
+本后缀一起使用。
+- _fourk_1 = 4K;
+- _fourk_2 = 4096;
+- _fourk_3 = 0x1000;
+- _fourk_4 = 10000o;
+** 符号常量
+可以通过使用 CONSTANT(name) 运算符来引用特定于目标的常量，其中 name 是
+以下之一：
+- MAXPAGESIZE，目标的最大页面大小。
+- COMMONPAGESIZE，目标的默认页面大小。
+
+如下，将创建一个与目标支持的最大页面边界对齐的文本部分。
+#+begin_src shell
+  .text ALIGN (CONSTANT (MAXPAGESIZE)) :
+  {
+      ,*(.text)
+  }
+#+end_src
+** 符号名称
+除非加引号，否则符号名称以字母、下划线或句点开头，可以包含字母、数字、
+下划线、句点和连字符。未加引号的符号名称不得与任何关键字冲突。您可以通
+过将符号名称括在双引号中来指定包含奇数字符或与关键字同名的符号：
+#+begin_src shell
+  "SECTION" = 9;
+  "with a space" = "also with a space" + 10;
+#+end_src
+由于符号可以包含许多非字母字符，因此用空格分隔符号是最安全的。例如，
+A-B是一个符号，而A - B是一个涉及减法的表达式。
+** 孤立部分
+孤立节是输入文件中存在的节，但链接器脚本并未将其明确放入输出文件中。链
+接器仍会通过查找或创建合适的输出节来将这些节复制到输出文件中，以放置孤
+立输入节。如果孤立输入节的名称与现有输出节的名称完全匹配，则孤立输入节
+将放置在该输出节的末尾。如果没有名称匹配的输出节，则将创建新的输出节。
+每个新输出节的名称都与其中的孤立节相同。如果有多个孤立节具有相同的名称，
+则这些孤立节将全部合并为一个新的输出节。如果创建新的输出节来保存孤立输
+入节，则链接器必须决定将这些新输出节相对于现有输出节放置在何处。在大多
+数现代目标上，链接器会尝试将孤立部分放置在具有相同属性的部分之后，例如
+代码与数据、可加载与不可加载等。如果未找到具有匹配属性的部分，或者您的
+目标缺乏此支持，则孤立部分将放置在文件末尾。命令行选
+项--orphan-handling和--unique可用于控制将孤立部分放置在哪些输出部分中。
+** 位置计数器
+特殊链接器变量点.始终包含当前输出位置计数器。由于“.” 始终引用输出部分中
+的位置，因此它只能出现在 SECTIONS 命令中的表达式中。 “.” 符号可以出现在
+表达式中允许普通符号的任何位置。为 “.” 赋值将导致位置计数器移动。这可用
+于在输出部分中创建空洞。位置计数器不能在输出部分内向后移动，也不能在输
+出部分外向后移动(如果这样做会创建具有重叠 LMA 的区域)。
+#+begin_src shell
+  SECTIONS
+  {
+      output :
+      {
+          file1(.text)
+          . = . + 1000;
+          file2(.text)
+          . += 1000;
+          file3(.text)
+      } = 0x12345678;
+  }
+#+end_src
+在前面的例子中，file1 中的.text部分位于输出部分output的开头。它后面是
+1000 字节的间隙。然后出现 file2 中的.text部分，在 file3 中的.text部分
+之前也有一个 1000 字节的间隙。符号= 0x12345678指定要在间隙中写入哪些数
+据。注意："." 实际上是指从当前包含对象的开头开始的字节偏移量。通常这是
+SECTIONS 语句，其起始地址为 0，因此"." 可以用作绝对地址。但是，如果在部
+分描述中使用 "."，它指的是从该部分开头开始的字节偏移量，而不是绝对地址。
+因此在这样的脚本中，.text 节将被分配一个起始地址 0x100 和一个正好为
+0x200 字节的大小，即使.text 输入节中没有足够的数据来填充此区域。（如果
+数据太多，将产生错误，因为这将试图向后移动 .）。.data 节将从 0x500 开
+始，在.data 输入节的值结束后和.data 输出节本身结束之前，它将有额外的
+0x600 字节空间。
+#+begin_src shell
+  SECTIONS
+  {
+      . = 0x100
+      .text: {
+          *(.text)
+          . = 0x200
+      }
+      . = 0x500
+      .data: {
+          *(.data)
+          . += 0x600
+      }
+  }
+#+end_src
+
+如果链接器需要放置孤立节，则将符号设置为输出节语句之外的位置计数器的值
+可能会导致意外值。例如，给出以下内容：
+#+begin_src shell
+  SECTIONS
+  {
+      start_of_text = . ;
+      .text:
+      {
+          *(.text)
+      }
+      end_of_text = . ;
+
+      start_of_data = . ;
+      .data:
+      {
+          *(.data)
+      }
+      end_of_data = . ;
+  }
+#+end_src
+如果链接器需要放置脚本中未提及的某些输入部分(例如 .rodata)，它可能会选
+择将该部分放置在 .text 和 .data 之间。可能认为链接器应该将 .rodata 放
+在上述脚本的空白行上，但空白行对链接器来说没有特殊意义。此外，链接器不
+会将上述符号名称与其部分关联。相反，它假定所有赋值或其他语句都属于前一
+个输出部分，除了赋值给 . 的特殊情况。即，链接器将放置孤立的 .rodata 部
+分，就好像脚本写成如下一样：
+#+begin_src shell
+  SECTIONS
+  {
+      start_of_text = . ;
+      .text:
+      {
+          *(.text)
+      }
+      end_of_text = . ;
+
+      start_of_data = . ;
+      .rodata:
+      {
+          *(.rodata)
+      }
+      .data:
+      {
+          *(.data)
+      }
+      end_of_data = . ;
+  }
+#+end_src
+这可能是也可能不是脚本作者对 start_of_data 值的意图。影响孤立节放置的
+一种方法是将位置计数器分配给其自身，因为链接器假设对 "."的赋值正在设置后
+续输出节的起始地址，因此应与该节分组。因此可以这样写，现在，孤立的
+.rodata 部分将被放置在 end_of_text 和 start_of_data 之间。
+#+begin_src shell
+    SECTIONS
+    {
+        start_of_text = . ;
+        .text:
+        {
+            *(.text)
+        }
+        end_of_text = . ;
+
+        . = . ;
+        start_of_data = . ;
+        .data:
+        {
+            *(.data)
+        }
+        end_of_data = . ;
+    }
+#+end_src
+** 运算符
+链接器可识别标准 C 算术运算符集，具有标准绑定和优先级
+** 表达式求值
+链接器会延迟计算表达式。它只在绝对必要时才计算表达式的值。链接器需要一
+些信息，例如第一个节的起始地址的值以及内存区域的来源和长度，以便进行任
+何链接。链接器在读取链接器脚本时会尽快计算这些值。但是，其他值(例如符
+号值)直到存储分配后才知道或需要。这些值稍后再计算，此时其他信息(例如输
+出节的大小)可用于符号赋值表达式。直到分配后才能知道节的大小，因此依赖
+于这些节的赋值直到分配后才会执行。某些表达式(例如依赖于位置计数器.的表
+达式)必须在节分配期间进行计算。如果需要表达式的结果，但没有值，则会导
+致错误。例如，类似以下脚本，将导致错误消息“初始地址的非常量表达式”(non
+constant expression for initial address)。
+#+begin_src shell
+  SECTIONS
+  {
+      .text 9+this_isnt_constant :
+      {
+          *(.text)
+      }
+  }
+#+end_src
+** 表达式的Section
+地址和符号可以是节相对的，也可以是绝对的。节相对符号是可重定位的。如果
+使用-r选项请求可重定位输出，则进一步的链接操作可能会更改节相对符号的值。
+另一方面，绝对符号将在任何进一步的链接操作中保留相同的值。链接器表达式
+中的某些术语是地址。对于节相对符号和返回地址的内置函数(例如 ADDR、
+LOADADDR、ORIGIN 和 SEGMENT_START)而言，情况确实如此。其他术语只是数字，
+或者是返回非地址值的内置函数(例如 LENGTH)。一个复杂因素是，除非设置
+LD_FEATURE (“SANE_EXPR”)，否则数字和绝对符号将根据其位置进行不同的处理，
+以与旧版本的 ld 兼容。出现在输出节定义之外的表达式将所有数字视为绝对地
+址。出现在输出节定义内的表达式将绝对符号视为数字。如果给出了
+LD_FEATURE ("SANE_EXPR")，则绝对符号和数字在任何地方都被视为数字。在以
+下简单示例中，在前两个赋值中，. 和 __executable_start 都设置为绝对地址
+0x100，然后在后两个赋值中，. 和 __data_start 都设置为相对于 .data 部分
+的 0x10。
+#+begin_src shell
+  SECTIONS
+  {
+      . = 0x100;
+      __executable_start = 0x100;
+      .data :
+      {
+          . = 0x10;
+          __data_start = 0x10;
+          *(.data)
+      }
+      ......
+  }
+#+end_src
+
+
+对于涉及数字、相对地址和绝对地址的表达式，ld 遵循以下规则来评估术语：
+- 对绝对地址或数字的一元运算，以及对两个绝对地址或两个数字或一个绝对地
+  址和一个数字之间的二元运算，将运算符应用于值。
+- 对相对地址的一元运算，以及对同一节中两个相对地址或一个相对地址和一个
+  数字之间的二元运算，将运算符应用于地址的偏移部分。
+- 其他二元运算，即两个不在同一节中的相对地址之间或一个相对地址和一个绝
+  对地址之间的二元运算，首先将任何非绝对术语转换为绝对地址，然后再应用
+  运算符。
+  
+
+每个子表达式的结果部分如下：
+- 仅涉及数字的运算会产生一个数字。
+- 比较&&和||的结果也是一个数字。
+- 当 LD_FEATURE (“SANE_EXPR”)或在输出节定义内时，对同一节中的两个相对
+  地址或两个绝对地址(经过上述转换后)进行的其他二元算术和逻辑运算的结果
+  也是一个数字，否则为绝对地址。
+- 对相对地址或一个相对地址和一个数字进行的其他运算的结果是与相对操作数
+  位于同一节中的相对地址。
+- 对绝对地址进行其他操作的结果(经过上述转换后)是绝对地址。
+
+可以使用内置函数 ABSOLUTE 强制表达式为绝对地址，否则表达式将是相对地址。
+例如，要创建一个设置为输出部分.data末尾地址的绝对符号：
+#+begin_src shell
+  SECTIONS
+  {
+      .data :
+      {
+          *(.data) _edata = ABSOLUTE(.);
+      }
+  }
+#+end_src
+如果未使用ABSOLUTE，则_edata将相对于.data部分。使用 LOADADDR 也会强制
+表达式为绝对地址，因为这个特定的内置函数返回绝对地址。
+* 内置函数
+链接器脚本语言包含许多用于链接器脚本表达式的内置函数。
+- ABSOLUTE(exp)，返回表达式 exp 的绝对值（不可重定位，而不是非负值）。
+  主要用于在节定义中为符号分配绝对值，其中符号值通常是节相关的。请参阅
+  表达式的节。
+- ADDR(section)，返回指定节的地址 (VMA)。脚本必须先前已定义该节的位置。
+  在以下示例中，start_of_output_1、symbol_1 和 symbol_2 被分配了等效值，
+  但 symbol_1 将相对于 .output1 节，而其他两个将是绝对值：
+  #+begin_src shell
+    SECTIONS
+    {
+        …
+        .output1 :
+        {
+            start_of_output_1 = ABSOLUTE(.);
+            …
+        }
+        .output :
+        {
+            symbol_1 = ADDR(.output1);
+            symbol_2 = start_of_output_1;
+        }
+        … 
+    }
+
+  #+end_src
+- ALIGN(align)/ALIGN(exp,align)，返回与下一个对齐边界对齐的位置计数器
+  (.) 或任意表达式。单个操作数 ALIGN 不会改变位置计数器的值，它只是对
+  其进行算术运算。两个操作数 ALIGN 允许任意表达式向上对齐(ALIGN(align)
+  等同于 ALIGN(ABSOLUTE(.), align))。以下是将输出 .data 部分与前一个部
+  分之后的下一个 0x2000 字节边界对齐并将部分内的变量设置为输入部分之后
+  的下一个 0x8000 边界的示例，本例中第一次使用 ALIGN 指定了节的位置，
+  因为它用作节定义的可选地址属性。第二次使用 ALIGN 来定义符号的值。内
+  置函数 NEXT 与 ALIGN 密切相关。
+  #+begin_src shell
+    SECTIONS
+    {
+        …
+        .data ALIGN(0x2000):
+        {
+            *(.data)
+            variable = ALIGN(0x8000);
+        }
+        …
+    }
+  #+end_src
+- ALIGNOF(section)，如果已分配该节，则返回指定节的字节对齐，如果尚未分
+  配该节，则返回零。如果链接器脚本中不存在该节，则链接器将报告错误。如
+  果节是 NEXT_SECTION，则 ALIGNOF 将返回链接器脚本中指定的下一个分配节
+  的对齐，如果没有这样的节，则返回零。在以下示例中，.output 节的对齐存
+  储为该节中的第一个值。
+  #+begin_src shell
+    SECTIONS
+    {
+        …
+        .output
+        {
+            LONG (ALIGNOF (.output))
+            …
+        }
+        …
+    }
+  #+end_src
+- BLOCK(exp)，这是 ALIGN 的同义词，用于与较旧的链接器脚本兼容。在设置
+  输出部分的地址时最常见。
+- DATA_SEGMENT_ALIGN(maxpagesize, commonpagesize)，这相当于
+  (ALIGN(maxpagesize) + (. & (maxpagesize - 1)))或
+  (ALIGN(maxpagesize) +  ((. + commonpagesize - 1) & (maxpagesize -
+  commonpagesize))),取决于后者是否比前者使用更少的 commonpagesize 大小
+  的页面作为数据段（此表达式的结果与 DATA_SEGMENT_END 之间的区域）。如
+  果使用后一种形式，则意味着将节省 commonpagesize 字节的运行时内存，但
+  磁盘文件中最多会浪费 commonpagesize 个字节。此表达式只能直接在
+  SECTIONS 命令中使用，不能在任何输出部分描述中使用，并且只能在链接器
+  脚本中使用一次。commonpagesize 应小于或等于 maxpagesize，并且应为对
+  象想要优化的系统页面大小，同时仍在最大 maxpagesize 的系统页面大小上
+  运行时。 但请注意，如果系统页面大小大于 commonpagesize，则-z relro保
+  护将无效。例如：. = DATA_SEGMENT_ALIGN(0x10000, 0x2000);
+- DATA_SEGMENT_END(exp)，这定义了 DATA_SEGMENT_ALIGN 评估目的的数据段
+  结尾。. = DATA_SEGMENT_END(.);
+- DATA_SEGMENT_RELRO_END(offset, exp)，当使用-z relro选项时，这将定义
+  PT_GNU_RELRO 段的结尾。当-z relro选项不存在时，
+  DATA_SEGMENT_RELRO_END 不执行任何操作，否则 DATA_SEGMENT_ALIGN 将被
+  填充，以便 exp + offset 与赋予 DATA_SEGMENT_ALIGN 的 commonpagesize
+  参数对齐。如果在链接器脚本中存在，则必须将其放置在
+  DATA_SEGMENT_ALIGN 和 DATA_SEGMENT_END 之间。计算第二个参数加上由于
+  节对齐而在 PT_GNU_RELRO 段末尾所需的任何填充。. =
+  DATA_SEGMENT_RELRO_END(24, .);
+- DEFINED(symbol)，如果符号位于链接器全局符号表中，并且在脚本中使用
+  DEFINED 的语句之前定义，则返回 1，否则返回 0。可以使用此函数为符号提
+  供默认值。例如，以下脚本片段显示如何将全局符号“begin”设置为.text部分
+  中的第一个位置，但如果名为“begin”的符号已经存在，则保留其值：
+  #+begin_src shell
+    SECTIONS
+    {
+        …
+        .text :
+        {
+            begin = DEFINED(begin) ? begin : . ;
+            …
+        }
+        …
+    }
+  #+end_src
+- LENGTH(memory)，返回名为 memory 的内存区域的长度。
+- LOADADDR(section)，返回命名的 section 的绝对 LMA。
+- LOG2CEIL(exp)，返回 exp 的二进制对数，四舍五入为无穷大。LOG2CEIL(0)
+  返回 0。
+- MAX(exp1, exp2)，返回 exp1 和 exp2 的最大值。
+- MIN(exp1, exp2)，返回 exp1 和 exp2 的最小值。
+- NEXT(exp)，返回下一个未分配的地址，该地址是 exp 的倍数。此函数与
+  ALIGN(exp) 密切相关；除非使用 MEMORY 命令为输出文件定义不连续的内存，
+  否则这两个函数是等效的。
+- ORIGIN(memory)，返回名为 memory 的内存区域的原点。
+- SEGMENT_START(segment, default)，返回指定段的基址。如果已经为此段指
+  定了显式值（使用命令行-T选项），则将返回该值，否则该值将为默认值。目
+  前，-T命令行选项只能用于设置text、data和bss段的基地址，但可以将
+  SEGMENT_START 与任何段名一起使用。
+- SIZEOF(section)，如果已分配该段，则返回指定段的大小(以字节为单位)，
+  如果尚未分配该段，则返回零。如果链接器脚本中不存在该段，则链接器将报
+  告错误。如果 section 为 NEXT_SECTION，则 SIZEOF 将返回链接器脚本中指
+  定的下一个分配段的对齐方式，如果不存在这样的段，则返回零。在以下示例
+  中，symbol_1 和 symbol_2 被分配了相同的值：
+  #+begin_src shell
+    SECTIONS
+    {
+        …
+        .output
+        {
+            .start = . ;
+            …
+            .end = . ;
+        }
+        symbol_1 = .end - .start ;
+        symbol_2 = SIZEOF(.output);
+        …
+    }
+  #+end_src
+- SIZEOF_HEADERS，返回输出文件头的大小（以字节为单位）。这是出现在输出
+  文件开头的信息。如果愿意，可以在设置第一个节的起始地址时使用此数字，
+  以方便分页。生成 ELF 输出文件时，如果链接器脚本使用内置函数
+  SIZEOF_HEADERS，则链接器必须在确定所有节地址和大小之前计算程序头的数
+  量。如果链接器后来发现它需要额外的程序头，它将报告错误“程序头空间不
+  足”。要避免此错误，必须避免使用 SIZEOF_HEADERS 函数，或者必须重新编
+  写链接器脚本以避免强制链接器使用额外的程序头，或者必须使用 PHDRS 命
+  令自己定义程序头。
+  

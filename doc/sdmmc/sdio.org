@@ -1,0 +1,293 @@
+#+title: SDIO
+#+subtitle: Sumarry
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+
+* Feature
+- Capacity of Memory
+  |------+----------------------------------+--------+-----------------------------|
+  | Name | Descript                         | Size   | Specification               |
+  |------+----------------------------------+--------+-----------------------------|
+  |------+----------------------------------+--------+-----------------------------|
+  | SDSC | Standard Capacity SD Memory Card | <=2GB  | Physical layer Spec         |
+  |------+----------------------------------+--------+-----------------------------|
+  | SDHC | High Capacity SD Memory Card     | >=2GB  | - Physical layer Spec V2.00 |
+  |      |                                  | <=32GB | - File System Spec V2.00    |
+  |------+----------------------------------+--------+-----------------------------|
+  | SDXC | Extended Capacity SD Memory Card | >=32GB | - Physical layer Spec V3.00 |
+  |      |                                  | <=2TB  | - File System Spec V3.00    |
+  |------+----------------------------------+--------+-----------------------------|
+
+- Voltage range: Operating valtage range: 2.7~3.6V
+
+- Bus Speed Mode
+  |---------------+---------+-----------+----------|
+  | Name          | Voltage | Frequency | Speed    |
+  |---------------+---------+-----------+----------|
+  |---------------+---------+-----------+----------|
+  | Default Speed | 3.3V    | 25MHz     | 12.5MB/s |
+  | High Speed    | 3.3V    | 50MHz     | 25MB/s   |
+  | SDR12         | 1.8V    | 25MHz     | 12.5MB/s |
+  | SDR25         | 1.8V    | 50MHz     | 25MB/s   |
+  | SDR50         | 1.8V    | 100MHz    | 50MB/s   |
+  | SDR104        | 1.8V    | 208MHz    | 104MB/s  |
+  | DDR50         | 1.8V    | 50MHz     | 50MB/s   |
+  |---------------+---------+-----------+----------|
+  - MB/s: 1024x1024 Bytes;
+- Form
+  |------------------------------+----------------|
+  | Name                         | Thickness      |
+  |------------------------------+----------------|
+  |------------------------------+----------------|
+  | Standard Size SD Memory Card | 2.1mm or 1.4mm |
+  | miniSD Memory Card           |                |
+  | microSD Memory Card          |                |
+  |------------------------------+----------------|
+- Speed Class Performance
+  |----------+--------------|
+  | Class    | Speed        |
+  |----------+--------------|
+  |----------+--------------|
+  | Class 0  | Legacy Cards |
+  | Class 2  | >=2MB/s      |
+  | Class 4  | >=4MB/s      |
+  | Class 6  | >=6MB/s      |
+  | Class 10 | >=10MB/s     |
+  |----------+--------------|
+  - MB/s: 1000x1000 Bytes;
+- Bus Topology
+  + SD Bus
+  + SPI Bus
+- State and Mode
+  |-------------------------+---------------------|
+  | Operation mode          | Card state          |
+  |-------------------------+---------------------|
+  |-------------------------+---------------------|
+  | inactive mode           | inactive state      |
+  |-------------------------+---------------------|
+  |                         | idle state          |
+  | card indentication mode | ready state         |
+  |                         | indentication state |
+  |-------------------------+---------------------|
+  |                         | standby state       |
+  |                         | transfer state      |
+  |                         | sending data state  |
+  | data transfer mode      | receive data state  |
+  |                         | programming state   |
+  |                         | disconnect state    |
+  |-------------------------+---------------------|
+* CMD
+Command format
+|--------------+-----------+-----------+-----------+--------+-------+---------|
+| Bit position |        47 |        46 | [45:40]   | [39:8] | [7:1] |       0 |
+|--------------+-----------+-----------+-----------+--------+-------+---------|
+| Width(bits)  |         1 |         1 | 6         | 32     | 7     |       1 |
+| Value        |         0 |         1 | x         | x      | x     |       1 |
+|--------------+-----------+-----------+-----------+--------+-------+---------|
+| Description  | Start bit | Trans bit | Cmd index | Arg    | CRC7  | End bit |
+|--------------+-----------+-----------+-----------+--------+-------+---------|
+
+- transmission time: 1 bit per cycle.
+  + 1.92us @25 MHz = (48*1000000us/25000000)
+  + 0.96us @50 MHz = (48*1000000us/50000000)
+** CMD0(GO_IDLE_STATE)
+The command GO_IDLE_STATE (CMD0) is the software reset command and
+sets each card into Idle State regardless of the current card state.
+** CMD8(SEND_IF_COND)
+SEND_IF_COND (CMD8) is used to verify SD Memory Card interface
+operating condition(the card supported voltage).
+** ACMD41(SD_SEND_OP_COND)
+SD_SEND_OP_COND (ACMD41) is designed to provide hosts with a mechanism
+to identify and reject cards which do not match the VDD range desired
+by the host.
+- voltage support;
+- clock frequency support and switch;
+** CMD2(ALL_SEND_CID)
+The host then issues the command ALL_SEND_CID (CMD2), to each card to
+get its unique card identification (CID) number.
+** CMD3(SEND_RELATIVE_ADDR)
+the host issues CMD3 (SEND_RELATIVE_ADDR) asks the card to publish a
+new relative card address (RCA).
+** CMD11()
+CMD11 is used for voltage switch
+** CMD19
+CMD19 is defined for Send Tuning Block Command.
+** CMD9(SEND_CSD)
+obtain the Card Specific Data(CSD register)
+** CMD4(SET_DSR)
+configure the driver stages of all identified cards
+** CMD7
+CMD7 is used to select one card and put it into the Transfer State.If
+a previously selected card is in the Transfer State its connection
+with the host is released and it will move back to the Stand-by
+State. When CMD7 is issued with the reserved relative card address
+"0x0000", all cards are put back to Stand-by State
+
+* Response
+
+** R1(normal response)
+|-------------+-----------+-----------+-----------+-------------+-------+---------|
+| Bit         |        47 |        46 | [45:40]   | [39:8]      | [7:1] |       0 |
+|-------------+-----------+-----------+-----------+-------------+-------+---------|
+| Width(bits) |         1 |         1 | 6         | 32          | 7     |       1 |
+| Value       |       '0' |       '0' | x         | x           | x     |     '1' |
+| Description | start bit | trans bit | cmd index | card status | CRC7  | end bit |
+|-------------+-----------+-----------+-----------+-------------+-------+---------|
+
+** R1b
+R1b is identical to R1 with an optional busy signal transmitted on the
+data line
+
+** R2(CID,CSD register)
+Code length is 136 bits. The contents of the CID register are sent as
+a response to the commands CMD2 and CMD10. The contents of the CSD
+register are sent as a response to CMD9. Only the bits [127...1] of
+the CID and CSD are transferred, the reserved bit [0] of these
+registers is replaced by the end bit of the response.
+|--------------+-----------+-----------+-----------+---------+---------|
+| Bit          |       135 |       134 | [133:128] | [127:1] |       0 |
+|--------------+-----------+-----------+-----------+---------+---------|
+| Width (bits) |         1 |         1 | 6         | 127     |       1 |
+| Value        |       '0' |       '0' | '111111'  | x       |     '1' |
+| Description  | start bit | trans bit | reserved  | CID/CSD | end bit |
+|--------------+-----------+-----------+-----------+---------+---------|
+
+** R3(OCR register)
+|-------------+-----------+-----------+----------+--------+----------+---------|
+| Bit         |        47 |        46 |  [45:40] | [39:8] |    [7:1] |       0 |
+|-------------+-----------+-----------+----------+--------+----------+---------|
+| Width(bits) |         1 |         1 |        6 | 32     |        7 |       1 |
+| Value       |         0 |         0 |   111111 | x      |  1111111 |       1 |
+| Description | start bit | trans bit | reserved | OCR    | reserved | end bit |
+|-------------+-----------+-----------+----------+--------+----------+---------|
+
+** R6(Published RCA response)
+
+** R7(Card interface condition)
+* Data Transfer Mode
+- All data read commands can be aborted any time by the stop command
+  (CMD12). The data transfer will terminate and the card will return
+  to the Transfer State. The read commands are: block read (CMD17),
+  multiple block read (CMD18), send write protect (CMD30), send scr
+  (ACMD51) and general command in read mode (CMD56).
+- All data write commands can be aborted any time by the stop command
+  (CMD12). The write commands shall be stopped prior to deselecting
+  the card by CMD7. The write commands are: block write (CMD24 and
+  CMD25), program CSD (CMD27), lock/unlock command (CMD42) and general
+  command in write mode (CMD56).
+- As soon as the data transfer is completed, the card will exit the
+  data write state and move either to the Programming State (transfer
+  is successful) or Transfer State (transfer failed).
+- If a block write operation is stopped and the block length and CRC
+  of the last block are valid, the data will be programmed.
+- The card may provide buffering for block write. This means that the
+  next block can be sent to the card while the previous is being
+  programmed. If all write buffers are full, and as long as the card
+  is in Programming State (see SD Memory Card state diagram Figure
+  4-13 ), the DAT0 line will be kept low (BUSY).
+- There is no buffering option for write CSD, write protection and
+  erase. This means that while the card is busy servicing any one of
+  these commands, no other data transfer commands will be
+  accepted. DAT0 line will be kept low as long as the card is busy and
+  in the Programming State. Actually if the CMD and DAT0 lines of the
+  cards are kept separated and the host keep the busy DAT0 line
+  disconnected from the other DAT0 lines (of the other cards) the host
+  may access the other cards while the card is in busy.
+- Parameter set commands are not allowed while card is
+  programming.Parameter set commands are: set block length (CMD16),
+  erase block start (CMD32) and erase block end (CMD33).
+- Read commands are not allowed while card is programming.
+- Moving another card from Stand-by to Transfer State (using CMD7)
+  will not terminate erase and programming operations. The card will
+  switch to the Disconnect State and will release the DAT line.
+- A card can be reselected while in the Disconnect State, using
+  CMD7. In this case the card will move to the Programming State and
+  reactivate the busy indication.
+- Resetting a card (using CMD0 or CMD15) will terminate any pending or
+  active programming operation. This may destroy the data contents on
+  the card. It is the host's responsibility to prevent this.
+- CMD34-37, CMD50 and CMD57 are reserved for SD command system
+  expansion. State transitions for these commands are defined in each
+  command system specification.
+  
+* Memory Partition
+- Block: is the unit that is related to the block oriented read and
+  write commands. Its size is the number of bytes that will be
+  transferred when one block command is sent by the host. The size of
+  a block is either programmable or fixed. The information about
+  allowed block sizes and the programmability is stored in the CSD.
+- For devices that have erasable memory cells, special erase commands
+  are defined. The granularity of the erasable units is in general not
+  the same as for the block oriented commands:
+- Sector: is the unit that is related to the erase commands. Its size
+  is the number of blocks that will be erased in one portion. The size
+  of a sector is fixed for each device. The information about the
+  sector size (in blocks) is stored in the CSD. Note that if the card
+  specifies AU size, sector size should be ignored.
+- AU (Allocation Unit): is a physical boundary of the card and
+  consists of one or more blocks and its size depends on each
+  card. The maximum AU size is defined for memory
+  capacity. Furthermore AU is the minimal unit in which the card
+  guarantees its performance for devices which complies with Speed
+  Class Specification. The information about the size and the Speed
+  Class are stored in the SD Status. AU is also used to calculate the
+  erase timeout.
+- WP-Group: is the minimal unit that may have individual write
+  protection for devices which support write-protected group. Its size
+  is the number of groups that will be write-protected by one bit. The
+  size of a WP-group is fixed for each device. The information about
+  the size is stored in the CSD. The High Capacity SD Memory Card does
+  not support the write protect group command.
+  
+* Card Register
+** OCR
+The 32-bit operation conditions register stores the VDD voltage
+profile of the card. Additionally, this register includes status
+information bits.
+- Low Voltage Range
+- Switching to 1.8V Accepted
+- Card Capacity Status
+- Card power up status bit
+** CID
+The Card IDentification (CID) register is 128 bits wide. It contains
+the card identification information used during the card
+identification phase.
+|--------------------+-------+-------+-----------|
+| Name               | Field | Width | CID-slice |
+|--------------------+-------+-------+-----------|
+|--------------------+-------+-------+-----------|
+| Manufacturer ID    | MID   |     8 | [127:120] |
+| OEM/Application ID | OID   |    16 | [119:104] |
+| Product name       | PNM   |    40 | [103:64]  |
+| Product revision   | PRV   |     8 | [63:56]   |
+| Product SN         | PSN   |    32 | [55:24]   |
+| reserved           | --    |     4 | [23:20]   |
+| Manufacture date   | MDT   |    12 | [19:8]    |
+| CRC7 checksum      | CRC   |     7 | [7:1]     |
+| not used,always 1  | -     |     1 | [0:0]     |
+|--------------------+-------+-------+-----------|
+** CSD
+The CSD defines the data format, error correction type, maximum data
+access time.
+** RCA
+The writable 16-bit relative card address register carries the card
+address that is published by the card during the card
+identification. This address is used for the addressed host-card
+communication after the card identification procedure.
+** DSR
+The 16-bit driver stage register is described in detail in Chapter
+6.5. It can be optionally used to improve the bus performance for
+extended operating conditions (depending on parameters like bus
+length,transfer rate or number of cards)
+** SCR
+In addition to the CSD register, there is another configuration
+register named SD CARD Configuration Register (SCR). SCR provides
+information on the SD Memory Card's special features that were
+configured into the given card.
+

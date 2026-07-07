@@ -1,0 +1,234 @@
+#+title: Diving into JTAG
+# #+subtitle: 
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+
+* info
+- https://interrupt.memfault.com/blog/diving-into-jtag-part1
+- https://interrupt.memfault.com/blog/diving-into-jtag-part-2
+- https://interrupt.memfault.com/blog/diving-into-jtag-part-3
+- https://interrupt.memfault.com/blog/diving-into-jtag-part-4
+- https://interrupt.memfault.com/blog/diving-into-jtag-part-5
+- https://interrupt.memfault.com/blog/diving-into-jtag-part-6
+- https://www.actuatedrobots.com/debugging-with-jtag/
+* Introduction
+JTAG (Joint Test Action Group) is a specialized hardware interface
+based on the IEEE 1149.1 standard. This interface is designed to
+connect complex chips and devices to standard test and debugging
+hardware.
+
+
+Nowadays JTAG is mainly used for:
+- Output control of microcircuits
+- Testing of printed circuit boards
+- Flashing of microchips with memory
+- Chip software debugging
+
+
+The testing method implemented in the standard is called Boundary
+Scan. The name reflects the idea of the process: Functional blocks
+within the chip are isolated, and specific signal combinations are
+applied to their inputs. The state of each block’s output is then
+evaluated. The whole process is performed by special commands via the
+JTAG interface, and no physical intervention is required.
+* Test Access Point (TAP)
+The Test Access Port (TAP) is one of the key elements of the JTAG
+protocol designed to control and configure chips connected to the JTAG
+chain.
+
+
+The TAP operates as a simple finite-state machine that is controlled
+by the TMS (Test Mode Select) signal. It allows access to the internal
+registers of microcontrollers and other devices through JTAG commands.
+
+
+Each device connected to the JTAG chain has its own TAP, which
+consists of the IR (Instruction Register) and DR (Data Register)
+registers.
+- The IR the register is used to select the instruction to be executed
+  on the device.
+- DR the register is used to transfer data.
+
+* Control signals
+The Test Access Port comprises four mandatory signals (TCK, TMS, TDI,
+TDO) and one optional signal (TRST).
+- TDI (Test Data Input) — test data input. The commands and data are
+  inserted into the chip through this pin on the rising edge of the
+  signal TCK.
+- TDO (Test Data Output) — serial data output. Commands and data are
+  output from the chip through this pin on the falling edge of the
+  signal TCK.
+- TCK (Test Clock) — clock input.
+- TMS (Test Mode Select) — controls the transitions between states of
+  the finite state machine TAP.
+- TRST (Test Reset) — reset signal of the TAP finite state machine.
+
+
+The standard is that the JTAG module reads data from the TMS and TDI
+lines on the rising edge of the TCK line. The JTAG module in any chip
+must also change the logic value on the TDO line on the falling edge
+of TCK. In the diagram below, the moments of reading data by the JTAG
+module are shown with the red dotted line and the moments of writing
+data are shown with the green dotted line.
+#+caption: JTAG Signals
+#+name: pic-jtagsignal
+#+attr_latex: :placement [H] :width 0.6\textwidth
+[[./pic/pic-jtagsignal.png]]
+* gangdi                                                           :noexport:
+** 行前准备
+** 门票购买
+- 官网或官方App购买，可选单日票、两日票或年票。
+- 第三方平台（如Klook、携程）可能有优惠。
+- 推荐购买“尊享卡”或“快速通行证”以减少排队时间。
+
+** 下载官方App
+- 下载“香港迪士尼乐园”App，查看实时排队时间、地图和演出时间。
+
+** 交通方式
+- 地铁: 搭乘港铁迪士尼线，在“迪士尼站”下车，直达乐园入口。
+- 巴士: 多条巴士线路直达乐园，如R8、R33、R42等。
+
+** 乐园分区及必玩项目
+香港迪士尼分为7个主题区，以下是各区亮点：
+1. 美国小镇大街：
+   - 适合拍照和购物，入口处有迪士尼角色迎宾。
+2. 探险世界：
+   - 森林河流之旅：乘船探险，适合家庭。
+   - 狮子王庆典：大型音乐剧，推荐观看。
+3. 幻想世界：
+   - 小小世界：适合亲子游玩。
+   - 灰姑娘旋转木马：经典项目。
+   - 米奇幻想曲：3D音乐短片，适合全家。
+4. 明日世界：
+   - 铁甲奇侠飞行之旅：与钢铁侠一起飞行，推荐。
+   - 星战极速穿梭：室内过山车，刺激。
+5. 反斗奇兵大本营：
+   - 玩具兵团跳降伞：轻度刺激。
+   - 冲天遥控车：适合喜欢刺激的游客。
+6. 迷离庄园：
+   - 迷离大宅：乘坐电磁厢车探索神秘庄园，推荐。
+7. 灰熊山谷：
+   - 灰熊山极速矿车：过山车项目，刺激有趣。
+
+** 表演和巡游
+1. 迪士尼飞天巡游：
+   - 下午的经典巡游，迪士尼角色和花车表演。
+
+2. 迪士尼星梦光影之旅：
+   - 夜间灯光秀和烟花表演，不可错过。
+
+3. 其他表演：
+   - 查看App获取当日演出时间，如“魔海奇缘凯旋庆典”、“迪士尼魔法书房”等。
+** 餐饮推荐
+1. 乐园内餐厅：
+   - 皇室宴会厅（幻想世界）：中西式自助餐。
+   - 大冒险家餐厅（探险世界）：东南亚风味。
+   - 火箭餐厅（明日世界）：快餐汉堡薯条。
+2. 小吃和甜品：
+   - 米奇造型冰淇淋、爆米花等。
+3. 自带食物：
+   - 可带少量零食和水，但需遵守乐园规定。
+
+住宿住宿** 注意事项
+1. 提前入园：
+   - 开园前到达，尽早游玩热门项目。
+2. 寄存行李：
+   - 入口处有寄存服务，需付费。
+3. 充电宝：
+   - 带充电宝，乐园内充电设施有限。
+4. 语言：
+   - 乐园提供普通话、粤语和英语服务。
+5. 购物：
+   - 美国小镇大街商店众多，建议离园前购物。
+
+** 推荐游玩路线
+- 亲子路线：幻想世界 → 探险世界 → 反斗奇兵大本营 → 美国小镇大街。
+- 刺激路线：明日世界 → 灰熊山谷 → 迷离庄园 → 反斗奇兵大本营。
+
+** 门票费用
+1. 标准门票：
+   - 成人（12-64岁）：约 HK$639 - HK$799（单日票，视季节而定）。
+   - 儿童（3-11岁）：约 HK$475 - HK$589（单日票）。
+   - 长者（65岁及以上）：约 HK$100（特惠票）。
+2. 两日票：
+   - 成人：约 HK$825 - HK$1,099。
+   - 儿童：约 HK$609 - HK$825。
+3. 年票：
+   - 适合常客，价格从 HK$1,198 起（银卡）。
+
+** 快速通行证（尊享卡）
+1. 标准尊享卡：
+   - 约 HK$199 - HK$399（视项目数量而定）。
+   - 可减少热门项目的排队时间。
+2. 尊享卡+：
+   - 包含更多项目和演出优先入场，价格更高。
+** 交通费用
+1. 地铁：
+   - 从市区（如尖沙咀、中环）到迪士尼站，单程约 HK$20 - HK$30。
+2. 巴士：
+   - 单程约 HK$15 - HK$30，视路线而定。
+3. 出租车：
+   - 从市区到乐园，单程约 HK$200 - HK$300。
+4. 自驾：
+   - 停车场费用：约 HK$130 - HK$250/天。
+** 餐饮费用
+1. 乐园内餐厅：
+   - 套餐：约 HK$100 - HK$150/人。
+   - 儿童餐：约 HK$60 - HK$80。
+   - 特色餐厅（如皇室宴会厅）：约 HK$200 - HK$300/人。
+2. 小吃和饮品：
+   - 米奇冰淇淋：约 HK$45。
+   - 爆米花：约 HK$40。
+   - 瓶装水：约 HK$30。
+3. 自带食物：
+   - 可带少量零食和水，节省部分开销。
+** 购物费用
+1. 纪念品：
+   - 米奇耳朵发箍：约 HK$100 - HK$150。
+   - 公仔：约 HK$200 - HK$400。
+   - 钥匙扣/文具：约 HK$50 - HK$100。
+
+2. 其他商品：
+   - 服装、饰品等，价格从 HK$100 到 HK$500 不等。
+** 其他费用
+1. 寄存服务：
+   - 寄存柜：约 HK$100 - HK$150/天。
+2. 充电宝租赁：
+   - 约 HK$50 - HK$100/天。
+3. 拍照服务：
+   - 乐园内摄影师拍照，约 HK$200 - HK$500/套。
+** 总开销估算
+1. 经济型（1天）：
+   - 门票：HK$639（成人）。
+   - 交通：HK$40（地铁往返）。
+   - 餐饮：HK$150（乐园内套餐 + 小吃）。
+   - 购物：HK$200（纪念品）。
+   - 总计：约 HK$1,029/人。
+
+2. 舒适型（1天）：
+   - 门票：HK$799（成人）。
+   - 尊享卡：HK$299。
+   - 交通：HK$60（出租车单程 + 地铁返程）。
+   - 餐饮：HK$300（特色餐厅 + 小吃）。
+   - 购物：HK$500。
+   - 总计：约 HK$1,958/人。
+
+3. 豪华型（1天）：
+   - 门票：HK$799（成人）。
+   - 尊享卡+：HK$499。
+   - 交通：HK$300（出租车往返）。
+   - 餐饮：HK$500（高级餐厅 + 小吃）。
+   - 购物：HK$1,000。
+   - 总计：约 HK$3,098/人。
+** 省钱小贴士
+1. 提前购票：官网或第三方平台常有早鸟优惠。
+2. 自带零食和水：减少餐饮开销。
+3. 避开节假日：门票和住宿价格较低。
+4. 使用年票：适合多次游玩，性价比高。
+   

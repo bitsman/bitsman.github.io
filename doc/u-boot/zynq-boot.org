@@ -1,0 +1,230 @@
+#+title: ZYNQ Bootloader
+# #+subtitle: 
+#+author: ZYNQ
+# #+latex_class: org-latex-beamer 
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+
+* ZYNQ Bootloader简介
+在系统上电后，需要ZYNQ Bootloader来进行初始化，如
+- 关闭WatchDog
+- 设置系统时钟
+- 初始化存储器控制器
+- 将更多的代码复制到内存中
+它能将操作系统内核复制到内存中运行，无论从本地（比如Flash）还是远端
+（比如通过网络）。
+
+简单的说，ZYNQ Bootloader就是这么一段程序，它在系统上电时开始执行，初始
+化硬件设备，准备好软件环境，最后调用操作系统内核。
+
+
+可以增强Bootloader的功能，比如增加网络功能，通过串口或网络下载文件、烧
+写文件、将Flash上压缩的文件解压后再运行等，这就是一个功能更为强大的
+Bootloader。
+
+* ZYNQ Bootloader的启动方式
+CPU上电后，会从某个地址开始执行，比如MIPS结构的CPU会从0xBFC00000取第一
+条指令，而ARM结构的CPU则大多数从地址0x00000000开始。在板级系统中，需要
+把存储器件ROM或Flash等映射到这个地址，ZYNQ Bootloader就存放在这个地址开
+始处，这样一上电就可以执行。
+
+
+在开发时，通常需要使用各种命令操作，一般通过串口来连接开发机和开发板，
+可在串口上输入各种命令、观察运行结果等。通常多用于开发环节，实际用户使
+用产品时是不用接串口来控制Bootloader的。从这个设计角度，ZYNQ Bootloader
+可以分为以下两种操作模式
+- 启动加载模式：上电后，ZYNQ Bootloader从板子上的某个存储器设备上将操作
+  系加载到RAM中运行，整个过程并没有用户的介入。当载有ZYNQ Bootloader的
+  产品发布时，通常工作在这个模式下。
+- 下载模式： 在这个模式下，开发人员可以使用各种命令，通过串口连接或网
+  络连接等通信手段从PC下载文件（比如内核映像、文件系统映像等），将它们
+  直接放在内存运行或是烧入Flash类存储器设备中。
+
+
+开发板与PC间传输文件时，可以使用串口xmoderm/ymodem/zmodem等协议，他们
+使用简单，但是速度较慢；还可以使用网络通过tftp、nfs协议来传输，这时，
+主上要开启tftp、nfs服务；还有其他方法，比如USB等。
+
+
+像Blob或者U-Boot等功能强大的Bootloader通常同是支持这两种工作模式，而且
+允许用户在这两种工作模式之间进行切换。比如，U-Boot在启动时处于正常的启
+动加载模式，但是它会延时若干秒，此处也可以通过设置改变，等待终端用户按
+下任意键，而将U-Boot切换到下载模式。如果在指定时间内没有用户按键，则
+U-Boot继启动Linux内核，ZYNQ-Bootloader的工作方式也类似U-Boot。
+
+* ZYNQ-Bootloader的结构和启动过程
+嵌入式操系统从软件的角度通常可以分为以下4个层次。
+1. 引导加载程序，包括固话在固件（firmware）中的boot代码（可选）和
+   Bootloader两大部分。有些芯片在运行Bootloader之前先运行一段固化的程
+   序（固件，firmware），比如x86结构的芯片就是先运行BIOS中的固件，然后
+   才运行硬盘第一分区中的Bootloader。在大多数嵌入式系统中并没有固件，
+   Bootloader是上电后执行的第一个程序。
+2. 操作系统内核，特定于嵌入式板子的定制内核以及内核的启动参数。内核的
+   启动参数可以是内核默认的，或是由Bootloader传递给它的。
+3. 文件系统，包括根文件系统和建立在Flash内存设备之上的文件系统。里面包
+   含了操作系统能够运行所必需的应用程序，库等，比如可以给用户提供各种
+   操作的控制界面的Shell程序、动态连接的程序运行时需要的glibc或uClibc
+   库等。
+4. 用户应用程序，特定于用户的应用程序，他们也存储在文件系统中。有时在
+   用户应用程序和内核层之间可能还会包括一个嵌入式图形用户界面。常用的
+   嵌入式图形界面有：Qtopia和MiniGUi等。显然，在嵌入式系统的固态存储设
+   备上有相应的分区来存储他们。
+** 启动参数
+在“Boot parameters”分区中存放一些可以设置的参数，比如IP地址、串口波特
+率、要传递给内核的命令行参数等。正常启动过程中，Bootloader首先运行，然
+后它将内核复制到内存中（也有些内核可以在固态存储设备上直接运行），并且
+在内存某个固定的地址设置好要传递给内核的参数，最后运行内核。内核启动后，
+它会挂接根文件系统，启动文件系统中的应用程序。
+** 启动阶段
+ZYNQ-Bootloader的启动过程可以分为单阶段（Single Stage）、多阶段
+（Multi-Stage）两种。通常多阶段的Bootloader能提供更为复杂的功能以及更
+好的可移植性。从固态存储设备上启动的Bootloader大多都是两个阶段的启动过
+程。
+- 第一个阶段使用汇编来实现，它完成一些依赖于CPU体系结构的初始化，并
+  调第二阶段的代码，主要完成如下功能
+  + 硬件设备初始化
+    1. 关闭WatchDog
+    2. 关闭中断
+    3. 设置CPU的运行速度和时钟频率
+    4. RAM初始化
+  + 为加载第二阶段代码准备RAM空间
+  + 复制第二阶段代码到RAM空间种
+  + 设置好栈
+  + 跳转到第二阶段代码的C入口点
+- 第二个阶段通常使用C语言来实现，这样可以实现更复杂的功能，而且代码会
+  有更好的可读性和可移植性。
+  + 初始化本阶段要使用到的硬件设备
+  + 检测系统内存映射
+  + 将内核映像和根文件系统映像从Flash上读到RAM空间中
+  + 为内核设置启动参数
+  + 调用内核
+
+
+为了方便开发，至少要初始化一个串口以便程序员与Bootloader进行交互。所谓
+检内存映射，即确定板上使用了多少内存、他们的地址空间是什么。由于嵌入式
+开中Bootloader多针对某些开发板进行编写，所以可以根据板子的情况直接设置，
+不需要考虑可以适用于各类情况的复杂算法。
+
+
+Flash上的内核映像有可能是经过压缩的，在读到RAM之后，还需要进行解压。当
+然对于有自解压功能的内核，不需要Bootloader来解压。
+
+
+将根文件系统映像复制到RAM中，也不是必须的。这取决于是什么类型的根文件
+系统，以及内核访问他们的方法。
+
+
+将内核存放在适当的位置后，直接跳到它的入口点即可调用内核。调用内核之前，
+对于ARM芯片，下列条件要满足。
+- CPU寄存器的设置
+  + R0=0
+  + R1=机器类型ID；对于ARM结构的CPU，其机器类型ID可以参见linux/arch/arm/tools/mach-types
+  + R2=启动参数标记列表在RAM中起始基地址
+- CPU工作模式
+  + 必须禁止中断主要是IRQs和FIQs
+  + CPU必须为SVC模式
+- Cache和MMU的设置
+  + MMU必须关闭
+  + iCache可以打开也可以关闭
+  + dCache必须关闭。
+
+
+用C语言表示如下。
+#+begin_src c :exports source
+  void (*theKernel)(int zero, int arch, u32 params_addr) = (void(*)(int,int,u32))KERNEL_RAM_BASE;
+  theKernel(0, ARCH_NUMBER, (u32)kernel_params_start);
+#+end_src
+
+** 内核交互
+ZYNQ Bootloader与内核的交互是单向的，Bootloader将各类参数传递给内核。由
+于他们不能同时运行，传递办法只有一个：Bootloader将参数放在某个约定的地
+方后，再启动内核，内核启动后从这个地方获得参数。
+
+
+除了约定好参数存放的地址外，还要规定参数的结构。内核都期望以标记列表的
+形传递启动参数。标记，就是一种数据结构；标记列表，就是挨着存放的多个标
+记。标记列表以标记ATAG_CORE开始，以标记ATAG_NONE结束。
+
+
+标记的数据结构为tag，它由一个tag_header结构和一个联合（union）组成。
+tag_header结构表示标记的类型和长度，比如是表示内存还是表示命令行参数等。
+对于不同类型的标记使用不同的联合（union），比如表示内存时使用tag_mem32，
+表示命令行时使用tag_cmdline。数据结构tag和tag_header定义在内核源码的
+include/asm/setup.h头文件中，如下所示。
+#+begin_src c :exports source
+  struct tag_header {
+      u32 size;
+      u32 tag;
+  };
+  struct tag{
+      struct tag_header hdr;
+      union {
+          struct tag_core         core;
+          struct tag_mem32        mem;
+          struct tag_videotext    videotext;
+          struct tag_ramdisk      ramdisk;
+          struct tag_initrd       initrd;
+          struct tag_serialnr     serialnr;
+          struct tag_revision     revision;
+          struct tag_videolfb     videolfb;
+          struct tag_cmdline      cmdline;
+          struct tag_acorn        acorn;
+          struct tag_memclk       memclk;
+      }u;
+  };
+#+end_src
+
+
+下面以设置内存标记、命令行标记为例说明参数的传递。
+- 设置标记ATAG_CORE：标记列表以标记ATAG_CORE开始，假设Bootloader与内核
+  约定的参数存放地址为0x40000100，则可以以如下代码设置标记ATAG_CORE：
+  #+begin_src c :exports source
+    params = (struct tag*) 0x40000100;
+    params->hdr.tag = ATAG_CORE;
+    params->hdr.size = tag_size(tag_core);
+    params->u.core.flags = 0;
+    params->u.core.pagesize = 0;
+    params->u.core.rootdev = 0;
+    params = tag_next(params);
+
+    #define tag_next(t) ((struct tag*)((u32 *)(t)+(t)->hdr.size))
+  #+end_src
+  其中，tag_next指向当前标记的末尾。
+
+- 设置内存标记：假设开发板使用的内存起始地址为0x40000000，大小为
+  #0x4000000，则内存标记可以如下设置：
+  #+begin_src c :exports source
+    params->hdr.tag = ATAG_MEM;
+    params->hdr.size = tag_size(tag_mem32);
+    params->u.mem.start = 0x40000000;
+    params->u.mem.size = 0x4000000;
+    params = tag_next(params);
+  #+end_src
+
+- 设置命令行标记：命令行就是一个字符串，它被用来控制内核的一些行为。比
+  如“root=/dev/mtdblock 2 init=/linuxrc console=ttySAC0”表示根文件系统
+  在MTD2分区上，系统启动后执行的第一个程序为/linuxrc，控制台为ttySAC0
+  （即第一个串口）。命令行可以在Bootloader中通过命令设置好，然后按如下
+  构造标记传给内核。
+  #+begin_src c :exports source
+    char *p = "root=/dev/mtdblock 2 init=/linuxrc console=ttySAC0";
+    params->hdr.tag = ATAG_CMDLINE;
+    params->hdr.size = (sizeof (struct tag_header)+strlen(p)+1+4)>>2;
+    strcpy(params->u.cmdline.cmdline, p);
+    params = tag_next(params);
+  #+end_src
+
+- 设置标记ATAG_NONE：标记列表以标记ATAG_NONE结束，如下设置。
+  #+begin_src c :exports source
+    params->hdr.tag = ATAG_NONE;
+    params->hdr.size = 0;
+  #+end_src
+
+  
+  
+  

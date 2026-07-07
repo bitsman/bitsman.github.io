@@ -1,0 +1,173 @@
+#+title: PINCTRL子系统
+# #+subtitle: 
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+* pinctrl子系统简介
+PIN Control子系统驱动的硬件叫做Pin Controller，在有些芯片中，有专门的
+管理模块，也有些是集成在GPIO模块中。主要功能包括：
+- pin multiplexing：pin引脚复用，将pin复用为GPIO、SPI、IIC等功能；
+- pin configuration： 这些配置参数包括如下，也可以根据芯片情况增加；
+  + pull-up/down：电阻上下拉设定；
+  + tri-state：三态设定；
+  + drive-strength：驱动能力设定。
+** Pin Controller
+Pin Controller这个硬件模块是dts中的一个节点node（也叫server node）。
+device（如UART/IIC）也需要在它自己的dts node中描述相关内容。也就是说引
+脚配置在Pin Controller的设备树节点中（server node），device的节点中
+（client device）通过其phandle去引用这些节点去使用，U-BOOT中使用
+pinctrl-name和pinctrl-n来引用server node中的配置。
+*** Pin Configuration
+每个pin configuration都是pin controller的child node，描述了client
+device要使用到的一组pin的配置信息。具体如何定义pin configuration是和具
+体的pin controller相关的。在pin controller node中定义pin configuration
+其目的是为了让client device引用。
+
+
+Pin configuration的对象是pin或者pin group，SoC中的管脚有些属性可以配置，
+例如上拉、下拉、高阻、驱动能力等，pinctrl subsystem使用pin
+configuration来封装这些功能，具体体现在struct pinconf_ops数据结构中，
+如下，U-BOOT对这些API做了整合放在“struct pinctrl_ops”变量中：
+#+begin_src c 
+  struct pinconf_ops {
+      #ifdef CONFIG_GENERIC_PINCONF
+      bool is_generic;
+      #endif
+      /** 获取指定pin(管脚的编号，由pin的注册信息获得)当前配置，保存在
+       ,* config指针中
+       ,* */
+      int (*pin_config_get) (...);
+    
+      /** 设置指定pin的配置(可以同时配置多个config，具体意义要由相应
+       ,* pinctrl driver实现
+       ,* */
+      int (*pin_config_set) (...);
+    
+      /** 获取指定pin group的配置项 */
+      int (*pin_config_group_get) (...);
+    
+      /** 设置指定pin group的配置项 */
+      int (*pin_config_group_set) (...);
+      int (*pin_config_dbg_parse_modify) (...);
+      void (*pin_config_dbg_show) (...);
+      void (*pin_config_group_dbg_show)(...);
+      void (*pin_config_config_dbg_show)(...);
+  };
+#+end_src
+
+*** Pinctrl Driver
+Pinctrl Driver需要根据实际情况，将系统中所有的pin组织成一个pin 描述结
+构数组（struct pinctrl_pin_desc类型），并使用Pinctrl Driver来处理Pin
+Configuration的配置。
+*** Pin Groups
+有时需要将很多pin组合在一起，以实现特定的功能，例如SPI、I2C等。因此pin
+controller需要以group为单位，访问、控制多个pin。相应地，pin controller
+子需要提供一些机制，来获取系统中到底有多少groups、每个groups包含哪些
+pins等。因此，pinctrl的核心驱动在struct pinctrl_ops中抽象出三个回调函
+数，用来获取groups相关信息，U-BOOT对这些API做了整合放在“struct
+pinctrl_ops”变量中。在dts中用属性groups来给出（如groups="uart0_tx_rx"）。
+#+begin_src c 
+  struct pinctrl_ops {
+      /** 获取系统中pin groups的个数，后续的操作，将以相应的索引为单位
+       ,* (类似数组的下标selector）操作这个group里面的pin
+       ,* */
+      int (*get_groups_count) (struct pinctrl_dev *pctldev);
+      /** 获取指定group（由索引selector指定）的名称，在dts中用属性groups
+       ,* 来给出（如groups="uart0_tx_rx"）
+       ,* */
+      const char *(*get_group_name) (...);
+      /** 获取指定group的所有pins（由索引selector指定），结果保存在pins
+       ,* 指针数组中
+       ,* */
+      int (*get_group_pins) (...);
+    
+      void (*pin_dbg_show) (...);
+    
+      /** 将device tree中的pin state信息转换为pin map */
+      int (*dt_node_to_map) (...);
+      void (*dt_free_map) (...);
+  };
+#+end_src
+
+配置node中groups属性和pins属性是平级，且U-BOOT中如果检测到pins属性，
+groups属性，就会被当成普通属性，并对pins的值一个一个的进行配置。如下，
+如有groups，驱动中就会整合配置"uart0_0_tx_rx"所代表的这些引脚。如果有
+pins，驱动就会一个一个的将这些属性配置给这些引脚。
+#+begin_src shell
+  pinconfig_uart0_default: uart0-default-pin {
+          bootph-all;
+          # groups和function合作
+          groups = "uart0_0_tx_rx";
+          function = "uart"; 
+          bias-disable;
+          speed-freq-very-high;
+          # pins，pinmux和groups冲突
+          pins = "PS_MIO15_500", "PS_MIO14_500";
+          pinmux = <6>;
+  };
+#+end_src
+
+
+dts 配置node中groups用于确定引脚，function用于确定引脚的功能，驱动中需
+要做对应的定义。
+#+begin_src c
+  static int hwd10909_emmc_pins[] = { 40, 41, 42, 43, 44, 45, 47, 48,49, 50, }; /* pin序号 */
+  static int hwd10909_emmc_funcs[] = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, };/* pin功能 */
+
+  static int hwd10909_emmc_rst_pins[] = { 37, };
+  static int hwd10909_emmc_rst_funcs[] = { 1, };
+
+  static int hwd10909_uart0_0_tx_rx_pins[] = { 15, 14, }; /* RX: MIO14 TX: MIO15 */
+  static int hwd10909_uart0_0_tx_rx_funcs[] = { 6, 6, }; /* AF6 AF6 */
+
+  static const struct hwd_group_desc hwd10909_groups[] = {
+      { "emmc", hwd10909_emmc_pins, sizeof(hwd10909_emmc_pins), hwd10909_emmc_funcs},
+      { "emmc_rst", hwd10909_emmc_rst_pins, sizeof(hwd10909_emmc_rst_pins), hwd10909_emmc_rst_funcs},
+      { "uart0_0_tx_rx", hwd10909_uart0_0_tx_rx_pins, sizeof(hwd10909_uart0_0_tx_rx_pins), hwd10909_uart0_0_tx_rx_funcs},
+  };
+  static const char *const hwd10909_emmc_groups[] = { "emmc", "emmc_rst", };
+  static const char *const hwd10909_uart_groups[] = { "uart0_0_tx_rx"};
+
+  static const struct hwd_function_desc hwd10909_functions[] = {
+      {"emmc",    hwd10909_emmc_groups, ARRAY_SIZE(hwd10909_emmc_groups)},
+      {"uart",    hwd10909_uart_groups, ARRAY_SIZE(hwd10909_uart_groups)},
+  };
+#+end_src
+
+*** Pin function
+为了管理SoC的管脚复用，pinctrl subsystem抽象出function的概念，用来表示
+I2C0、UART5等功能。pin（或者pin group）所对应的function一经确定，它们
+的管脚复用状态也就确定了。在dts中用属性function来给出（如
+function="uart"）。
+
+
+和Pin groups类似，pinctrl核心驱动不关心function的具体形态，只要求
+pinctrl驱动将SoC的所有可能的function枚举出来（格式自行定义，不过需要有
+编号、名称等内容），并注册给pinctrl核心驱动。后续pinctrl核心驱动将会通
+过function的索引，访问、控制相应的function。同一个function（如I2C0），
+可能可以map到不同的pin（或者pin group）上。
+*** Pin state
+pin(pin group)以及相应的function和configuration的组合，可以确定一个设
+备的一个“状态”。这个状态在pinctrl subsystem中就称作pin state。在dts的
+client device中使用pinctrl-name属性来给出这个client device可能的状态
+state，然后这些使用这些pinctrl-n句柄来引用server node中的每个
+configuration，通常引用标签（如pinctrl-names = "default";
+pinctrl-0 = <&pinconfig_uart0_default>;），然后在client device驱动中，
+可使用API（pinctrl_select_state(dev, "default");）来切换这个设备的引脚
+状态到default态。
+*** Pin map
+在Linux的pinctrl subsystem中，pin state有关的信息是通过pin map收集。在
+旧时代，kernel的bsp工程师需要在machine有关的代码中，静态的定义pin map
+数组，这一个非常繁琐且不易维护的过程。不过当kernel引入device tree之后，
+事情就简单了很多：pinctrl driver确定了pin map各个字段的格式之后，就可
+以在dts文件中维护pin state以及相应的mapping table。pinctrl core在初始
+化的时候，会读取并解析dts，并生成pin map。而各个consumer，可以在自己的
+dts node中，直接引用pinctrl driver定义的pin state，并在设备驱动的相应
+的位置，调用pinctrl subsystem提供的API，active或者deactive这些state。
+至于dts中pin map描述的格式是什么，则完全由pinctrl driver自己决定，因为，
+最终的解析工作（dts to map）也是它自己做的。

@@ -1,0 +1,228 @@
+#+title: U-Boot
+#+subtitle: 设备树
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+
+简单的说，如果要使用Device Tree，首先用户要了解自己的硬件配置和系统运
+行参数，并把这些信息组织成Device Tree source file。通过DTC（Device
+Tree Compiler），可以将这些适合人类阅读的Device Tree source file变成适
+合机器处理的Device Tree binary file（有一个更好听的名字，DTB，device
+tree blob）。在系统启动的时候，boot program（例如：firmware、
+bootloader）可以将保存在flash中的DTB copy到内存（当然也可以通过其他方
+式，例如可以通过bootloader的交互式命令加载DTB，或者firmware可以探测到
+device的信息，组织成DTB保存在内存中），并把DTB的起始地址传递给client
+program（例如OS kernel，bootloader或者其他特殊功能的程序）。对于计算机
+系统（computer system），一般是firmware->bootloader->OS，对于嵌入式系
+统，一般是bootloader->OS。
+* u-boot对fdt的支持
+fdt即flattened device tree，只要加入即可，重新编译u-boot，就可以实现对
+device tree的支持。
+#+begin_src c
+  #define CONFIG_OF_LIBFDT               /* Device Tree support */
+#+end_src
+* dtb在uboot中的位置
+dtb可以以两种形式编译到uboot的镜像中。
+- dtb和uboot的bin文件分离
+  + 如何使能：需要打开CONFIG_OF_SEPARATE宏来使能。
+  + 编译说明：在这种方式下，uboot的编译和dtb的编译是分开的，先生成
+    uboot的bin文件，然后再另外生成dtb文件。
+  + 最终位置：dtb最终会追加到uboot的bin文件的最后面。也就是uboot.img
+    的最后一部分。因此，可以通过uboot的结束地址符号，也就是_end符号来
+    获取dtb的地址。
+- dtb集成到uboot的bin文件内部
+  + 如何使能：需要打开CONFIG_OF_EMBED宏来使能。
+  + 编译说明：在这种方式下，在编译uboot的过程中，也会编译dtb。
+  + 最终位置：注意：最终dtb是包含到了uboot的bin文件内部的。dtb会位于
+    uboot的.dtb.init.rodata段中，并且在代码中可以通过__dtb_dt_begin符
+    号获取其符号。因为这种方式不够灵活，文档上也不推荐，所以后续也不具
+    体研究，简单了解一下即可。
+- 另外，也可以通过fdtcontroladdr环境变量来指定dtb的地址：可以通过直接
+  把dtb加载到内存的某个位置，并在环境变量中设置fdtcontroladdr为这个地
+  址，达到动态指定dtb的目的。
+* u-boot中如何获取dtb
+** 整体说明
+在u-boot初始化过程中，需要对dtb做两个操作：
+- 获取dtb的地址，并且验证dtb的合法性
+- 因为我们使用的dtb并没有集成到uboot的bin文件中，也就是使用的
+  CONFIG_OF_SEPARATE方式。因此，在relocate uboot的过程中并不会去
+  relocate dtb。因此，这里我们还需要自行为dtb预留内存空间并进行
+  relocate。
+- relocate之后，还需要重新获取一次dtb的地址。
+
+
+对应代码common/board_f.c
+#+begin_src c
+  static init_fnc_t init_sequence_f[] = {
+  //...
+  #ifdef CONFIG_OF_CONTROL
+      fdtdec_setup, // 获取dtb的地址，并且验证dtb的合法性
+  #endif
+  //...
+      reserve_fdt, // 为dtb分配新的内存地址空间
+  //...
+      reloc_fdt, // relocate dtb
+  //...
+  }
+#+end_src
+** 验证dtb的合法性
+对应代码如下,lib/fdtdec.c
+#+begin_src c
+  int fdtdec_setup(void){
+  #if CONFIG_IS_ENABLED(OF_CONTROL) // 确保CONFIG_OF_CONTROL宏是打开的
+  # ifdef CONFIG_OF_EMBED
+      /* Get a pointer to the FDT */
+      gd->fdt_blob = __dtb_dt_begin; 
+  // 当使用CONFIG_OF_EMBED的方式时，也就是dtb集成到uboot的bin文件中时，通过__dtb_dt_begin符号来获取dtb地址。
+  # elif defined CONFIG_OF_SEPARATE
+      /* FDT is at end of image */
+      gd->fdt_blob = (ulong *)&_end;
+  //当使用CONFIG_OF_SEPARATE的方式时，也就是dtb追加到uboot的bin文件后面时，通过_end符号来获取dtb地址。
+  # endif
+      /* Allow the early environment to override the fdt address */
+      gd->fdt_blob = (void *)getenv_ulong("fdtcontroladdr", 16,
+                          (uintptr_t)gd->fdt_blob);
+  // 可以通过环境变量fdtcontroladdr来指定gd->fdt_blob，也就是指定fdt的地址。
+  #endif
+  // 最终都把dtb的地址存储在gd->fdt_blob中
+      return fdtdec_prepare_fdt();
+  // 在fdtdec_prepare_fdt中检查fdt的合法性
+  }
+  /* fdtdec_prepare_fdt实现如下 */
+  int fdtdec_prepare_fdt(void){
+      if (!gd->fdt_blob || ((uintptr_t)gd->fdt_blob & 3) ||
+          fdt_check_header(gd->fdt_blob)) {
+          puts("No valid device tree binary found - please append one to U-Boot binary, use u-boot-dtb.bin or define CONFIG_OF_EMBED. For sandbox, use -d <file.dtb>\n");
+          return -1;
+  // 判断dtb是否存在，以及是否有四个字节对齐。
+  // 然后再调用fdt_check_header看看头部是否正常。fdt_check_header主要是检查dtb的magic是否正确。
+      }
+      return 0;
+  }
+#+end_src
+** 为dtb分配新的内存地址空间（reserve_fdt）
+common/board_f.c中
+#+begin_src c
+  static int reserve_fdt(void){
+  #ifndef CONFIG_OF_EMBED
+  // 当使用CONFIG_OF_EMBED方式时，也就是dtb集成在uboot中的时候，relocate uboot过程中也会把dtb一起relocate，所以这里就不需要处理。
+  // 当使用CONFIG_OF_SEPARATE方式时，就需要在这里地方进行relocate
+      if (gd->fdt_blob) {
+          gd->fdt_size = ALIGN(fdt_totalsize(gd->fdt_blob) + 0x1000, 32);
+  // 获取dtb的size
+          gd->start_addr_sp -= gd->fdt_size;
+          gd->new_fdt = map_sysmem(gd->start_addr_sp, gd->fdt_size);
+  // 为dtb分配新的内存空间
+          debug("Reserving %lu Bytes for FDT at: %08lx\n",
+                gd->fdt_size, gd->start_addr_sp);
+      }
+  #endif
+      return 0;
+  }
+#+end_src
+** relocate dtb（reloc_fdt）
+common/board_f.c中
+#+begin_src c
+  static int reloc_fdt(void){
+  #ifndef CONFIG_OF_EMBED
+  // 当使用CONFIG_OF_EMBED方式时，也就是dtb集成在uboot中的时候，relocate uboot过程中也会把dtb一起relocate，所以这里就不需要处理。
+  // 当使用CONFIG_OF_SEPARATE方式时，就需要在这里地方进行relocate
+      if (gd->flags & GD_FLG_SKIP_RELOC)
+  // 检查GD_FLG_SKIP_RELOC标识
+          return 0;
+      if (gd->new_fdt) {
+          memcpy(gd->new_fdt, gd->fdt_blob, gd->fdt_size);
+  // relocate dtb空间
+          gd->fdt_blob = gd->new_fdt;
+  // 切换gd->fdt_blob到dtb的新的地址空间上
+      }
+  #endif
+
+      return 0;
+  }
+#+end_src
+* boot中对FDT的支持
+如果要使用tag，需boot和kernel同时支持，那么用FDT取代TAG也同样如此.uboot中
+对FDT的支持:
+- uboot代码中已经对fdt有支持，可以通过开启CONFIG_OF_LIBFDT配置，实现
+  FDT支持，如此会省掉一部分工作。例如：fdt调试命令可以直接使用。
+- 如前所述dtb文件被烧录到flash上。在Uboot引导内核启动之前会将dtb拷贝到
+  内存上，并对dtb的内容进行修改，这一步是为了支持对环境变量的动态修改。
+  以下介绍u-boot中如何修改dts文件中定义的内容：重点观察
+  example_plat_version.dts文件里chosen节点中bootargs参数的修改，关键函
+  数fdt_chosen：
+  #+begin_src c 
+    int fdt_chosen(void *fdt, int force){
+      int nodeoffset;
+      char *str;
+      const char *path;
+      nodeoffset= fdt_path_offset(fdt, "/chosen");
+      if(nodeoffset<0)
+      {
+        nodeoffset=fdt_add_subnode(fdt,0,"chosen");
+        if(nodeoffset<0)
+        {
+          return nodeoffset;
+        }
+      }
+      str = getenv("bootargs");
+      path = fdt_set_prop(fdt,nodeoffset,"bootargs",str,strlen(str)+1);
+      return 0;
+    }
+  #+end_src
+  上述函数的fdt_path_offset(fdt,”chosen”)获取的是dts文件中的：
+  #+begin_src shell
+    chosen{
+    bootargs = "console=ttyS0,115200 mem=100M root=/dev/mtdblock0 init=/linuxrc";
+    };
+  #+end_src
+  要想修改bootargs则调用fdt_setprop_string;其中fdt_setprop_string等接
+  口是FDT提供的标准接口，boot和kernel源码中都可调用。
+  
+- 将dtb从flash拷贝到dram上。假设拷贝到dram=0x200100的地址，则uboot跳转
+  到kernel时再通过cpu的通用寄存器r2告知系统这个地址，这一点与tag没有分
+  别。至此完成boot下对fdt的支持。
+  
+* Uboot下调试FDT
+Uboot支持标准的fdt命令修改dtb的内容。
+- fdt list ：列出系统中所有节点。即上面dts文件中的节点。
+- 列出aliases节点：fdt list /aliases
+- 查看boot分区信息：fdt list nand
+- 修改dtb举例：
+  + 修改前 reg= <0x2000 0xe007>(字节序反了):实际表示linux 系统内存从
+    0x200000开始大小为0x7e00000
+  + 修改后 reg=<0x2000 0xe006>:实际表示linux 系统内存从0x200000开始大
+    小为0x6e00000
+
+  #+begin_src shell
+    #fdt list /memory
+    memory{
+        device_type = "memory";
+        reg = <0x2000,0xe007>;
+    };
+    #fdt set /memory reg <0x200000 0x6e00000>
+    #
+    #fdt list /memory
+    memory{
+        device_type = "memory";
+        reg = <0x2000,0xe006>;
+    };
+  #+end_src
+** fdt调试和验证的工具方法
+*** dtc工具
+dtc可以使用宿主机提供的亦可以使用kernel提供的。这个工具是将已编译的dtb
+文件反汇编。以下命令可以将dtb反编译到dts文件
+#+begin_src shell
+  dtc -I dtb -o dts 1.dts xxx.dtb
+#+end_src
+*** U-Boot fdt command
+驱动代码在debug期间，若希望更改外设模块的设备树属性时，在不改变存储设
+备中dtb文件的前提下，进入到U-Boot的命令行界面，通过U-Boot的fdt命令来实
+现。例如修改外设时钟源、修改外设时钟名、status属性等。为了使U-Boot支持
+fdt命令需要打开“CONFIG_OF_LIBFDT”。
+

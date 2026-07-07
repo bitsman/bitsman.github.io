@@ -1,0 +1,33 @@
+#+title: U-Boot Driver Mode
+#+subtitle: Pinctrl
+# #+author: 
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+* 前言
+前言在许多soc内部都包含有pin控制器，通过pin控制器的寄存器，我们可以配
+置一个或者一组引脚的功能和特性。uboot提供一个类似linux的pinctrl子系统，
+目的是为了统一各soc厂商的pin脚管理。
+* Pinctrl子系统的功能简介
+我们可以通过pinctrl子系统来设置引脚的复用、配置，可以将IO复用成GPIO、
+I2C等其它功能。图如下
+[[./pic/pinctrl_sys.png]]
+
+- 管理系统中所有的可以控制的pin，在系统初始化的时候，枚举所有可以控制
+  的pin，并标识这些pin。
+- 管理这些pin的复用，对于SOC而言，其引脚除了配置成普通的GPIO之外，若干
+  个引脚还可以组成一个pin group，行程特定的功能。pin control subsystem
+  要管理所有的pin group。
+- 配置这些pin的特性。例如使能或关闭引脚上的pull-up、pull-down电阻，配
+  置引脚的driver strength。
+* Pinctrl Uclass创建流程
+下面是pinctrl uclass创建和绑定的过程如下.
+
+  
+
+
+   

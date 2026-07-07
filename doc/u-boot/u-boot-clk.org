@@ -1,0 +1,409 @@
+#+title: U-Boot
+#+subtitle: Clock
+#+author: 
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+* clk的一些概念
+** fixed rate clock
+这一类clock具有固定的频率，不能开关、不能调整频率、不能选择parent、不
+需要提供任何的clk_ops回调函数，是最简单的一类clock。可以直接通过DTS配
+置的方式支持，clock framework core能直接从DTS中解出clock信息，并自动注
+册到kernel，不需要任何driver支持。例如24MHz晶振和32.768K的晶振。
+** fixed factor clock
+这一类clock具有固定的factor（即multiplier和divider），clock的频率是由
+parent clock的频率，乘以mul，除以div，多用于一些具有固定分频系数的
+clock。由于parent clock的频率可以改变，因而fix factor clock也可该改变
+频率。以第一行的clk为例，这里的"sys_pll1_40m"就是我们想要的fixed
+factor clock。“sys_pll1_40m"的clk的父时钟节点为"sys_pll1_out”(800MHz)，
+倍频系数为1，分频系数为20。回调有
+- .recalc_rate
+- .set_rate
+- .round_rate
+** mux clock
+这一类clock可以选择多个parent。该接口可注册mux控制比较规则的clock（类
+似divider clock）：
+- name：clk名字；
+- parent_names：一个字符串数组，用于描述所有可能的parent clock名字；
+- num_parents：parent clock的个数；reg、shift、width，选择parent的寄存
+  器、偏移、宽度，默认情况下，寄存器值为0时，对应第一个parent，依此类推；
+
+
+
+回调有：
+- get_parent
+- set_parent
+- recalc_rate
+
+** divider clock
+这类clock可以设置分频值
+- name：需要生成的divider clock名字；
+- parent：控制分频比的父时钟节点；
+- reg：控制clock分频比的寄存器地址；
+- shift：控制分频比的bit在寄存器中的偏移；
+- width：控制分频比的bit位数，默认情况下，实际的divider值是寄存器值加1。
+  如果有其它例外，可使用下面的的flag指示；
+
+
+回调：
+- recalc_rate
+- set_rate
+- round_rate
+** gate clock
+这一类clock只可开关，可使用下面接口注册：
+- name：clock的名称；
+- parent_name：parent clock的名称，没有的话可留空；
+- reg：控制该clock开关的寄存器地址；
+- shift：控制开关的bit在寄存器中的偏移；
+- CLK_IS_CRITICAL：不允许开关控制，属于系统核心clk；
+
+
+回调有：
+- .enable
+- .disable
+** composite clock
+顾名思义，就是mux、divider、gate等clock的组合，可通过下面接口注册。
+- reg：集成了mux、divider、gate功能的寄存器地址；
+- parent_names：可选择的parent名字数组；
+* 启动初期的clk初始化入口（非驱动层）
+在clk驱动代码中，只使能了IMX8MP_SYS_PLL1_800M，IMX8MP_SYS_PLL2_1000M等
+最基础的时钟，并没有像Linux一样打开所有的时钟，毕竟对于一个bootloader
+来说，体积小和高效才是第一位。
+
+
+在UBoot启动中期会初始化定时器、时钟等等CPU必须的外设，其中初始化时钟的
+函数是int clock_init(void)。
+
+
+MIPI 的时钟初始化enable_display_clk在int clock_init(void)中调用。
+* DTS中的相关定义
+MIPI DSI的数据来源是lcdif1，其dts定义如下图所示，可以看到，要想打开
+MIPI DSI，我们必须打开IMX8MP_CLK_MEDIA_DISP1_PIX_ROOT，
+IMX8MP_CLK_MEDIA_AXI_ROOT，IMX8MP_CLK_MEDIA_APB_ROOT和
+IMX8MP_CLK_MEDIA_MIPI_PHY1_REF。提供对应的频率分别为594M，500M，200M和
+27M。值得注意的是，Uboot中的clk驱动并没有像Linux一样解析dts中时钟并在
+各自驱动中进行enable。因此对于显示相关的驱动，我们单独设置分频系数和时
+钟频率，而不是在clk驱动中。
+* 芯片手册部分
+** CCM中的PLL分频器
+首先来看看Video PLL产生，ARM PLL，GPU PLL，DRAM PLL，AUDIO PLL和VIDEO
+PLL等待是整个SOC中的最重要的PLL（这几个PLL作为父节点）。这里我们以需要
+的VIDEO PLL为例，外接的晶振是24Mhz，经过CCM（时钟控制模块）后产生
+594MHz的时钟。如下图所示，CCM的大致工作原理是，输入的时钟经由相位频率
+检测器（PFD）、电荷泵、电压控制器振荡器（VCO）、6位预分频器、10位主分
+频器、3位缩放器、增量西格玛调制器（DSM）和自动频率控制（AFC）生成分频
+的PLL。
+
+
+PLL的计算公式如下：参数范围：1 ≤ p ≤ 63, 64 ≤ m ≤ 1023, 0 ≤ s ≤ 6,
+-32768 ≤ k ≤ 32767（p、m和s是无符号整数，k是二的整数。 ）
+- p：预分频器系数
+- m：主分频器系数
+- s：缩放器系数
+- k：调制控制值
+
+当SSCG_EN = 1时，扩展分频功能就打开了。下图是扩展模式的clk计算，计算公
+式如下：
+image-20220325102425096
+
+接下来几个小节的截图分别表示了CLK_ROOT可以选择由哪个时钟源产生。例如
+MEDIA_DISP1_PIX_CLK_ROOT偏移量0xBE00，最大频率250MHz，可以选择的时钟源
+有24M_REF_CLK，SYSTEM_PLL2_CLK和VIDEO_PLL_CLK等等。写入对应的数字即可
+选择。
+
+
+- MEDIA_DISP1_PIX_CLK_ROOT（IMX8MP_CLK_MEDIA_DISP1_PIX_ROOT）:
+  image-20220322220858038
+- MEDIA_AXI_CLK_ROOT（IMX8MP_CLK_MEDIA_AXI_ROOT）:
+  image-20220322220509624
+- MEDIA_APB_CLK_ROOT（IMX8MP_CLK_MEDIA_APB_ROOT）:
+  image-20220322220424743
+- MEDIA_MIPI_PHY1_REF_CL K_ROOT（IMX8MP_CLK_MEDIA_MIPI_PHY1_REF）:
+  image-20220322220700691
+** 代码部分
+现在让我们看看Uboot中是如何驱动CCM生成594MHz的Video PLL的吧。整体思路
+如下，先设置VIDEO_PLL，再依次设置AXI，APB和REF。
+image-20220322221849688
+
+
+在代码中imx_int_pll_rate_table预先定义了我们想要的PLL频率以及生成PLL所
+对应的p,m,k,s值。
+image-20220322205944063
+
+
+[外链图片转存失败]
+
+
+在pll配置函数fracpll_configure 中会根据传入的freq频率值进行匹配，得到
+频率对应的p,m,k,s值。
+
+
+下面就是将参数写入相应pll寄存器了，这里时钟相关的寄存器基地址是芯片手
+册中定义的CCM寄存器基地址0x3036_0000，注意我这里的圈出来每个寄存器基地
+址的差值4。
+image-20220322210713747 image-20220322210039133
+[外链图片转存失败]
+** 重要的数据结构
+现在我们知道了基地址，如何将其用软件数据结构表示出来的呢？这里引入了一
+个巧妙的数据结构定义anamix_pll，u32在内存中占有的大小为4字节，和上面寄
+存器差值对应。因此！当知道了基地址后，我们用u32顺序表示所有的寄存器，
+这个时候我们就能随意写入想要的pll寄存器啦！
+#+begin_src c
+  struct anamix_pll {
+          u32 audio_pll1_gnrl_ctl;
+          u32 audio_pll1_fdiv_ctl0;
+          u32 audio_pll1_fdiv_ctl1;
+          u32 audio_pll1_sscg_ctl;
+          u32 audio_pll1_mnit_ctl;
+          u32 audio_pll2_gnrl_ctl;
+          u32 audio_pll2_fdiv_ctl0;
+          u32 audio_pll2_fdiv_ctl1;
+          u32 audio_pll2_sscg_ctl;
+          u32 audio_pll2_mnit_ctl;
+          u32 video_pll1_gnrl_ctl;
+          u32 video_pll1_fdiv_ctl0;
+          u32 video_pll1_fdiv_ctl1;
+          u32 video_pll1_sscg_ctl;
+          u32 video_pll1_mnit_ctl;
+          u32 reserved[5];
+          u32 dram_pll_gnrl_ctl;
+          u32 dram_pll_fdiv_ctl0;
+          u32 dram_pll_fdiv_ctl1;
+          u32 dram_pll_sscg_ctl;
+          u32 dram_pll_mnit_ctl;
+          u32 gpu_pll_gnrl_ctl;
+          u32 gpu_pll_div_ctl;
+          u32 gpu_pll_locked_ctl1;
+          u32 gpu_pll_mnit_ctl;
+          u32 vpu_pll_gnrl_ctl;
+          u32 vpu_pll_div_ctl;
+          u32 vpu_pll_locked_ctl1;
+          u32 vpu_pll_mnit_ctl;
+          u32 arm_pll_gnrl_ctl;
+          u32 arm_pll_div_ctl;
+          u32 arm_pll_locked_ctl1;
+          u32 arm_pll_mnit_ctl;
+          u32 sys_pll1_gnrl_ctl;
+          u32 sys_pll1_div_ctl;
+          u32 sys_pll1_locked_ctl1;
+          u32 reserved2[24];
+          u32 sys_pll1_mnit_ctl;
+          u32 sys_pll2_gnrl_ctl;
+          u32 sys_pll2_div_ctl;
+          u32 sys_pll2_locked_ctl1;
+          u32 sys_pll2_mnit_ctl;
+          u32 sys_pll3_gnrl_ctl;
+          u32 sys_pll3_div_ctl;
+          u32 sys_pll3_locked_ctl1;
+          u32 sys_pll3_mnit_ctl;
+          u32 anamix_misc_ctl;
+          u32 anamix_clk_mnit_ctl;
+          u32 reserved3[437];
+          u32 digprog;
+  };
+#+end_src
+
+另外为了提高代码的通用性，又有一组枚举值来确保代码使用者可以写入想要的
+寄存器。
+#+begin_src c
+  enum pll_clocks {
+          ANATOP_ARM_PLL,
+          ANATOP_VPU_PLL,
+          ANATOP_GPU_PLL,
+          ANATOP_SYSTEM_PLL1,
+          ANATOP_SYSTEM_PLL2,
+          ANATOP_SYSTEM_PLL3,
+          ANATOP_AUDIO_PLL1,
+          ANATOP_AUDIO_PLL2,
+          ANATOP_VIDEO_PLL,
+          ANATOP_DRAM_PLL,
+  };
+#+end_src
+注意：如果我们想产生VIDEO PLL，上图中的pll_base就是anamix_pll中的
+ANATOP_VIDEO_PLL，也就是地址0x3036_0028。
+** 寄存器的写入
+现在我们已经拿到了产生594Mhz VIDEO PLL所需的寄存器和pmks值。
+- 设置LCDIF中的IMX8MP_VIDEO_PLL1_OUT: enable_display_clk优先设置了
+  VIDEO_PLL和MIPI相关的clk，但是lcdif像素时钟
+  （IMX8MP_CLK_MEDIA_DISP1_PIX）是在后面lcdif驱动加载的时候设置的。
+  #+begin_src c
+    /* Set Video PLL to 594Mhz, p = 1, m = 99,  k = 0, s = 2 */
+    fracpll_configure(ANATOP_VIDEO_PLL, VIDEO_PLL_RATE);
+  #+end_src
+- 设置LCDIF中的IMX8MP_CLK_MEDIA_AXI
+  #+begin_src c 
+    /* 500Mhz */
+    clock_set_target_val(MEDIA_AXI_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(1) | CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV2));
+  #+end_src
+
+
+
+接下来的几个都是使用clock_set_target_val设置时钟。第一参数是root clk
+id 号，例如这里的MEDIA_AXI_CLK_ROOT是20。这里表面上名为clk index，其实
+就是slice id。这里的slice种类又细分为CORE_CLOCK_SLICE，BUS_CLOCK_SLICE，
+IP_CLOCK_SLICE，AHB_CLOCK_SLICE，IPG_CLOCK_SLICE，CORE_SEL_CLOCK_SLICE
+和DRAM_SEL_CLOCK_SLICE。clock_set_target_val会根据slice index id寻找到
+clk_root_map数组中对应的clk组，这个时候就拿到了slice type和slice index
+id。比如我们这里拿到的是BUS_CLOCK_SLICE和4，然后get_clk_root_target才
+能去ccm中找到slice type[slice index]寄存器地址。也就是这里我们要写入的
+MEDIA_AXI_CLK_ROOT地址。
+image-20220323133910970 image-20220323131956469 image-20220323153530769
+
+
+注意以上的数据结构，对应着芯片手册。
+image-20220323132655052
+
+
+当前clk root entry对应的多个时钟源，由src_mux[8]表示。
+image-20220323153812002
+
+
+从ccm中获取bus slice[slice_index]值，即MEDIA_AXI_CLK_ROOT。这里的寄存器地址是CCM_TARGET_ROOT20，这里的20指的slice index。
+image-20220323134702650
+
+
+芯片手册中的地址计算公式如下
+image-20220323140534500
+
+
+对于下方的数据结构，又是如何实现地址计算的呢？
+ccm_reg结构体的基础地址=0x3038_0000，每个u32大小为4字节，所以34816（十
+进制大小）是截止到struct ccm_root bus_root[12]之前的大小，加上这里的
+slice index=4，那就是4个ccm_root大小，即32x4x4=512。512加上34816就是
+35328，转换成16进制就是0x8A00!!!计算出了寄存器地址0x3038_8A00。
+#+begin_src c 
+  struct ccm_ccgr {
+          u32 ccgr;
+          u32 ccgr_set;
+          u32 ccgr_clr;
+          u32 ccgr_tog;
+  };
+  struct ccm_root {
+          u32 target_root;
+          u32 target_root_set;
+          u32 target_root_clr;
+          u32 target_root_tog;
+          u32 misc;
+          u32 misc_set;
+          u32 misc_clr;
+          u32 misc_tog;
+          u32 nm_post;
+          u32 nm_post_root_set;
+          u32 nm_post_root_clr;
+          u32 nm_post_root_tog;
+          u32 nm_pre;
+          u32 nm_pre_root_set;
+          u32 nm_pre_root_clr;
+          u32 nm_pre_root_tog;
+          u32 db_post;
+          u32 db_post_root_set;
+          u32 db_post_root_clr;
+          u32 db_post_root_tog;
+          u32 db_pre;
+          u32 db_pre_root_set;
+          u32 db_pre_root_clr;
+          u32 db_pre_root_tog;
+          u32 reserved[4];
+          u32 access_ctrl;
+          u32 access_ctrl_root_set;
+          u32 access_ctrl_root_clr;
+          u32 access_ctrl_root_tog;
+  };
+  struct ccm_reg {
+          u32 reserved_0[4096];
+          struct ccm_ccgr ccgr_array[192];
+          u32 reserved_1[3328];
+          struct ccm_root core_root[5];
+          u32 reserved_2[352];
+          struct ccm_root bus_root[12];
+          u32 reserved_3[128];
+          struct ccm_root ahb_ipg_root[4];
+          u32 reserved_4[384];
+          struct ccm_root dram_sel;
+          struct ccm_root core_sel;
+          u32 reserved_5[448];
+          struct ccm_root ip_root[78];
+  };
+#+end_src
+现在我们成功拿到了MEDIA_AXI_CLK_ROOT的地址，即0x3038_8A00,这里的8A00正
+是CCM_TARGET_ROOT20的偏移地址。
+image-20220323140025248
+
+
+这里写入的位分别是
+CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(1) | CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV2)
+也就是手册中的Bit28，26～24和18～16。 26～24位写入001，即ROOT CLK选择
+SYSTEM_PLL2_CLK(1000MHz)。
+
+18~16位写入001。预分频参数2，将1000MHz除2得到需要的500MHz。
+image-20220323164456666
+设置LCDIF中的IMX8MP_CLK_MEDIA_APB
+
+
+分析同MEDIA_AXI_CLK_ROOT。
+#+begin_src c
+  /* 200Mhz */
+  clock_set_target_val(MEDIA_APB_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(2) |CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV4));
+#+end_src
+
+设置MIPI DSI中的IMX8MP_CLK_MEDIA_MIPI_PHY1_REF
+分析同MEDIA_AXI_CLK_ROOT。得到27MHz。
+#+begin_src c
+  /* 27Mhz MIPI DPHY PLL ref from video PLL */
+  clock_set_target_val(MEDIA_MIPI_PHY1_REF_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(7) |CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV22));
+#+end_src
+
+lcdif中的MEDIA_DISP1_PIX_CLK_ROOT设置
+enable_display_clk会在lcdif驱动加载之前调用，因此当lcdif驱动使用
+mxs_set_lcdclk设置lcdif时钟时，**会根据MIPI的594MHz频率为依据计算lcdif
+的像素时钟分频参数pre和post。**最后设置的时钟是
+MEDIA_DISP1_PIX_CLK_ROOT，即lcdif输出给mipi的像素时钟。算法如下：
+image-20220322230439347
+
+
+代码分析同MEDIA_AXI_CLK_ROOT，最后在lcdif驱动加载的时候才设置MEDIA_DISP1_PIX_CLK_ROOT。
+#+begin_src c 
+  clock_set_target_val(MEDIA_DISP1_PIX_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(1) | CLK_ROOT_PRE_DIV(pre - 1) | CLK_ROOT_POST_DIV(post - 1));
+#+end_src
+
+
+移植需要的clk到驱动中
+我们需要在驱动中设置IMX8MP_CLK_MEDIA_DISP2_PIX以及
+IMX8MP_CLK_MEDIA_LDB_ROOT，均由IMX8MP_VIDEO_PLL1_OUT分频得到。其中
+IMX8MP_CLK_MEDIA_DISP2_PIX为lcdif2的74.25MHz，
+IMX8MP_CLK_MEDIA_LDB_ROOT为ldb的serial_clk=74.25*7。
+** PLL移植
+PLL脚本：
+#+begin_src c 
+  #define VIDEO_PLL_RATE 1039500000U
+
+  static struct imx_int_pll_rate_table imx8mm_fracpll_tbl[] = {
+    PLL_1443X_RATE(1039500000U, 693, 4, 2, 0),
+          PLL_1443X_RATE(1000000000U, 250, 3, 1, 0),
+          PLL_1443X_RATE(800000000U, 200, 3, 1, 0),
+          PLL_1443X_RATE(750000000U, 250, 2, 2, 0),
+          PLL_1443X_RATE(650000000U, 325, 3, 2, 0),
+          PLL_1443X_RATE(600000000U, 300, 3, 2, 0),
+          PLL_1443X_RATE(594000000U, 99, 1, 2, 0),
+          PLL_1443X_RATE(400000000U, 400, 3, 3, 0),
+          PLL_1443X_RATE(266000000U, 266, 3, 3, 0),
+          PLL_1443X_RATE(167000000U, 334, 3, 4, 0),
+          PLL_1443X_RATE(100000000U, 200, 3, 4, 0),
+  };
+#+end_src
+
+
+- IMX8MP_CLK_MEDIA_DISP2_PIX: 设置IMX8MP_CLK_MEDIA_DISP2_PIX分频系数为14。
+  #+begin_src c
+    clock_set_target_val(MEDIA_DISP2_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(1) | CLK_ROOT_PRE_DIV(14) )
+  #+end_src
+- IMX8MP_CLK_MEDIA_LDB_ROOT: 2分频。
+  #+begin_src c
+    clock_set_target_val(MEDIA_LDB_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(7) | CLK_ROOT_PRE_DIV(2) )
+  #+end_src
+
+
