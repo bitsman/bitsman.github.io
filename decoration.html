@@ -3,14 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-06-05 周五 00:04 -->
+<!-- 2026-07-12 日 12:30 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>装修日记</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="比克曼" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -31,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -40,22 +41,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -161,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -177,113 +191,66 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="css/org-manual.css"/>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2018 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-</script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">装修日记</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgd13444f">1. 验房</a>
+<li><a href="#orge3395ae">1. 验房</a>
 <ul>
-<li><a href="#orgb91a71e">1.1. 证件</a></li>
-<li><a href="#org2765de6">1.2. 工具</a></li>
-<li><a href="#org869af33">1.3. 流程</a></li>
+<li><a href="#org9c813fe">1.1. 证件</a></li>
+<li><a href="#orgc11fc73">1.2. 工具</a></li>
+<li><a href="#org95e4ba5">1.3. 流程</a></li>
 </ul>
 </li>
-<li><a href="#org362bc41">2. 装修</a>
+<li><a href="#orgbd86aa2">2. 装修</a>
 <ul>
-<li><a href="#org866eac3">2.1. 装修流程</a></li>
-<li><a href="#orgb170586">2.2. 设计师的服务流程</a></li>
-<li><a href="#org4bdd0a7">2.3. 设计师的收费方式和内容</a></li>
-<li><a href="#org844f1ce">2.4. 施工队进度表</a></li>
-<li><a href="#orga6a18e5">2.5. 常用单位换算</a></li>
-<li><a href="#org0e9ee52">2.6. 空间</a>
+<li><a href="#org3d8e353">2.1. 装修流程</a></li>
+<li><a href="#org955e825">2.2. 设计师的服务流程</a></li>
+<li><a href="#orgc6ad8f5">2.3. 设计师的收费方式和内容</a></li>
+<li><a href="#orgbf55bf4">2.4. 施工队进度表</a></li>
+<li><a href="#org64e71c9">2.5. 常用单位换算</a></li>
+<li><a href="#orgea3e528">2.6. 空间</a>
 <ul>
-<li><a href="#org50176c3">2.6.1. 测量前的准备</a></li>
-<li><a href="#org9feac88">2.6.2. 卧室</a></li>
+<li><a href="#orgc2ea0ba">2.6.1. 测量前的准备</a></li>
+<li><a href="#orgbe48e45">2.6.2. 卧室</a></li>
 </ul>
 </li>
-<li><a href="#org2dc77d3">2.7. 合同</a>
+<li><a href="#orgd9d47ed">2.7. 合同</a>
 <ul>
-<li><a href="#org21dd27a">2.7.1. 设计合同</a></li>
-<li><a href="#org258e1f4">2.7.2. 施工合同</a></li>
+<li><a href="#org51e9b1d">2.7.1. 设计合同</a></li>
+<li><a href="#org702d65f">2.7.2. 施工合同</a></li>
 </ul>
 </li>
-<li><a href="#orgf608ba3">2.8. 建材</a>
+<li><a href="#org84058b2">2.8. 建材</a>
 <ul>
-<li><a href="#org9b73ea6">2.8.1. 木质地板</a></li>
-<li><a href="#org5d7bb0a">2.8.2. 石材</a></li>
-<li><a href="#orgdba070f">2.8.3. 瓷砖</a></li>
-<li><a href="#org4031819">2.8.4. 地毯</a></li>
-<li><a href="#org1c4f694">2.8.5. 涂料</a></li>
-<li><a href="#orgaf6ac70">2.8.6. 壁饰类</a></li>
-<li><a href="#orge7f1568">2.8.7. 玻璃类</a></li>
-<li><a href="#org4cd7f6c">2.8.8. 料理台</a></li>
-<li><a href="#orgbfaedc7">2.8.9. 水槽</a></li>
+<li><a href="#orgdf4c9d6">2.8.1. 木质地板</a></li>
+<li><a href="#orgdc10b16">2.8.2. 石材</a></li>
+<li><a href="#orge3f9cb0">2.8.3. 瓷砖</a></li>
+<li><a href="#org63be9ab">2.8.4. 地毯</a></li>
+<li><a href="#org296286b">2.8.5. 涂料</a></li>
+<li><a href="#org326551e">2.8.6. 壁饰类</a></li>
+<li><a href="#orga1dec57">2.8.7. 玻璃类</a></li>
+<li><a href="#org93ce74d">2.8.8. 料理台</a></li>
+<li><a href="#org2df93a5">2.8.9. 水槽</a></li>
 </ul>
 </li>
-<li><a href="#org91e9f47">2.9. 监工表单</a>
+<li><a href="#org227a180">2.9. 监工表单</a>
 <ul>
-<li><a href="#org79a6d55">2.9.1. 石材监工检查表单</a></li>
+<li><a href="#org29caf3e">2.9.1. 石材监工检查表单</a></li>
 </ul>
 </li>
-<li><a href="#org5a3af09">2.10. 插座开关灯</a></li>
-<li><a href="#orge4824b0">2.11. 家具</a>
+<li><a href="#org298889e">2.10. 插座开关灯</a></li>
+<li><a href="#org1002530">2.11. 家具</a>
 <ul>
-<li><a href="#org29c7a6f">2.11.1. 桌子</a></li>
-<li><a href="#orge341264">2.11.2. 床</a></li>
+<li><a href="#org66fb6da">2.11.1. 桌子</a></li>
+<li><a href="#org18fcfbe">2.11.2. 床</a></li>
 </ul>
 </li>
 </ul>
@@ -295,19 +262,19 @@ for the JavaScript code in this tag.
 <h2>List of Tables</h2>
 <div id="text-list-of-tables">
 <ul>
-<li><a href="#orgadf9b1b"><span class="table-number">Table 1:</span> 设计师收费方式</a></li>
-<li><a href="#orgeddf1c8"><span class="table-number">Table 2:</span> 工程进度表</a></li>
-<li><a href="#orgf9d0881"><span class="table-number">Table 3:</span> 单位换算</a></li>
+<li><a href="#org91093b4"><span class="table-number">Table 1:</span> 设计师收费方式</a></li>
+<li><a href="#orgd5a70f0"><span class="table-number">Table 2:</span> 工程进度表</a></li>
+<li><a href="#orgda730ef"><span class="table-number">Table 3:</span> 单位换算</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd13444f" class="outline-2">
-<h2 id="orgd13444f"><span class="section-number-2">1</span> 验房</h2>
+<div id="outline-container-orge3395ae" class="outline-2">
+<h2 id="orge3395ae"><span class="section-number-2">1.</span> 验房</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgb91a71e" class="outline-3">
-<h3 id="orgb91a71e"><span class="section-number-3">1.1</span> 证件</h3>
+<div id="outline-container-org9c813fe" class="outline-3">
+<h3 id="org9c813fe"><span class="section-number-3">1.1.</span> 证件</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 在签合同时增加这样的约定：“交房时，应先验房然后办收房手续”，如果当初没有来得及在合同上约定，则可在收楼文件中注明“房内
@@ -322,8 +289,8 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-org2765de6" class="outline-3">
-<h3 id="org2765de6"><span class="section-number-3">1.2</span> 工具</h3>
+<div id="outline-container-orgc11fc73" class="outline-3">
+<h3 id="orgc11fc73"><span class="section-number-3">1.2.</span> 工具</h3>
 <div class="outline-text-3" id="text-1-2">
 <ul class="org-ul">
 <li>量具：5m盒尺、25~33cm直角尺、50~60cm丁字尺、1m直尺；</li>
@@ -344,8 +311,8 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-org869af33" class="outline-3">
-<h3 id="org869af33"><span class="section-number-3">1.3</span> 流程</h3>
+<div id="outline-container-org95e4ba5" class="outline-3">
+<h3 id="org95e4ba5"><span class="section-number-3">1.3.</span> 流程</h3>
 <div class="outline-text-3" id="text-1-3">
 <ul class="org-ul">
 <li>检查厨房烟道：用纸卷点火后灭火冒烟，放在烟道口下方10厘米左右，看烟是否上升到烟道口立即拐弯吸走；</li>
@@ -373,16 +340,16 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
-<div id="outline-container-org362bc41" class="outline-2">
-<h2 id="org362bc41"><span class="section-number-2">2</span> 装修</h2>
+<div id="outline-container-orgbd86aa2" class="outline-2">
+<h2 id="orgbd86aa2"><span class="section-number-2">2.</span> 装修</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 装修原则：轻装修，重装饰, 一般包括：水电改造，贴砖，刷墙，做厨房，卫生间吊
 顶，橱柜等； 
 </p>
 </div>
-<div id="outline-container-org866eac3" class="outline-3">
-<h3 id="org866eac3"><span class="section-number-3">2.1</span> 装修流程</h3>
+<div id="outline-container-org3d8e353" class="outline-3">
+<h3 id="org3d8e353"><span class="section-number-3">2.1.</span> 装修流程</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 按照时间顺序大体30步多：
@@ -421,8 +388,8 @@ for the JavaScript code in this tag.
 </ol>
 </div>
 </div>
-<div id="outline-container-orgb170586" class="outline-3">
-<h3 id="orgb170586"><span class="section-number-3">2.2</span> 设计师的服务流程</h3>
+<div id="outline-container-org955e825" class="outline-3">
+<h3 id="org955e825"><span class="section-number-3">2.2.</span> 设计师的服务流程</h3>
 <div class="outline-text-3" id="text-2-2">
 <ul class="org-ul">
 <li>现场勘查及丈量空间尺寸</li>
@@ -438,10 +405,10 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-org4bdd0a7" class="outline-3">
-<h3 id="org4bdd0a7"><span class="section-number-3">2.3</span> 设计师的收费方式和内容</h3>
+<div id="outline-container-orgc6ad8f5" class="outline-3">
+<h3 id="orgc6ad8f5"><span class="section-number-3">2.3.</span> 设计师的收费方式和内容</h3>
 <div class="outline-text-3" id="text-2-3">
-<table id="orgadf9b1b" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org91093b4" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 1:</span> 设计师收费方式</caption>
 
 <colgroup>
@@ -494,10 +461,10 @@ for the JavaScript code in this tag.
 </table>
 </div>
 </div>
-<div id="outline-container-org844f1ce" class="outline-3">
-<h3 id="org844f1ce"><span class="section-number-3">2.4</span> 施工队进度表</h3>
+<div id="outline-container-orgbf55bf4" class="outline-3">
+<h3 id="orgbf55bf4"><span class="section-number-3">2.4.</span> 施工队进度表</h3>
 <div class="outline-text-3" id="text-2-4">
-<table id="orgeddf1c8" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="orgd5a70f0" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 2:</span> 工程进度表</caption>
 
 <colgroup>
@@ -918,10 +885,10 @@ for the JavaScript code in this tag.
 </table>
 </div>
 </div>
-<div id="outline-container-orga6a18e5" class="outline-3">
-<h3 id="orga6a18e5"><span class="section-number-3">2.5</span> 常用单位换算</h3>
+<div id="outline-container-org64e71c9" class="outline-3">
+<h3 id="org64e71c9"><span class="section-number-3">2.5.</span> 常用单位换算</h3>
 <div class="outline-text-3" id="text-2-5">
-<table id="orgf9d0881" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="orgda730ef" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 3:</span> 单位换算</caption>
 
 <colgroup>
@@ -1091,12 +1058,12 @@ for the JavaScript code in this tag.
 </table>
 </div>
 </div>
-<div id="outline-container-org0e9ee52" class="outline-3">
-<h3 id="org0e9ee52"><span class="section-number-3">2.6</span> 空间</h3>
+<div id="outline-container-orgea3e528" class="outline-3">
+<h3 id="orgea3e528"><span class="section-number-3">2.6.</span> 空间</h3>
 <div class="outline-text-3" id="text-2-6">
 </div>
-<div id="outline-container-org50176c3" class="outline-4">
-<h4 id="org50176c3"><span class="section-number-4">2.6.1</span> 测量前的准备</h4>
+<div id="outline-container-orgc2ea0ba" class="outline-4">
+<h4 id="orgc2ea0ba"><span class="section-number-4">2.6.1.</span> 测量前的准备</h4>
 <div class="outline-text-4" id="text-2-6-1">
 <ul class="org-ul">
 <li>卷尺：5米长；</li>
@@ -1106,8 +1073,8 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-org9feac88" class="outline-4">
-<h4 id="org9feac88"><span class="section-number-4">2.6.2</span> 卧室</h4>
+<div id="outline-container-orgbe48e45" class="outline-4">
+<h4 id="orgbe48e45"><span class="section-number-4">2.6.2.</span> 卧室</h4>
 <div class="outline-text-4" id="text-2-6-2">
 <ul class="org-ul">
 <li>至少要10平米；</li>
@@ -1116,8 +1083,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
-<div id="outline-container-org2dc77d3" class="outline-3">
-<h3 id="org2dc77d3"><span class="section-number-3">2.7</span> 合同</h3>
+<div id="outline-container-orgd9d47ed" class="outline-3">
+<h3 id="orgd9d47ed"><span class="section-number-3">2.7.</span> 合同</h3>
 <div class="outline-text-3" id="text-2-7">
 <p>
 合同中定金不可退，订金可以退；避免在装修过程中不停增加预算，必要时可以在合同预算清单中约定“设计方案微调的情况下，允许实
@@ -1144,16 +1111,16 @@ for the JavaScript code in this tag.
 </ul></li>
 </ul>
 </div>
-<div id="outline-container-org21dd27a" class="outline-4">
-<h4 id="org21dd27a"><span class="section-number-4">2.7.1</span> 设计合同</h4>
+<div id="outline-container-org51e9b1d" class="outline-4">
+<h4 id="org51e9b1d"><span class="section-number-4">2.7.1.</span> 设计合同</h4>
 <div class="outline-text-4" id="text-2-7-1">
 <p>
 同设计师签的合同；
 </p>
 </div>
 </div>
-<div id="outline-container-org258e1f4" class="outline-4">
-<h4 id="org258e1f4"><span class="section-number-4">2.7.2</span> 施工合同</h4>
+<div id="outline-container-org702d65f" class="outline-4">
+<h4 id="org702d65f"><span class="section-number-4">2.7.2.</span> 施工合同</h4>
 <div class="outline-text-4" id="text-2-7-2">
 <p>
 同施工方签的合同，施工合同一般都含监工；
@@ -1161,12 +1128,12 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
-<div id="outline-container-orgf608ba3" class="outline-3">
-<h3 id="orgf608ba3"><span class="section-number-3">2.8</span> 建材</h3>
+<div id="outline-container-org84058b2" class="outline-3">
+<h3 id="org84058b2"><span class="section-number-3">2.8.</span> 建材</h3>
 <div class="outline-text-3" id="text-2-8">
 </div>
-<div id="outline-container-org9b73ea6" class="outline-4">
-<h4 id="org9b73ea6"><span class="section-number-4">2.8.1</span> 木质地板</h4>
+<div id="outline-container-orgdf4c9d6" class="outline-4">
+<h4 id="orgdf4c9d6"><span class="section-number-4">2.8.1.</span> 木质地板</h4>
 <div class="outline-text-4" id="text-2-8-1">
 <ul class="org-ul">
 <li>实木地板：厚度1.5~2.1厘米的整块原木切割而成，天然木纹清晰，但天然的木头表面不耐磨。出入频繁易沾灰的玄关不适合；浴室门
@@ -1178,8 +1145,8 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-org5d7bb0a" class="outline-4">
-<h4 id="org5d7bb0a"><span class="section-number-4">2.8.2</span> 石材</h4>
+<div id="outline-container-orgdc10b16" class="outline-4">
+<h4 id="orgdc10b16"><span class="section-number-4">2.8.2.</span> 石材</h4>
 <div class="outline-text-4" id="text-2-8-2">
 <ul class="org-ul">
 <li>花岗岩：硬度高，地质密，耐磨，耐压，不易风化，价格高昂；</li>
@@ -1188,8 +1155,8 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-orgdba070f" class="outline-4">
-<h4 id="orgdba070f"><span class="section-number-4">2.8.3</span> 瓷砖</h4>
+<div id="outline-container-orge3f9cb0" class="outline-4">
+<h4 id="orge3f9cb0"><span class="section-number-4">2.8.3.</span> 瓷砖</h4>
 <div class="outline-text-4" id="text-2-8-3">
 <p>
 分墙面砖，地面砖；
@@ -1201,8 +1168,8 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-org4031819" class="outline-4">
-<h4 id="org4031819"><span class="section-number-4">2.8.4</span> 地毯</h4>
+<div id="outline-container-org63be9ab" class="outline-4">
+<h4 id="org63be9ab"><span class="section-number-4">2.8.4.</span> 地毯</h4>
 <div class="outline-text-4" id="text-2-8-4">
 <ul class="org-ul">
 <li>羊毛地毯：保暖，柔软，不易受潮变形，耐用，清洁保养困难；</li>
@@ -1212,8 +1179,8 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-org1c4f694" class="outline-4">
-<h4 id="org1c4f694"><span class="section-number-4">2.8.5</span> 涂料</h4>
+<div id="outline-container-org296286b" class="outline-4">
+<h4 id="org296286b"><span class="section-number-4">2.8.5.</span> 涂料</h4>
 <div class="outline-text-4" id="text-2-8-5">
 <ul class="org-ul">
 <li>水泥漆：采用水溶性亚克力合成树脂为成分，可耐酸耐水洗，又分平光漆，亮光漆；</li>
@@ -1222,8 +1189,8 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-orgaf6ac70" class="outline-4">
-<h4 id="orgaf6ac70"><span class="section-number-4">2.8.6</span> 壁饰类</h4>
+<div id="outline-container-org326551e" class="outline-4">
+<h4 id="org326551e"><span class="section-number-4">2.8.6.</span> 壁饰类</h4>
 <div class="outline-text-4" id="text-2-8-6">
 <ul class="org-ul">
 <li>壁纸：通气性好，原料为纸张加涂刷树脂或者压花纹处理；</li>
@@ -1231,8 +1198,8 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-orge7f1568" class="outline-4">
-<h4 id="orge7f1568"><span class="section-number-4">2.8.7</span> 玻璃类</h4>
+<div id="outline-container-orga1dec57" class="outline-4">
+<h4 id="orga1dec57"><span class="section-number-4">2.8.7.</span> 玻璃类</h4>
 <div class="outline-text-4" id="text-2-8-7">
 <ul class="org-ul">
 <li>清玻璃：透视性100%；</li>
@@ -1242,8 +1209,8 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-org4cd7f6c" class="outline-4">
-<h4 id="org4cd7f6c"><span class="section-number-4">2.8.8</span> 料理台</h4>
+<div id="outline-container-org93ce74d" class="outline-4">
+<h4 id="org93ce74d"><span class="section-number-4">2.8.8.</span> 料理台</h4>
 <div class="outline-text-4" id="text-2-8-8">
 <ul class="org-ul">
 <li>耐火板：不易刮伤，但不耐湿，易翻翘，实用性不佳</li>
@@ -1254,16 +1221,16 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-orgbfaedc7" class="outline-4">
-<h4 id="orgbfaedc7"><span class="section-number-4">2.8.9</span> 水槽</h4>
+<div id="outline-container-org2df93a5" class="outline-4">
+<h4 id="org2df93a5"><span class="section-number-4">2.8.9.</span> 水槽</h4>
 </div>
 </div>
-<div id="outline-container-org91e9f47" class="outline-3">
-<h3 id="org91e9f47"><span class="section-number-3">2.9</span> 监工表单</h3>
+<div id="outline-container-org227a180" class="outline-3">
+<h3 id="org227a180"><span class="section-number-3">2.9.</span> 监工表单</h3>
 <div class="outline-text-3" id="text-2-9">
 </div>
-<div id="outline-container-org79a6d55" class="outline-4">
-<h4 id="org79a6d55"><span class="section-number-4">2.9.1</span> 石材监工检查表单</h4>
+<div id="outline-container-org29caf3e" class="outline-4">
+<h4 id="org29caf3e"><span class="section-number-4">2.9.1.</span> 石材监工检查表单</h4>
 <div class="outline-text-4" id="text-2-9-1">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -1325,8 +1292,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
-<div id="outline-container-org5a3af09" class="outline-3">
-<h3 id="org5a3af09"><span class="section-number-3">2.10</span> 插座开关灯</h3>
+<div id="outline-container-org298889e" class="outline-3">
+<h3 id="org298889e"><span class="section-number-3">2.10.</span> 插座开关灯</h3>
 <div class="outline-text-3" id="text-2-10">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -1380,12 +1347,12 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orge4824b0" class="outline-3">
-<h3 id="orge4824b0"><span class="section-number-3">2.11</span> 家具</h3>
+<div id="outline-container-org1002530" class="outline-3">
+<h3 id="org1002530"><span class="section-number-3">2.11.</span> 家具</h3>
 <div class="outline-text-3" id="text-2-11">
 </div>
-<div id="outline-container-org29c7a6f" class="outline-4">
-<h4 id="org29c7a6f"><span class="section-number-4">2.11.1</span> 桌子</h4>
+<div id="outline-container-org66fb6da" class="outline-4">
+<h4 id="org66fb6da"><span class="section-number-4">2.11.1.</span> 桌子</h4>
 <div class="outline-text-4" id="text-2-11-1">
 <ul class="org-ul">
 <li>餐桌：可以买伸缩餐桌；</li>
@@ -1393,8 +1360,8 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-orge341264" class="outline-4">
-<h4 id="orge341264"><span class="section-number-4">2.11.2</span> 床</h4>
+<div id="outline-container-org18fcfbe" class="outline-4">
+<h4 id="org18fcfbe"><span class="section-number-4">2.11.2.</span> 床</h4>
 <div class="outline-text-4" id="text-2-11-2">
 <ul class="org-ul">
 <li>床：1.8米的床，其实是1.9米的，1.5米的其实是1.6米的，关系到插座开关位置；</li>
@@ -1408,8 +1375,8 @@ for the JavaScript code in this tag.
 <div id="postamble" class="status">
 <p class="author">Author: 比克曼</p>
 <p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
-<p class="date">Created: 2020-06-05 周五 00:04</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+<p class="date">Created: 2026-07-12 日 12:30</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

@@ -3,14 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-06-05 周五 00:05 -->
+<!-- 2026-07-12 日 12:30 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>数学</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="比克曼" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -31,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -40,22 +41,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -161,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -177,227 +191,190 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="css/org-manual.css"/>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2018 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
 </script>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        displayAlign: "center",
-        displayIndent: "0em",
 
-        "HTML-CSS": { scale: 100,
-                        linebreaks: { automatic: "false" },
-                        webFont: "TeX"
-                       },
-        SVG: {scale: 100,
-              linebreaks: { automatic: "false" },
-              font: "TeX"},
-        NativeMML: {scale: 100},
-        TeX: { equationNumbers: {autoNumber: "AMS"},
-               MultLineWidth: "85%",
-               TagSide: "right",
-               TagIndent: ".8em"
-             }
-});
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">数学</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org8881aa0">1. 代数</a>
+<li><a href="#org059b038">1. 代数</a>
 <ul>
-<li><a href="#org0183fe0">1.1. 概念</a>
+<li><a href="#org5978be4">1.1. 概念</a>
 <ul>
-<li><a href="#org8114e85">1.1.1. 数域</a></li>
-<li><a href="#org683712a">1.1.2. 其他</a></li>
+<li><a href="#org1782613">1.1.1. 数域</a></li>
+<li><a href="#org17600e5">1.1.2. 其他</a></li>
 </ul>
 </li>
-<li><a href="#orged365cc">1.2. 复数</a>
+<li><a href="#org00162f9">1.2. 复数</a>
 <ul>
-<li><a href="#org72f4aa0">1.2.1. 复变函数</a></li>
+<li><a href="#orgf227b6b">1.2.1. 复变函数</a></li>
 </ul>
 </li>
-<li><a href="#org7e2dfea">1.3. 多项式</a>
+<li><a href="#orga278fc8">1.3. 多项式</a>
 <ul>
-<li><a href="#org850e71e">1.3.1. 概念</a></li>
-<li><a href="#orge1a6790">1.3.2. 满足定律</a></li>
-<li><a href="#org3805e29">1.3.3. 公式</a></li>
-<li><a href="#org027da7c">1.3.4. 应用</a></li>
+<li><a href="#orgf1f811c">1.3.1. 概念</a></li>
+<li><a href="#org50f7cd4">1.3.2. 满足定律</a></li>
+<li><a href="#orgd7f7178">1.3.3. 公式</a></li>
+<li><a href="#orgaa46e71">1.3.4. 应用</a></li>
 </ul>
 </li>
-<li><a href="#orgda156d5">1.4. 微积分</a></li>
+<li><a href="#org7aa5645">1.4. 微积分</a></li>
 </ul>
 </li>
-<li><a href="#orge664130">2. 微积分</a>
+<li><a href="#org7a6df94">2. 微积分</a>
 <ul>
-<li><a href="#orge915734">2.1. 梯度</a></li>
+<li><a href="#org8cc9ae5">2.1. 梯度</a></li>
 </ul>
 </li>
-<li><a href="#orgefeb0a0">3. 矩阵</a>
+<li><a href="#org97e10e4">3. 矩阵</a>
 <ul>
-<li><a href="#orgc56e305">3.1. 概念</a></li>
-<li><a href="#org2b10b70">3.2. 向量</a></li>
-<li><a href="#orgf248939">3.3. 行列式</a></li>
-<li><a href="#org617cda7">3.4. 物理意义</a>
+<li><a href="#org787ca9e">3.1. 概念</a></li>
+<li><a href="#orgd02df7e">3.2. 向量</a></li>
+<li><a href="#org5249756">3.3. 行列式</a></li>
+<li><a href="#org9e755a7">3.4. 物理意义</a>
 <ul>
-<li><a href="#orgd5b6ccc">3.4.1. 矩阵的逆</a></li>
-<li><a href="#org0d6f279">3.4.2. 正交矩阵</a></li>
-<li><a href="#org937ed26">3.4.3. 变换</a></li>
-<li><a href="#org47fd161">3.4.4. 逆变换</a></li>
-<li><a href="#org116fda2">3.4.5. 等角变换</a></li>
-<li><a href="#org866a7ed">3.4.6. 正交变换</a></li>
-<li><a href="#org8c3351c">3.4.7. 刚体变换</a></li>
-<li><a href="#orgd6dfddc">3.4.8. 旋转</a></li>
-<li><a href="#org609898d">3.4.9. 缩放</a></li>
-<li><a href="#orgaded95c">3.4.10. 投影</a></li>
-<li><a href="#org6ac58b2">3.4.11. 镜像</a></li>
-<li><a href="#org2b237a3">3.4.12. 切变</a></li>
+<li><a href="#orgd8e0ec1">3.4.1. 矩阵的逆</a></li>
+<li><a href="#orgb548cef">3.4.2. 正交矩阵</a></li>
+<li><a href="#org7dda68e">3.4.3. 变换</a></li>
+<li><a href="#org9794883">3.4.4. 逆变换</a></li>
+<li><a href="#orgb42e3ba">3.4.5. 等角变换</a></li>
+<li><a href="#org983d1ad">3.4.6. 正交变换</a></li>
+<li><a href="#org1d807c2">3.4.7. 刚体变换</a></li>
+<li><a href="#orgd735d74">3.4.8. 旋转</a></li>
+<li><a href="#orgd63bed7">3.4.9. 缩放</a></li>
+<li><a href="#org9f620df">3.4.10. 投影</a></li>
+<li><a href="#org8ecb770">3.4.11. 镜像</a></li>
+<li><a href="#org437e435">3.4.12. 切变</a></li>
 </ul>
 </li>
-<li><a href="#orge650dc9">3.5. 求导</a>
+<li><a href="#org6d814cc">3.5. 求导</a>
 <ul>
-<li><a href="#orgf899ccf">3.5.1. 行向量对元素求导</a></li>
-<li><a href="#org6f54fc1">3.5.2. 列向量对元素求导</a></li>
-<li><a href="#org7feae89">3.5.3. 矩阵对元素求导</a></li>
-<li><a href="#orgdc5c2cf">3.5.4. 元素对行向量求导</a></li>
-<li><a href="#orgfaa61e5">3.5.5. 元素对列向量求导</a></li>
-<li><a href="#org90f7e75">3.5.6. 元素对矩阵求导</a></li>
-<li><a href="#org5de3c45">3.5.7. 行向量对列向量求导</a></li>
-<li><a href="#org40da320">3.5.8. 列向量对行向量求导</a></li>
-<li><a href="#orga33c54a">3.5.9. 行向量对行向量求导</a></li>
-<li><a href="#orgb37c47f">3.5.10. 列向量对列向量求导</a></li>
-<li><a href="#org7a9d4c6">3.5.11. 矩阵对行向量求导</a></li>
-<li><a href="#org4dc2382">3.5.12. 矩阵对列向量求导</a></li>
-<li><a href="#orgb841f76">3.5.13. 行向量对矩阵求导</a></li>
-<li><a href="#org8dd1b20">3.5.14. 列向量对矩阵求导</a></li>
-<li><a href="#org1133b30">3.5.15. 矩阵对矩阵求导</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orgf4d01d4">4. 概率</a>
-<ul>
-<li><a href="#orge8fc46a">4.1. 概念</a></li>
-<li><a href="#org051ff11">4.2. 排列组合</a></li>
-<li><a href="#orgcc92b47">4.3. 期望方差</a>
-<ul>
-<li><a href="#org59405e0">4.3.1. 期望</a></li>
-<li><a href="#org56b89d7">4.3.2. 方差</a></li>
-</ul>
-</li>
-<li><a href="#org2613ade">4.4. 概率分布</a>
-<ul>
-<li><a href="#orgbba700d">4.4.1. 离散分布</a>
-<ul>
-<li><a href="#orgf4041d7">4.4.1.1. 0-1分布</a></li>
-<li><a href="#org10efa40">4.4.1.2. 二项分布</a></li>
-<li><a href="#org3b507ab">4.4.1.3. 泊松分布</a></li>
-<li><a href="#orgbccde3e">4.4.1.4. 几何分布</a></li>
-</ul>
-</li>
-<li><a href="#org4792476">4.4.2. 连续分布</a>
-<ul>
-<li><a href="#org758b1d1">4.4.2.1. 正太分布</a></li>
-<li><a href="#org6d68287">4.4.2.2. 指数分布</a></li>
-<li><a href="#orga5b9000">4.4.2.3. \beta分布</a></li>
+<li><a href="#org401a437">3.5.1. 行向量对元素求导</a></li>
+<li><a href="#org72bbeee">3.5.2. 列向量对元素求导</a></li>
+<li><a href="#orgc49dba2">3.5.3. 矩阵对元素求导</a></li>
+<li><a href="#org728684d">3.5.4. 元素对行向量求导</a></li>
+<li><a href="#org4066f49">3.5.5. 元素对列向量求导</a></li>
+<li><a href="#orgd3ff749">3.5.6. 元素对矩阵求导</a></li>
+<li><a href="#orgdb28803">3.5.7. 行向量对列向量求导</a></li>
+<li><a href="#org6738f05">3.5.8. 列向量对行向量求导</a></li>
+<li><a href="#org0f2b201">3.5.9. 行向量对行向量求导</a></li>
+<li><a href="#orge1e79e4">3.5.10. 列向量对列向量求导</a></li>
+<li><a href="#org04b0f58">3.5.11. 矩阵对行向量求导</a></li>
+<li><a href="#orgd77affd">3.5.12. 矩阵对列向量求导</a></li>
+<li><a href="#org88f27db">3.5.13. 行向量对矩阵求导</a></li>
+<li><a href="#orga525e14">3.5.14. 列向量对矩阵求导</a></li>
+<li><a href="#org0d75ed2">3.5.15. 矩阵对矩阵求导</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org8a89f40">4.5. 贝叶斯</a>
+<li><a href="#orgef64150">4. 概率</a>
 <ul>
-<li><a href="#org560f274">4.5.1. 最大似然和最大后验估计</a></li>
+<li><a href="#org8400671">4.1. 概念</a></li>
+<li><a href="#orgf41c130">4.2. 排列组合</a></li>
+<li><a href="#orgdbc22f6">4.3. 期望方差</a>
+<ul>
+<li><a href="#org26bc340">4.3.1. 期望</a></li>
+<li><a href="#org5a8db2a">4.3.2. 方差</a></li>
+</ul>
+</li>
+<li><a href="#org2b3bce5">4.4. 概率分布</a>
+<ul>
+<li><a href="#org5018bc5">4.4.1. 离散分布</a>
+<ul>
+<li><a href="#org5a0d41c">4.4.1.1. 0-1分布</a></li>
+<li><a href="#org7f445bb">4.4.1.2. 二项分布</a></li>
+<li><a href="#org912dc1b">4.4.1.3. 泊松分布</a></li>
+<li><a href="#org576dd29">4.4.1.4. 几何分布</a></li>
+</ul>
+</li>
+<li><a href="#org0386db8">4.4.2. 连续分布</a>
+<ul>
+<li><a href="#org0ecaed1">4.4.2.1. 正太分布</a></li>
+<li><a href="#org303874e">4.4.2.2. 指数分布</a></li>
+<li><a href="#orgbe070d8">4.4.2.3. \beta分布</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org86b256d">5. 统计</a>
+<li><a href="#orgf0bbc3d">4.5. 贝叶斯</a>
 <ul>
-<li><a href="#org338ccc1">5.1. 概念</a></li>
-<li><a href="#org8522799">5.2. 估计量评估</a></li>
-<li><a href="#orgc181462">5.3. 贝叶斯估计</a></li>
-<li><a href="#org4a3fc32">5.4. 贝叶斯分类</a>
-<ul>
-<li><a href="#org6ee10a3">5.4.1. 最小错误率贝叶斯分类器</a></li>
-<li><a href="#orgfbba4fb">5.4.2. 最大似然比贝叶斯分类器</a></li>
-<li><a href="#org299e4da">5.4.3. 最小风险贝叶斯分类器</a></li>
-<li><a href="#org6e00bf9">5.4.4. 朴素贝叶斯</a></li>
+<li><a href="#org35779bd">4.5.1. 最大似然和最大后验估计</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org3b032b3">6. 几何</a>
+<li><a href="#org97f3dee">5. 统计</a>
 <ul>
-<li><a href="#orge434de5">6.1. 方向余弦</a></li>
-<li><a href="#org392cce4">6.2. 欧拉角</a></li>
-<li><a href="#orgbd0473c">6.3. 四元数</a>
+<li><a href="#orgaef4517">5.1. 概念</a></li>
+<li><a href="#orgc150527">5.2. 估计量评估</a></li>
+<li><a href="#org061e6bd">5.3. 贝叶斯估计</a></li>
+<li><a href="#org858aa74">5.4. 贝叶斯分类</a>
 <ul>
-<li><a href="#org5144c70">6.3.1. 物理意义</a>
-<ul>
-<li><a href="#org602d35b">6.3.1.1. 用四元数旋转矢量</a></li>
+<li><a href="#orge895735">5.4.1. 最小错误率贝叶斯分类器</a></li>
+<li><a href="#orgb8cfd86">5.4.2. 最大似然比贝叶斯分类器</a></li>
+<li><a href="#org386ea59">5.4.3. 最小风险贝叶斯分类器</a></li>
+<li><a href="#orga737bce">5.4.4. 朴素贝叶斯</a></li>
 </ul>
 </li>
-<li><a href="#org1060d19">6.3.2. 运算</a>
+</ul>
+</li>
+<li><a href="#org33111ce">6. 几何</a>
 <ul>
-<li><a href="#orgb1edc27">6.3.2.1. 乘法</a></li>
-<li><a href="#orgbd61844">6.3.2.2. 模</a></li>
-<li><a href="#org4368b49">6.3.2.3. 共轭</a></li>
-<li><a href="#orgfa5f0ce">6.3.2.4. 逆</a></li>
-<li><a href="#org5323c32">6.3.2.5. 插值</a></li>
-<li><a href="#org4152537">6.3.2.6. 转换</a></li>
+<li><a href="#orgd22e04b">6.1. 方向余弦</a></li>
+<li><a href="#orgf93af1b">6.2. 欧拉角</a></li>
+<li><a href="#org6ae5973">6.3. 四元数</a>
+<ul>
+<li><a href="#orgfefb9fa">6.3.1. 物理意义</a>
+<ul>
+<li><a href="#org87d1d99">6.3.1.1. 用四元数旋转矢量</a></li>
+</ul>
+</li>
+<li><a href="#org36923e8">6.3.2. 运算</a>
+<ul>
+<li><a href="#orgac49942">6.3.2.1. 乘法</a></li>
+<li><a href="#org0ea9f9a">6.3.2.2. 模</a></li>
+<li><a href="#org44b9510">6.3.2.3. 共轭</a></li>
+<li><a href="#org20f3325">6.3.2.4. 逆</a></li>
+<li><a href="#orgaae6f0c">6.3.2.5. 插值</a></li>
+<li><a href="#orgdd40b75">6.3.2.6. 转换</a></li>
 </ul>
 </li>
 </ul>
@@ -408,16 +385,16 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org8881aa0" class="outline-2">
-<h2 id="org8881aa0"><span class="section-number-2">1</span> 代数</h2>
+<div id="outline-container-org059b038" class="outline-2">
+<h2 id="org059b038"><span class="section-number-2">1.</span> 代数</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org0183fe0" class="outline-3">
-<h3 id="org0183fe0"><span class="section-number-3">1.1</span> 概念</h3>
+<div id="outline-container-org5978be4" class="outline-3">
+<h3 id="org5978be4"><span class="section-number-3">1.1.</span> 概念</h3>
 <div class="outline-text-3" id="text-1-1">
 </div>
-<div id="outline-container-org8114e85" class="outline-4">
-<h4 id="org8114e85"><span class="section-number-4">1.1.1</span> 数域</h4>
+<div id="outline-container-org1782613" class="outline-4">
+<h4 id="org1782613"><span class="section-number-4">1.1.1.</span> 数域</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <ul class="org-ul">
 <li>自然数：natural number，{0，1，2，3&#x2026;}等全体非负整数组成的数的集合称为自然数；</li>
@@ -447,7 +424,7 @@ for the JavaScript code in this tag.
 多项式代数：研究未知数次数更高的高次方程，形成的方向；
 </p>
 
-<div class="figure">
+<div id="orgc24996f" class="figure">
 <p><img src="./img/img-number.png" alt="img-number.png" />
 </p>
 </div></li>
@@ -455,8 +432,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org683712a" class="outline-4">
-<h4 id="org683712a"><span class="section-number-4">1.1.2</span> 其他</h4>
+<div id="outline-container-org17600e5" class="outline-4">
+<h4 id="org17600e5"><span class="section-number-4">1.1.2.</span> 其他</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <ul class="org-ul">
 <li>自然底数：e表示自然底数，近似等于2.71828；</li>
@@ -471,8 +448,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
-<div id="outline-container-orged365cc" class="outline-3">
-<h3 id="orged365cc"><span class="section-number-3">1.2</span> 复数</h3>
+<div id="outline-container-org00162f9" class="outline-3">
+<h3 id="org00162f9"><span class="section-number-3">1.2.</span> 复数</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 实数代表一维数轴上的所有点，复数代表二维几何平面上的所有点。复数集和复平面
@@ -513,8 +490,8 @@ pl.show()
 <li>复数除法：复数除法的模等于它们的模的商，辐角等于被除数和除数的辐角之差；</li>
 </ul>
 </div>
-<div id="outline-container-org72f4aa0" class="outline-4">
-<h4 id="org72f4aa0"><span class="section-number-4">1.2.1</span> 复变函数</h4>
+<div id="outline-container-orgf227b6b" class="outline-4">
+<h4 id="orgf227b6b"><span class="section-number-4">1.2.1.</span> 复变函数</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <p>
 设G是一个复数z=x+iy的非空集合，存在法则f使得将z变换到另一个复数域w=u+iv, 记
@@ -524,12 +501,12 @@ pl.show()
 </div>
 </div>
 </div>
-<div id="outline-container-org7e2dfea" class="outline-3">
-<h3 id="org7e2dfea"><span class="section-number-3">1.3</span> 多项式</h3>
+<div id="outline-container-orga278fc8" class="outline-3">
+<h3 id="orga278fc8"><span class="section-number-3">1.3.</span> 多项式</h3>
 <div class="outline-text-3" id="text-1-3">
 </div>
-<div id="outline-container-org850e71e" class="outline-4">
-<h4 id="org850e71e"><span class="section-number-4">1.3.1</span> 概念</h4>
+<div id="outline-container-orgf1f811c" class="outline-4">
+<h4 id="orgf1f811c"><span class="section-number-4">1.3.1.</span> 概念</h4>
 <div class="outline-text-4" id="text-1-3-1">
 <ul class="org-ul">
 <li>最大公因式：设f(x), g(x)是P[x]中两个多项式。P[x]中多项式d(x)称为f(x), g(x)的一个最大公因式，如果它满足
@@ -550,8 +527,8 @@ pl.show()
 </ul>
 </div>
 </div>
-<div id="outline-container-orge1a6790" class="outline-4">
-<h4 id="orge1a6790"><span class="section-number-4">1.3.2</span> 满足定律</h4>
+<div id="outline-container-org50f7cd4" class="outline-4">
+<h4 id="org50f7cd4"><span class="section-number-4">1.3.2.</span> 满足定律</h4>
 <div class="outline-text-4" id="text-1-3-2">
 <ul class="org-ul">
 <li>加法交换律, f(x)+g(x)=g(x)+f(x)；</li>
@@ -564,8 +541,8 @@ pl.show()
 </ul>
 </div>
 </div>
-<div id="outline-container-org3805e29" class="outline-4">
-<h4 id="org3805e29"><span class="section-number-4">1.3.3</span> 公式</h4>
+<div id="outline-container-orgd7f7178" class="outline-4">
+<h4 id="orgd7f7178"><span class="section-number-4">1.3.3.</span> 公式</h4>
 <div class="outline-text-4" id="text-1-3-3">
 <ul class="org-ul">
 <li>多项式乘法，f(x)g(x) = \(\sum_{i=0}^{n}a_{i}x^{i}\) \(\sum_{j=0}^{m}b_{j}x^{j}\) = \(\sum\limits_{s=0}^{m+n}(\sum\limits_{i+j}a_{i}b_{j})x^{s}\)</li>
@@ -580,12 +557,12 @@ pl.show()
 </div>
 </div>
 
-<div id="outline-container-org027da7c" class="outline-4">
-<h4 id="org027da7c"><span class="section-number-4">1.3.4</span> 应用</h4>
+<div id="outline-container-orgaa46e71" class="outline-4">
+<h4 id="orgaa46e71"><span class="section-number-4">1.3.4.</span> 应用</h4>
 <div class="outline-text-4" id="text-1-3-4">
 </div>
 <ol class="org-ol">
-<li><a id="orge67c8a7"></a>多项式拟合<br />
+<li><a id="org724c3a9"></a>多项式拟合<br />
 <div class="outline-text-6" id="text-1-3-4-0-1">
 <ul class="org-ul">
 <li>概念：根据给定的m个点，并不要求这条曲线经过这些点，而是y=f(x)的近似曲线y=\(\Phi(x)\)；</li>
@@ -595,8 +572,8 @@ pl.show()
 </ol>
 </div>
 </div>
-<div id="outline-container-orgda156d5" class="outline-3">
-<h3 id="orgda156d5"><span class="section-number-3">1.4</span> 微积分</h3>
+<div id="outline-container-org7aa5645" class="outline-3">
+<h3 id="org7aa5645"><span class="section-number-3">1.4.</span> 微积分</h3>
 <div class="outline-text-3" id="text-1-4">
 <ul class="org-ul">
 <li>方向导数：偏导数反映的是函数沿着坐标轴方向的变化率。然而在实际问题中很多
@@ -628,8 +605,8 @@ pl.show()
 </div>
 </div>
 </div>
-<div id="outline-container-orge664130" class="outline-2">
-<h2 id="orge664130"><span class="section-number-2">2</span> 微积分</h2>
+<div id="outline-container-org7a6df94" class="outline-2">
+<h2 id="org7a6df94"><span class="section-number-2">2.</span> 微积分</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>欧拉转换
@@ -641,8 +618,8 @@ pl.show()
 </ol></li>
 </ul>
 </div>
-<div id="outline-container-orge915734" class="outline-3">
-<h3 id="orge915734"><span class="section-number-3">2.1</span> 梯度</h3>
+<div id="outline-container-org8cc9ae5" class="outline-3">
+<h3 id="org8cc9ae5"><span class="section-number-3">2.1.</span> 梯度</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 函数f(x, y)的梯度由下式表示
@@ -666,12 +643,12 @@ $$
 </div>
 </div>
 </div>
-<div id="outline-container-orgefeb0a0" class="outline-2">
-<h2 id="orgefeb0a0"><span class="section-number-2">3</span> 矩阵</h2>
+<div id="outline-container-org97e10e4" class="outline-2">
+<h2 id="org97e10e4"><span class="section-number-2">3.</span> 矩阵</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgc56e305" class="outline-3">
-<h3 id="orgc56e305"><span class="section-number-3">3.1</span> 概念</h3>
+<div id="outline-container-org787ca9e" class="outline-3">
+<h3 id="org787ca9e"><span class="section-number-3">3.1.</span> 概念</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 矩阵实际上是高等线性函数的系数，线性函数就是线性变换的表达式, 可以说向量是
@@ -703,8 +680,8 @@ $$
 </ul>
 </div>
 </div>
-<div id="outline-container-org2b10b70" class="outline-3">
-<h3 id="org2b10b70"><span class="section-number-3">3.2</span> 向量</h3>
+<div id="outline-container-orgd02df7e" class="outline-3">
+<h3 id="orgd02df7e"><span class="section-number-3">3.2.</span> 向量</h3>
 <div class="outline-text-3" id="text-3-2">
 <ul class="org-ul">
 <li>向量的导数：其中A是矩阵，x是一个n维向量。
@@ -713,8 +690,8 @@ $$
 </ul>
 </div>
 </div>
-<div id="outline-container-orgf248939" class="outline-3">
-<h3 id="orgf248939"><span class="section-number-3">3.3</span> 行列式</h3>
+<div id="outline-container-org5249756" class="outline-3">
+<h3 id="org5249756"><span class="section-number-3">3.3.</span> 行列式</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 只有方阵才有行列式的意义，非方阵的行列式未定义。
@@ -731,12 +708,12 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-org617cda7" class="outline-3">
-<h3 id="org617cda7"><span class="section-number-3">3.4</span> 物理意义</h3>
+<div id="outline-container-org9e755a7" class="outline-3">
+<h3 id="org9e755a7"><span class="section-number-3">3.4.</span> 物理意义</h3>
 <div class="outline-text-3" id="text-3-4">
 </div>
-<div id="outline-container-orgd5b6ccc" class="outline-4">
-<h4 id="orgd5b6ccc"><span class="section-number-4">3.4.1</span> 矩阵的逆</h4>
+<div id="outline-container-orgd8e0ec1" class="outline-4">
+<h4 id="orgd8e0ec1"><span class="section-number-4">3.4.1.</span> 矩阵的逆</h4>
 <div class="outline-text-4" id="text-3-4-1">
 <p>
 矩阵的逆可以撤销原变换的变换，一个向量v用矩阵M进行变换，接着用M的逆M<sup>-1</sup>进
@@ -744,8 +721,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-org0d6f279" class="outline-4">
-<h4 id="org0d6f279"><span class="section-number-4">3.4.2</span> 正交矩阵</h4>
+<div id="outline-container-orgb548cef" class="outline-4">
+<h4 id="orgb548cef"><span class="section-number-4">3.4.2.</span> 正交矩阵</h4>
 <div class="outline-text-4" id="text-3-4-2">
 <p>
 旋转矩阵和镜像矩阵都是正交的。有时由外部数据构成的矩阵，由于可能存在部分坏
@@ -760,8 +737,8 @@ $$
 </ul>
 </div>
 </div>
-<div id="outline-container-org937ed26" class="outline-4">
-<h4 id="org937ed26"><span class="section-number-4">3.4.3</span> 变换</h4>
+<div id="outline-container-org7dda68e" class="outline-4">
+<h4 id="org7dda68e"><span class="section-number-4">3.4.3.</span> 变换</h4>
 <div class="outline-text-4" id="text-3-4-3">
 <p>
 向量在几何上能被解释成一系列与轴平行的位移，如向量[1, -3, -4]能被解释成位移
@@ -818,8 +795,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-org47fd161" class="outline-4">
-<h4 id="org47fd161"><span class="section-number-4">3.4.4</span> 逆变换</h4>
+<div id="outline-container-org9794883" class="outline-4">
+<h4 id="org9794883"><span class="section-number-4">3.4.4.</span> 逆变换</h4>
 <div class="outline-text-4" id="text-3-4-4">
 <p>
 如果存在一个逆变换可以撤销原变换，那么该变换是可逆的变换。旋转、缩放、镜像、
@@ -829,8 +806,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-org116fda2" class="outline-4">
-<h4 id="org116fda2"><span class="section-number-4">3.4.5</span> 等角变换</h4>
+<div id="outline-container-orgb42e3ba" class="outline-4">
+<h4 id="orgb42e3ba"><span class="section-number-4">3.4.5.</span> 等角变换</h4>
 <div class="outline-text-4" id="text-3-4-5">
 <p>
 如果变换前后两向量夹角的大小和方向都不改变，该变换是等角的。只有平移，旋转
@@ -839,8 +816,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-org866a7ed" class="outline-4">
-<h4 id="org866a7ed"><span class="section-number-4">3.4.6</span> 正交变换</h4>
+<div id="outline-container-org983d1ad" class="outline-4">
+<h4 id="org983d1ad"><span class="section-number-4">3.4.6.</span> 正交变换</h4>
 <div class="outline-text-4" id="text-3-4-6">
 <p>
 正交用来描述具有某种性质的矩阵，正交变换的基本思想是轴保持相互垂直，并且不
@@ -849,8 +826,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-org8c3351c" class="outline-4">
-<h4 id="org8c3351c"><span class="section-number-4">3.4.7</span> 刚体变换</h4>
+<div id="outline-container-org1d807c2" class="outline-4">
+<h4 id="org1d807c2"><span class="section-number-4">3.4.7.</span> 刚体变换</h4>
 <div class="outline-text-4" id="text-3-4-7">
 <p>
 刚体变换只改变物体的位置和方向，不包括形状，所有长度，角度，面积，体积都不
@@ -859,8 +836,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-orgd6dfddc" class="outline-4">
-<h4 id="orgd6dfddc"><span class="section-number-4">3.4.8</span> 旋转</h4>
+<div id="outline-container-orgd735d74" class="outline-4">
+<h4 id="orgd735d74"><span class="section-number-4">3.4.8.</span> 旋转</h4>
 <div class="outline-text-4" id="text-3-4-8">
 <ul class="org-ul">
 <li><p>
@@ -937,21 +914,21 @@ $$
 </ul>
 </div>
 </div>
-<div id="outline-container-org609898d" class="outline-4">
-<h4 id="org609898d"><span class="section-number-4">3.4.9</span> 缩放</h4>
+<div id="outline-container-orgd63bed7" class="outline-4">
+<h4 id="orgd63bed7"><span class="section-number-4">3.4.9.</span> 缩放</h4>
 </div>
-<div id="outline-container-orgaded95c" class="outline-4">
-<h4 id="orgaded95c"><span class="section-number-4">3.4.10</span> 投影</h4>
+<div id="outline-container-org9f620df" class="outline-4">
+<h4 id="org9f620df"><span class="section-number-4">3.4.10.</span> 投影</h4>
 </div>
-<div id="outline-container-org6ac58b2" class="outline-4">
-<h4 id="org6ac58b2"><span class="section-number-4">3.4.11</span> 镜像</h4>
+<div id="outline-container-org8ecb770" class="outline-4">
+<h4 id="org8ecb770"><span class="section-number-4">3.4.11.</span> 镜像</h4>
 </div>
-<div id="outline-container-org2b237a3" class="outline-4">
-<h4 id="org2b237a3"><span class="section-number-4">3.4.12</span> 切变</h4>
+<div id="outline-container-org437e435" class="outline-4">
+<h4 id="org437e435"><span class="section-number-4">3.4.12.</span> 切变</h4>
 </div>
 </div>
-<div id="outline-container-orge650dc9" class="outline-3">
-<h3 id="orge650dc9"><span class="section-number-3">3.5</span> 求导</h3>
+<div id="outline-container-org6d814cc" class="outline-3">
+<h3 id="org6d814cc"><span class="section-number-3">3.5.</span> 求导</h3>
 <div class="outline-text-3" id="text-3-5">
 <p>
 如果X是列向量, X<sup>T</sup>是X的转置，A是矩阵，A<sup>T</sup>是A的转置，则对X的求导法则有 
@@ -963,8 +940,8 @@ $$
 <li>\[\frac{d(X^{T}*A*X)}{dX} = X^{T}(A^{T}+A)\]</li>
 </ol>
 </div>
-<div id="outline-container-orgf899ccf" class="outline-4">
-<h4 id="orgf899ccf"><span class="section-number-4">3.5.1</span> 行向量对元素求导</h4>
+<div id="outline-container-org401a437" class="outline-4">
+<h4 id="org401a437"><span class="section-number-4">3.5.1.</span> 行向量对元素求导</h4>
 <div class="outline-text-4" id="text-3-5-1">
 <p>
 设\(y^{T}=[y_{1}...y_{n}]\)是n维行向量，x是元素，则
@@ -972,16 +949,16 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-org6f54fc1" class="outline-4">
-<h4 id="org6f54fc1"><span class="section-number-4">3.5.2</span> 列向量对元素求导</h4>
+<div id="outline-container-org72bbeee" class="outline-4">
+<h4 id="org72bbeee"><span class="section-number-4">3.5.2.</span> 列向量对元素求导</h4>
 <div class="outline-text-4" id="text-3-5-2">
 <p>
 和行向量求导形式一致。
 </p>
 </div>
 </div>
-<div id="outline-container-org7feae89" class="outline-4">
-<h4 id="org7feae89"><span class="section-number-4">3.5.3</span> 矩阵对元素求导</h4>
+<div id="outline-container-orgc49dba2" class="outline-4">
+<h4 id="orgc49dba2"><span class="section-number-4">3.5.3.</span> 矩阵对元素求导</h4>
 <div class="outline-text-4" id="text-3-5-3">
 <p>
 设\(
@@ -1003,8 +980,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-orgdc5c2cf" class="outline-4">
-<h4 id="orgdc5c2cf"><span class="section-number-4">3.5.4</span> 元素对行向量求导</h4>
+<div id="outline-container-org728684d" class="outline-4">
+<h4 id="org728684d"><span class="section-number-4">3.5.4.</span> 元素对行向量求导</h4>
 <div class="outline-text-4" id="text-3-5-4">
 <p>
 设y是元素，\(x^{T}=[x^{1}...x^{q}]\)是q维行向量，则
@@ -1014,16 +991,16 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-orgfaa61e5" class="outline-4">
-<h4 id="orgfaa61e5"><span class="section-number-4">3.5.5</span> 元素对列向量求导</h4>
+<div id="outline-container-org4066f49" class="outline-4">
+<h4 id="org4066f49"><span class="section-number-4">3.5.5.</span> 元素对列向量求导</h4>
 <div class="outline-text-4" id="text-3-5-5">
 <p>
 和对行向量求导形式一致。
 </p>
 </div>
 </div>
-<div id="outline-container-org90f7e75" class="outline-4">
-<h4 id="org90f7e75"><span class="section-number-4">3.5.6</span> 元素对矩阵求导</h4>
+<div id="outline-container-orgd3ff749" class="outline-4">
+<h4 id="orgd3ff749"><span class="section-number-4">3.5.6.</span> 元素对矩阵求导</h4>
 <div class="outline-text-4" id="text-3-5-6">
 <p>
 设y是元素，\(X=
@@ -1047,8 +1024,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-org5de3c45" class="outline-4">
-<h4 id="org5de3c45"><span class="section-number-4">3.5.7</span> 行向量对列向量求导</h4>
+<div id="outline-container-orgdb28803" class="outline-4">
+<h4 id="orgdb28803"><span class="section-number-4">3.5.7.</span> 行向量对列向量求导</h4>
 <div class="outline-text-4" id="text-3-5-7">
 <p>
 设\(y^{T}=[y_{1}...y_{n}]\)是n维行向量，\(x=
@@ -1072,8 +1049,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-org40da320" class="outline-4">
-<h4 id="org40da320"><span class="section-number-4">3.5.8</span> 列向量对行向量求导</h4>
+<div id="outline-container-org6738f05" class="outline-4">
+<h4 id="org6738f05"><span class="section-number-4">3.5.8.</span> 列向量对行向量求导</h4>
 <div class="outline-text-4" id="text-3-5-8">
 <p>
 设\(y=
@@ -1097,8 +1074,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-orga33c54a" class="outline-4">
-<h4 id="orga33c54a"><span class="section-number-4">3.5.9</span> 行向量对行向量求导</h4>
+<div id="outline-container-org0f2b201" class="outline-4">
+<h4 id="org0f2b201"><span class="section-number-4">3.5.9.</span> 行向量对行向量求导</h4>
 <div class="outline-text-4" id="text-3-5-9">
 <p>
 设\(y^{T}=[y_{1}...y_{n}]\)是n维行向量，\(x^{T}=[x_{1}...x_{q}]\)是q维行向
@@ -1107,8 +1084,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-orgb37c47f" class="outline-4">
-<h4 id="orgb37c47f"><span class="section-number-4">3.5.10</span> 列向量对列向量求导</h4>
+<div id="outline-container-orge1e79e4" class="outline-4">
+<h4 id="orge1e79e4"><span class="section-number-4">3.5.10.</span> 列向量对列向量求导</h4>
 <div class="outline-text-4" id="text-3-5-10">
 <p>
 设\(y=
@@ -1140,8 +1117,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-org7a9d4c6" class="outline-4">
-<h4 id="org7a9d4c6"><span class="section-number-4">3.5.11</span> 矩阵对行向量求导</h4>
+<div id="outline-container-org04b0f58" class="outline-4">
+<h4 id="org04b0f58"><span class="section-number-4">3.5.11.</span> 矩阵对行向量求导</h4>
 <div class="outline-text-4" id="text-3-5-11">
 <p>
 设\(Y=
@@ -1157,8 +1134,8 @@ y_{m1} & ... & y_{mn}\\
 </p>
 </div>
 </div>
-<div id="outline-container-org4dc2382" class="outline-4">
-<h4 id="org4dc2382"><span class="section-number-4">3.5.12</span> 矩阵对列向量求导</h4>
+<div id="outline-container-orgd77affd" class="outline-4">
+<h4 id="orgd77affd"><span class="section-number-4">3.5.12.</span> 矩阵对列向量求导</h4>
 <div class="outline-text-4" id="text-3-5-12">
 <p>
 设\(Y=
@@ -1190,8 +1167,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-orgb841f76" class="outline-4">
-<h4 id="orgb841f76"><span class="section-number-4">3.5.13</span> 行向量对矩阵求导</h4>
+<div id="outline-container-org88f27db" class="outline-4">
+<h4 id="org88f27db"><span class="section-number-4">3.5.13.</span> 行向量对矩阵求导</h4>
 <div class="outline-text-4" id="text-3-5-13">
 <p>
 设\(y^{T}=[y_{1}...y_{n}]\)是n维行向量，\(X=
@@ -1215,8 +1192,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-org8dd1b20" class="outline-4">
-<h4 id="org8dd1b20"><span class="section-number-4">3.5.14</span> 列向量对矩阵求导</h4>
+<div id="outline-container-orga525e14" class="outline-4">
+<h4 id="orga525e14"><span class="section-number-4">3.5.14.</span> 列向量对矩阵求导</h4>
 <div class="outline-text-4" id="text-3-5-14">
 <p>
 设\(y=
@@ -1248,8 +1225,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-org1133b30" class="outline-4">
-<h4 id="org1133b30"><span class="section-number-4">3.5.15</span> 矩阵对矩阵求导</h4>
+<div id="outline-container-org0d75ed2" class="outline-4">
+<h4 id="org0d75ed2"><span class="section-number-4">3.5.15.</span> 矩阵对矩阵求导</h4>
 <div class="outline-text-4" id="text-3-5-15">
 <p>
 设\(Y=
@@ -1287,8 +1264,8 @@ $$
 </div>
 </div>
 </div>
-<div id="outline-container-orgf4d01d4" class="outline-2">
-<h2 id="orgf4d01d4"><span class="section-number-2">4</span> 概率</h2>
+<div id="outline-container-orgef64150" class="outline-2">
+<h2 id="orgef64150"><span class="section-number-2">4.</span> 概率</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 概率有两种定义观点。
@@ -1301,8 +1278,8 @@ $$
 点解释。</li>
 </ul>
 </div>
-<div id="outline-container-orge8fc46a" class="outline-3">
-<h3 id="orge8fc46a"><span class="section-number-3">4.1</span> 概念</h3>
+<div id="outline-container-org8400671" class="outline-3">
+<h3 id="org8400671"><span class="section-number-3">4.1.</span> 概念</h3>
 <div class="outline-text-3" id="text-4-1">
 <ul class="org-ul">
 <li>样本空间：随机试验的所有可能结果组成的集合，在表示时一般一行的数据表示一
@@ -1396,7 +1373,7 @@ Var(X)=E((X-u)<sup>2</sup>)=E(X<sup>2</sup>)-u<sup>2</sup>, 另外针对样本�
 在计算协方差矩阵时必须以列为计算;</li>
 </ul>
 <p>
-#<a id="org4b0b2c4"></a>
+#<a id="org6e46f25"></a>
 </p>
 <ul class="org-ul">
 <li>总体线性相关系数: X和Y的总体线性相关系数,其中Var(X)，Var(Y)为X,Y的方差，
@@ -1417,10 +1394,10 @@ Cov(X, Y)为X和Y的协方差；
 图\ref{img-cond-exp}所示；
 </p>
 
-<div id="org0dbfbb9" class="figure">
+<div id="org3dfe7d0" class="figure">
 <p><img src="./img/cond-exp-plot.jpg" alt="cond-exp-plot.jpg" />
 </p>
-<p><span class="figure-number">Figure 2: </span>回归实例</p>
+<p><span class="figure-number">Figure 1: </span>回归实例</p>
 </div></li>
 <li>回归函数：被解释变量Y的条件期望E(Y|X<sub>i</sub>)随解释变量X的变化而有规律的变化，
 如果把Y的条件期望表现为X的如下函数，这个函数称为回归函数, 回归函数又分为
@@ -1446,8 +1423,8 @@ Cov(X, Y)为X和Y的协方差；
 </ul>
 </div>
 </div>
-<div id="outline-container-org051ff11" class="outline-3">
-<h3 id="org051ff11"><span class="section-number-3">4.2</span> 排列组合</h3>
+<div id="outline-container-orgf41c130" class="outline-3">
+<h3 id="orgf41c130"><span class="section-number-3">4.2.</span> 排列组合</h3>
 <div class="outline-text-3" id="text-4-2">
 <ul class="org-ul">
 <li>排列：n个相异事物取r个(1&lt;=r&lt;=n)的不同排列总数，为 \(P_{r}^{n} = n(n-1)(n-2)...(n-r+1)\) , 如果r=n，则 \(P_{r}^{r} = r!\)</li>
@@ -1456,12 +1433,12 @@ Cov(X, Y)为X和Y的协方差；
 </ul>
 </div>
 </div>
-<div id="outline-container-orgcc92b47" class="outline-3">
-<h3 id="orgcc92b47"><span class="section-number-3">4.3</span> 期望方差</h3>
+<div id="outline-container-orgdbc22f6" class="outline-3">
+<h3 id="orgdbc22f6"><span class="section-number-3">4.3.</span> 期望方差</h3>
 <div class="outline-text-3" id="text-4-3">
 </div>
-<div id="outline-container-org59405e0" class="outline-4">
-<h4 id="org59405e0"><span class="section-number-4">4.3.1</span> 期望</h4>
+<div id="outline-container-org26bc340" class="outline-4">
+<h4 id="org26bc340"><span class="section-number-4">4.3.1.</span> 期望</h4>
 <div class="outline-text-4" id="text-4-3-1">
 <p>
 数学期望包含了几个定理和性质。
@@ -1481,8 +1458,8 @@ Cov(X, Y)为X和Y的协方差；
 </ul>
 </div>
 </div>
-<div id="outline-container-org56b89d7" class="outline-4">
-<h4 id="org56b89d7"><span class="section-number-4">4.3.2</span> 方差</h4>
+<div id="outline-container-org5a8db2a" class="outline-4">
+<h4 id="org5a8db2a"><span class="section-number-4">4.3.2.</span> 方差</h4>
 <div class="outline-text-4" id="text-4-3-2">
 <p>
 数学方差包含了几个定理和性质。
@@ -1496,16 +1473,16 @@ Cov(X, Y)为X和Y的协方差；
 </div>
 </div>
 </div>
-<div id="outline-container-org2613ade" class="outline-3">
-<h3 id="org2613ade"><span class="section-number-3">4.4</span> 概率分布</h3>
+<div id="outline-container-org2b3bce5" class="outline-3">
+<h3 id="org2b3bce5"><span class="section-number-3">4.4.</span> 概率分布</h3>
 <div class="outline-text-3" id="text-4-4">
 </div>
-<div id="outline-container-orgbba700d" class="outline-4">
-<h4 id="orgbba700d"><span class="section-number-4">4.4.1</span> 离散分布</h4>
+<div id="outline-container-org5018bc5" class="outline-4">
+<h4 id="org5018bc5"><span class="section-number-4">4.4.1.</span> 离散分布</h4>
 <div class="outline-text-4" id="text-4-4-1">
 </div>
-<div id="outline-container-orgf4041d7" class="outline-5">
-<h5 id="orgf4041d7"><span class="section-number-5">4.4.1.1</span> 0-1分布</h5>
+<div id="outline-container-org5a0d41c" class="outline-5">
+<h5 id="org5a0d41c"><span class="section-number-5">4.4.1.1.</span> 0-1分布</h5>
 <div class="outline-text-5" id="text-4-4-1-1">
 <p>
 随机变量X只能取0和1两个值，取0和1的概率分布是p，q，p+q=1, 其分布律可以表示
@@ -1515,8 +1492,8 @@ Cov(X, Y)为X和Y的协方差；
 </p>
 </div>
 </div>
-<div id="outline-container-org10efa40" class="outline-5">
-<h5 id="org10efa40"><span class="section-number-5">4.4.1.2</span> 二项分布</h5>
+<div id="outline-container-org7f445bb" class="outline-5">
+<h5 id="org7f445bb"><span class="section-number-5">4.4.1.2.</span> 二项分布</h5>
 <div class="outline-text-5" id="text-4-4-1-2">
 <ul class="org-ul">
 <li>定义：服从二项分布的随机变量X表示在n个独立的是/非试验中成功的次数i，其中每次试验的成功概率为p
@@ -1525,7 +1502,7 @@ Cov(X, Y)为X和Y的协方差；
 </ul>
 </div>
 <ol class="org-ol">
-<li><a id="org8ded934"></a>python实现<br />
+<li><a id="orgab482f5"></a>python实现<br />
 <div class="outline-text-6" id="text-4-4-1-2-1">
 <div class="org-src-container">
 <pre class="src src-python"><span style="color: #ffb6c1; font-size: 105%;">from</span> scipy <span style="color: #ffb6c1; font-size: 105%;">import</span> stats         <span style="color: #90ee90; font-style: italic;">#</span><span style="color: #90ee90; font-style: italic;">&#20498;&#20837;&#24037;&#20855;&#21253;</span>
@@ -1549,19 +1526,19 @@ plt.show()                      <span style="color: #90ee90; font-style: italic;
 </ol>
 </div>
 
-<div id="outline-container-org3b507ab" class="outline-5">
-<h5 id="org3b507ab"><span class="section-number-5">4.4.1.3</span> 泊松分布</h5>
+<div id="outline-container-org912dc1b" class="outline-5">
+<h5 id="org912dc1b"><span class="section-number-5">4.4.1.3.</span> 泊松分布</h5>
 </div>
-<div id="outline-container-orgbccde3e" class="outline-5">
-<h5 id="orgbccde3e"><span class="section-number-5">4.4.1.4</span> 几何分布</h5>
+<div id="outline-container-org576dd29" class="outline-5">
+<h5 id="org576dd29"><span class="section-number-5">4.4.1.4.</span> 几何分布</h5>
 </div>
 </div>
-<div id="outline-container-org4792476" class="outline-4">
-<h4 id="org4792476"><span class="section-number-4">4.4.2</span> 连续分布</h4>
+<div id="outline-container-org0386db8" class="outline-4">
+<h4 id="org0386db8"><span class="section-number-4">4.4.2.</span> 连续分布</h4>
 <div class="outline-text-4" id="text-4-4-2">
 </div>
-<div id="outline-container-org758b1d1" class="outline-5">
-<h5 id="org758b1d1"><span class="section-number-5">4.4.2.1</span> 正太分布</h5>
+<div id="outline-container-org0ecaed1" class="outline-5">
+<h5 id="org0ecaed1"><span class="section-number-5">4.4.2.1.</span> 正太分布</h5>
 <div class="outline-text-5" id="text-4-4-2-1">
 <ul class="org-ul">
 <li>概率密度：设连续型随机变量X具有概率密度如下，则称X服从参数为\(\mu, \sigma\)的正态分布，记为\(N(\mu, \sigma^{2})\)
@@ -1581,20 +1558,20 @@ X的分布函数表示如下, 其中\(\mathrm{d}x=dx_{1}dx_{2}...dx_{n},a=(a_{1}
 </div>
 </div>
 
-<div id="outline-container-org6d68287" class="outline-5">
-<h5 id="org6d68287"><span class="section-number-5">4.4.2.2</span> 指数分布</h5>
+<div id="outline-container-org303874e" class="outline-5">
+<h5 id="org303874e"><span class="section-number-5">4.4.2.2.</span> 指数分布</h5>
 </div>
-<div id="outline-container-orga5b9000" class="outline-5">
-<h5 id="orga5b9000"><span class="section-number-5">4.4.2.3</span> \beta分布</h5>
+<div id="outline-container-orgbe070d8" class="outline-5">
+<h5 id="orgbe070d8"><span class="section-number-5">4.4.2.3.</span> \beta分布</h5>
 </div>
 </div>
 </div>
-<div id="outline-container-org8a89f40" class="outline-3">
-<h3 id="org8a89f40"><span class="section-number-3">4.5</span> 贝叶斯</h3>
+<div id="outline-container-orgf0bbc3d" class="outline-3">
+<h3 id="orgf0bbc3d"><span class="section-number-3">4.5.</span> 贝叶斯</h3>
 <div class="outline-text-3" id="text-4-5">
 </div>
-<div id="outline-container-org560f274" class="outline-4">
-<h4 id="org560f274"><span class="section-number-4">4.5.1</span> 最大似然和最大后验估计</h4>
+<div id="outline-container-org35779bd" class="outline-4">
+<h4 id="org35779bd"><span class="section-number-4">4.5.1.</span> 最大似然和最大后验估计</h4>
 <div class="outline-text-4" id="text-4-5-1">
 <p>
 最大似然也叫ML，最大后验也叫MAP，MAP估计方法根据经验数据获得对难以观察的量
@@ -1615,12 +1592,12 @@ f(x|\(\theta\))就是似然函数，利用观察数据x对\(\theta\)的估计就
 </div>
 </div>
 </div>
-<div id="outline-container-org86b256d" class="outline-2">
-<h2 id="org86b256d"><span class="section-number-2">5</span> 统计</h2>
+<div id="outline-container-org97f3dee" class="outline-2">
+<h2 id="org97f3dee"><span class="section-number-2">5.</span> 统计</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org338ccc1" class="outline-3">
-<h3 id="org338ccc1"><span class="section-number-3">5.1</span> 概念</h3>
+<div id="outline-container-orgaef4517" class="outline-3">
+<h3 id="orgaef4517"><span class="section-number-3">5.1.</span> 概念</h3>
 <div class="outline-text-3" id="text-5-1">
 <ul class="org-ul">
 <li>样本分类：样本具有特征向量，样本属于某个类别，如果在坐标系中表示，则特征
@@ -1714,8 +1691,8 @@ $$
 </ul>
 </div>
 </div>
-<div id="outline-container-org8522799" class="outline-3">
-<h3 id="org8522799"><span class="section-number-3">5.2</span> 估计量评估</h3>
+<div id="outline-container-orgc150527" class="outline-3">
+<h3 id="orgc150527"><span class="section-number-3">5.2.</span> 估计量评估</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 对于一般情况下，随机变量都会服从正太分布\(N(\mu, \sigma^{2})\)，令其概率密度为p(x).则log似然函数为
@@ -1760,8 +1737,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-orgc181462" class="outline-3">
-<h3 id="orgc181462"><span class="section-number-3">5.3</span> 贝叶斯估计</h3>
+<div id="outline-container-org061e6bd" class="outline-3">
+<h3 id="org061e6bd"><span class="section-number-3">5.3.</span> 贝叶斯估计</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 贝叶斯估计指对于一个已知概率分布的事件，需要通过我们采集到的样本空间来估计这些概率分布的参数\(\theta\)，也就是后验概率，
@@ -1772,8 +1749,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-org4a3fc32" class="outline-3">
-<h3 id="org4a3fc32"><span class="section-number-3">5.4</span> 贝叶斯分类</h3>
+<div id="outline-container-org858aa74" class="outline-3">
+<h3 id="org858aa74"><span class="section-number-3">5.4.</span> 贝叶斯分类</h3>
 <div class="outline-text-3" id="text-5-4">
 <p>
 可以通过一个例子先明确先验概率，后验概率的具体情况：如果有一所学校，有60%是男生和40%是女生。女生穿裤子与裙子的数量相同；
@@ -1819,8 +1796,8 @@ G 事件的互补的事件，这个比例是 60 ，也即 0.6 。</li>
 <li>最小风险贝叶斯分类器；</li>
 </ol>
 </div>
-<div id="outline-container-org6ee10a3" class="outline-4">
-<h4 id="org6ee10a3"><span class="section-number-4">5.4.1</span> 最小错误率贝叶斯分类器</h4>
+<div id="outline-container-orge895735" class="outline-4">
+<h4 id="orge895735"><span class="section-number-4">5.4.1.</span> 最小错误率贝叶斯分类器</h4>
 <div class="outline-text-4" id="text-5-4-1">
 <p>
 最小错误率贝叶斯分类器也可以叫最大后验概率分类器。
@@ -1841,8 +1818,8 @@ G 事件的互补的事件，这个比例是 60 ，也即 0.6 。</li>
 </p>
 </div>
 </div>
-<div id="outline-container-orgfbba4fb" class="outline-4">
-<h4 id="orgfbba4fb"><span class="section-number-4">5.4.2</span> 最大似然比贝叶斯分类器</h4>
+<div id="outline-container-orgb8cfd86" class="outline-4">
+<h4 id="orgb8cfd86"><span class="section-number-4">5.4.2.</span> 最大似然比贝叶斯分类器</h4>
 <div class="outline-text-4" id="text-5-4-2">
 <p>
 类条件概率\(P(x|\omega_{i})\)称为\(\omega_{i}\)对特征向量x的似然函数，表达了某类别中的样本取某特征值的可能性。由最小错误
@@ -1855,8 +1832,8 @@ G 事件的互补的事件，这个比例是 60 ，也即 0.6 。</li>
 </p>
 </div>
 </div>
-<div id="outline-container-org299e4da" class="outline-4">
-<h4 id="org299e4da"><span class="section-number-4">5.4.3</span> 最小风险贝叶斯分类器</h4>
+<div id="outline-container-org386ea59" class="outline-4">
+<h4 id="org386ea59"><span class="section-number-4">5.4.3.</span> 最小风险贝叶斯分类器</h4>
 <div class="outline-text-4" id="text-5-4-3">
 <p>
 在最小错误率贝叶斯分类器分类器中，仅考虑了样本属于每一类的后验概率就做出了分类决策，而没有考虑每一种分类决策的风险。事实
@@ -1882,8 +1859,8 @@ G 事件的互补的事件，这个比例是 60 ，也即 0.6 。</li>
 </p>
 </div>
 </div>
-<div id="outline-container-org6e00bf9" class="outline-4">
-<h4 id="org6e00bf9"><span class="section-number-4">5.4.4</span> 朴素贝叶斯</h4>
+<div id="outline-container-orga737bce" class="outline-4">
+<h4 id="orga737bce"><span class="section-number-4">5.4.4.</span> 朴素贝叶斯</h4>
 <div class="outline-text-4" id="text-5-4-4">
 <p>
 朴素贝叶斯：是在贝叶斯分类基础上，基于一个简单的假定：给定目标值时属性之间相互条件独立，这样可以简化似然概率的计算。朴素
@@ -1907,8 +1884,8 @@ G 事件的互补的事件，这个比例是 60 ，也即 0.6 。</li>
 </div>
 </div>
 
-<div id="outline-container-org3b032b3" class="outline-2">
-<h2 id="org3b032b3"><span class="section-number-2">6</span> 几何</h2>
+<div id="outline-container-org33111ce" class="outline-2">
+<h2 id="org33111ce"><span class="section-number-2">6.</span> 几何</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 讨论几何就必须要明确坐标系，不同的坐标系下得出的结果可能不一样。这里主要阐
@@ -1934,16 +1911,16 @@ G 事件的互补的事件，这个比例是 60 ，也即 0.6 。</li>
 方位。</li>
 </ul>
 </div>
-<div id="outline-container-orge434de5" class="outline-3">
-<h3 id="orge434de5"><span class="section-number-3">6.1</span> 方向余弦</h3>
+<div id="outline-container-orgd22e04b" class="outline-3">
+<h3 id="orgd22e04b"><span class="section-number-3">6.1.</span> 方向余弦</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 方向余弦指一个3x3的方向余弦矩阵，其中每个元素必须在[-1, 1]的范围内。
 </p>
 </div>
 </div>
-<div id="outline-container-org392cce4" class="outline-3">
-<h3 id="org392cce4"><span class="section-number-3">6.2</span> 欧拉角</h3>
+<div id="outline-container-orgf93af1b" class="outline-3">
+<h3 id="orgf93af1b"><span class="section-number-3">6.2.</span> 欧拉角</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 欧拉角的基本思想是将角位移分解为绕3个相互垂直轴的3个旋转组成的序列。绕任意3
@@ -1985,8 +1962,8 @@ pitch 90度再bank 45度效果等价。也就是一旦选择\(\pm{}90\)作为pit
 </ul>
 </div>
 </div>
-<div id="outline-container-orgbd0473c" class="outline-3">
-<h3 id="orgbd0473c"><span class="section-number-3">6.3</span> 四元数</h3>
+<div id="outline-container-org6ae5973" class="outline-3">
+<h3 id="org6ae5973"><span class="section-number-3">6.3.</span> 四元数</h3>
 <div class="outline-text-3" id="text-6-3">
 <p>
 我们知道复数有1个实部和1个虚部，从几何的角度它可以表达2维平面。有数学家
@@ -2002,8 +1979,8 @@ w+xi+yj+zk, 2维空间的复数很多性质都能应用到四元数上。并且�
 <li>\(ki=j, ik=-j\);</li>
 </ol>
 </div>
-<div id="outline-container-org5144c70" class="outline-4">
-<h4 id="org5144c70"><span class="section-number-4">6.3.1</span> 物理意义</h4>
+<div id="outline-container-orgfefb9fa" class="outline-4">
+<h4 id="orgfefb9fa"><span class="section-number-4">6.3.1.</span> 物理意义</h4>
 <div class="outline-text-4" id="text-6-3-1">
 <p>
 三维空间有一种“轴-角”对\((n, \theta)\)定义了一个角位移，即绕轴n(向量)旋转
@@ -2021,8 +1998,8 @@ z & = n_{z}*sin(\theta/2)\\
 $$ 
 </p>
 </div>
-<div id="outline-container-org602d35b" class="outline-5">
-<h5 id="org602d35b"><span class="section-number-5">6.3.1.1</span> 用四元数旋转矢量</h5>
+<div id="outline-container-org87d1d99" class="outline-5">
+<h5 id="org87d1d99"><span class="section-number-5">6.3.1.1.</span> 用四元数旋转矢量</h5>
 <div class="outline-text-5" id="text-6-3-1-1">
 <p>
 给定一个矢量v，再给定一个旋转的单位四元数q，让v旋转q。首先将v改写成四元数的
@@ -2032,12 +2009,12 @@ $$
 </div>
 </div>
 </div>
-<div id="outline-container-org1060d19" class="outline-4">
-<h4 id="org1060d19"><span class="section-number-4">6.3.2</span> 运算</h4>
+<div id="outline-container-org36923e8" class="outline-4">
+<h4 id="org36923e8"><span class="section-number-4">6.3.2.</span> 运算</h4>
 <div class="outline-text-4" id="text-6-3-2">
 </div>
-<div id="outline-container-orgb1edc27" class="outline-5">
-<h5 id="orgb1edc27"><span class="section-number-5">6.3.2.1</span> 乘法</h5>
+<div id="outline-container-orgac49942" class="outline-5">
+<h5 id="orgac49942"><span class="section-number-5">6.3.2.1.</span> 乘法</h5>
 <div class="outline-text-5" id="text-6-3-2-1">
 <p>
 给定两个四元数p和q，分别代表旋转P和Q，则乘积pq表示两个旋转的合成(即旋转Q后
@@ -2047,32 +2024,32 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-orgbd61844" class="outline-5">
-<h5 id="orgbd61844"><span class="section-number-5">6.3.2.2</span> 模</h5>
+<div id="outline-container-org0ea9f9a" class="outline-5">
+<h5 id="org0ea9f9a"><span class="section-number-5">6.3.2.2.</span> 模</h5>
 <div class="outline-text-5" id="text-6-3-2-2">
 <p>
 四元数q的模可以表示为\[N(q)=|q|=w^{2}+x^{2}+y^{2}+z^{2}\] 
 </p>
 </div>
 </div>
-<div id="outline-container-org4368b49" class="outline-5">
-<h5 id="org4368b49"><span class="section-number-5">6.3.2.3</span> 共轭</h5>
+<div id="outline-container-org44b9510" class="outline-5">
+<h5 id="org44b9510"><span class="section-number-5">6.3.2.3.</span> 共轭</h5>
 <div class="outline-text-5" id="text-6-3-2-3">
 <p>
 四元数q的共轭表示为\[q^{\ast} = (w, -x, -y, -z)\] 
 </p>
 </div>
 </div>
-<div id="outline-container-orgfa5f0ce" class="outline-5">
-<h5 id="orgfa5f0ce"><span class="section-number-5">6.3.2.4</span> 逆</h5>
+<div id="outline-container-org20f3325" class="outline-5">
+<h5 id="org20f3325"><span class="section-number-5">6.3.2.4.</span> 逆</h5>
 <div class="outline-text-5" id="text-6-3-2-4">
 <p>
 由矩阵逆引申出四元数q的逆。\[q^{-1}=\frac{q^{\ast}}{|q|^{2}}\] 
 </p>
 </div>
 </div>
-<div id="outline-container-org5323c32" class="outline-5">
-<h5 id="org5323c32"><span class="section-number-5">6.3.2.5</span> 插值</h5>
+<div id="outline-container-orgaae6f0c" class="outline-5">
+<h5 id="orgaae6f0c"><span class="section-number-5">6.3.2.5.</span> 插值</h5>
 <div class="outline-text-5" id="text-6-3-2-5">
 <p>
 两个四元数之间可以方便的近些插值计算。给定两个旋转四元数\(q_{a}, q_{b}\)代
@@ -2089,8 +2066,8 @@ $$
 </ul>
 </div>
 </div>
-<div id="outline-container-org4152537" class="outline-5">
-<h5 id="org4152537"><span class="section-number-5">6.3.2.6</span> 转换</h5>
+<div id="outline-container-orgdd40b75" class="outline-5">
+<h5 id="orgdd40b75"><span class="section-number-5">6.3.2.6.</span> 转换</h5>
 <div class="outline-text-5" id="text-6-3-2-6">
 <ul class="org-ul">
 <li><p>
@@ -2134,8 +2111,8 @@ $$
 <div id="postamble" class="status">
 <p class="author">Author: 比克曼</p>
 <p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
-<p class="date">Created: 2020-06-05 周五 00:05</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+<p class="date">Created: 2026-07-12 日 12:30</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

@@ -3,14 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-11-20 周五 23:37 -->
+<!-- 2026-07-12 日 12:41 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>比克曼的知识管理</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="比克曼" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -31,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -40,22 +41,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -161,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -177,197 +191,169 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="css/org-manual.css"/>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2018 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-</script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">比克曼的知识管理
 <br />
 <span class="subtitle">主页</span>
 </h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org93c270e">1. 数学</a></li>
-<li><a href="#orge55f4cf">2. 算法</a></li>
-<li><a href="#org222277b">3. 协议</a></li>
-<li><a href="#orgf32d7bf">4. 软件</a></li>
-<li><a href="#org579ac94">5. 硬件</a></li>
-<li><a href="#orgf1a6627">6. 工具</a></li>
-<li><a href="#org16b9d59">7. 信号系统</a></li>
-<li><a href="#org8d1ee68">8. 操作系统</a></li>
-<li><a href="#orgd3571f2">9. 通信</a></li>
-<li><a href="#org6094233">10. 安全</a></li>
-<li><a href="#org7b96e6b">11. 附录</a>
+<li><a href="#orgd09e9f8">1. 数学</a></li>
+<li><a href="#org494a3cf">2. 算法</a></li>
+<li><a href="#org2aa1c7e">3. 协议</a></li>
+<li><a href="#org2a51e30">4. 软件</a></li>
+<li><a href="#orgade616b">5. 硬件</a></li>
+<li><a href="#org7eda322">6. 工具</a></li>
+<li><a href="#orge841632">7. 信号系统</a></li>
+<li><a href="#org12a0a19">8. 操作系统</a></li>
+<li><a href="#org1c352d1">9. 通信</a></li>
+<li><a href="#orgbdc8bd3">10. 安全</a></li>
+<li><a href="#orgf255827">11. 附录</a>
 <ul>
-<li><a href="#org73d8404">11.1. 帮助</a>
+<li><a href="#org17fb92c">11.1. 帮助</a>
 <ul>
-<li><a href="#org9df171e">11.1.1. blog生成</a></li>
+<li><a href="#org5ccce99">11.1.1. blog生成</a></li>
 </ul>
 </li>
-<li><a href="#org2bd873f">11.2. 公钥指纹</a></li>
+<li><a href="#org9242a42">11.2. 日常</a></li>
+<li><a href="#org2c83c22">11.3. 公钥指纹</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org93c270e" class="outline-2">
-<h2 id="org93c270e"><span class="section-number-2">1</span> <a href="./math.html">数学</a></h2>
+<div id="outline-container-orgd09e9f8" class="outline-2">
+<h2 id="orgd09e9f8"><span class="section-number-2">1.</span> <a href="./math.html">数学</a></h2>
 <div class="outline-text-2" id="text-1">
 <p>
 汇总工作中需要用到数学知识。
 </p>
 </div>
 </div>
-<div id="outline-container-orge55f4cf" class="outline-2">
-<h2 id="orge55f4cf"><span class="section-number-2">2</span> <a href="./algorithm.html">算法</a></h2>
+<div id="outline-container-org494a3cf" class="outline-2">
+<h2 id="org494a3cf"><span class="section-number-2">2.</span> <a href="./algorithm.html">算法</a></h2>
 <div class="outline-text-2" id="text-2">
 <p>
 总结各种机器学习,数据挖掘等的理念、工具、算法等, 以及数字图像处理知识。
 </p>
 </div>
 </div>
-<div id="outline-container-org222277b" class="outline-2">
-<h2 id="org222277b"><span class="section-number-2">3</span> <a href="./protocol.html">协议</a></h2>
+<div id="outline-container-org2aa1c7e" class="outline-2">
+<h2 id="org2aa1c7e"><span class="section-number-2">3.</span> <a href="./protocol.html">协议</a></h2>
 <div class="outline-text-2" id="text-3">
 <p>
 总结工作中遇到的各种协议，包括大族协议，小族协议等。
 </p>
 </div>
 </div>
-<div id="outline-container-orgf32d7bf" class="outline-2">
-<h2 id="orgf32d7bf"><span class="section-number-2">4</span> <a href="./software.html">软件</a></h2>
+<div id="outline-container-org2a51e30" class="outline-2">
+<h2 id="org2a51e30"><span class="section-number-2">4.</span> <a href="./software.html">软件</a></h2>
 <div class="outline-text-2" id="text-4">
 <p>
 总结软件开发的一些理论，技巧，编程语言等。
 </p>
 </div>
 </div>
-<div id="outline-container-org579ac94" class="outline-2">
-<h2 id="org579ac94"><span class="section-number-2">5</span> <a href="./hardware.html">硬件</a></h2>
+<div id="outline-container-orgade616b" class="outline-2">
+<h2 id="orgade616b"><span class="section-number-2">5.</span> <a href="./hardware.html">硬件</a></h2>
 <div class="outline-text-2" id="text-5">
 <p>
 总结硬件中的数字电路、模拟电路、射频、器件、芯片内核等。
 </p>
 </div>
 </div>
-<div id="outline-container-orgf1a6627" class="outline-2">
-<h2 id="orgf1a6627"><span class="section-number-2">6</span> <a href="./tool.html">工具</a></h2>
+<div id="outline-container-org7eda322" class="outline-2">
+<h2 id="org7eda322"><span class="section-number-2">6.</span> <a href="./tool.html">工具</a></h2>
 <div class="outline-text-2" id="text-6">
 <p>
 总结工作中用到的工具，emacs、latex、git、软件工具等。
 </p>
 </div>
 </div>
-<div id="outline-container-org16b9d59" class="outline-2">
-<h2 id="org16b9d59"><span class="section-number-2">7</span> <a href="./signal.html">信号系统</a></h2>
+<div id="outline-container-orge841632" class="outline-2">
+<h2 id="orge841632"><span class="section-number-2">7.</span> <a href="./signal.html">信号系统</a></h2>
 <div class="outline-text-2" id="text-7">
 <p>
 总结信号与系统的方方面面。
 </p>
 </div>
 </div>
-<div id="outline-container-org8d1ee68" class="outline-2">
-<h2 id="org8d1ee68"><span class="section-number-2">8</span> <a href="./os.html">操作系统</a></h2>
+<div id="outline-container-org12a0a19" class="outline-2">
+<h2 id="org12a0a19"><span class="section-number-2">8.</span> <a href="./os.html">操作系统</a></h2>
 <div class="outline-text-2" id="text-8">
 <p>
 总结工作中用到的操作系统，Android、Linux、嵌入式操作系统等。
 </p>
 </div>
 </div>
-<div id="outline-container-orgd3571f2" class="outline-2">
-<h2 id="orgd3571f2"><span class="section-number-2">9</span> <a href="./communication.html">通信</a></h2>
+<div id="outline-container-org1c352d1" class="outline-2">
+<h2 id="org1c352d1"><span class="section-number-2">9.</span> <a href="./communication.html">通信</a></h2>
 <div class="outline-text-2" id="text-9">
 <p>
 总结通信系统的方方面面，从基础到LTE。
 </p>
 </div>
 </div>
-<div id="outline-container-org6094233" class="outline-2">
-<h2 id="org6094233"><span class="section-number-2">10</span> <a href="./security.html">安全</a></h2>
+<div id="outline-container-orgbdc8bd3" class="outline-2">
+<h2 id="orgbdc8bd3"><span class="section-number-2">10.</span> <a href="./security.html">安全</a></h2>
 <div class="outline-text-2" id="text-10">
 <p>
 总结安全行业相关概念和心得。
 </p>
 </div>
 </div>
-<div id="outline-container-org7b96e6b" class="outline-2">
-<h2 id="org7b96e6b"><span class="section-number-2">11</span> 附录</h2>
+<div id="outline-container-orgf255827" class="outline-2">
+<h2 id="orgf255827"><span class="section-number-2">11.</span> 附录</h2>
 <div class="outline-text-2" id="text-11">
 </div>
-<div id="outline-container-org73d8404" class="outline-3">
-<h3 id="org73d8404"><span class="section-number-3">11.1</span> 帮助</h3>
+<div id="outline-container-org17fb92c" class="outline-3">
+<h3 id="org17fb92c"><span class="section-number-3">11.1.</span> 帮助</h3>
 <div class="outline-text-3" id="text-11-1">
 </div>
-<div id="outline-container-org9df171e" class="outline-4">
-<h4 id="org9df171e"><span class="section-number-4">11.1.1</span> blog生成</h4>
+<div id="outline-container-org5ccce99" class="outline-4">
+<h4 id="org5ccce99"><span class="section-number-4">11.1.1.</span> blog生成</h4>
 <div class="outline-text-4" id="text-11-1-1">
 <ul class="org-ul">
-<li>修改<a href="file:///d:/emacs/.emacs.d/org-mode/bitman-org-blog.el">file:///d:/emacs/.emacs.d/org-mode/bitman-org-blog.el</a>中的
+<li>修改<a href="file:///home/joe/.emacs.d/org-mode/bitman-org-blog.el">file:///home/joe/.emacs.d/org-mode/bitman-org-blog.el</a>中的
 org-publish-project-alist变中的blog路径，并使之生效；</li>
-<li>执行“C-c C-e P(Publish) p(Current project)”;</li>
+<li>执行方式
+<ul class="org-ul">
+<li>“C-c C-e P(Publish) p(Current project)”;</li>
+<li>M-x my-publish-html</li>
+<li>M-x org-publish</li>
+</ul></li>
+<li>如果没有生成，可以使用强制生成
+<ul class="org-ul">
+<li>C-u M-x org-publish；</li>
+<li>删除“~/.org-timestamps”文件夹；</li>
+</ul></li>
 </ul>
 </div>
 </div>
 </div>
-<div id="outline-container-org2bd873f" class="outline-3">
-<h3 id="org2bd873f"><span class="section-number-3">11.2</span> 公钥指纹</h3>
+<div id="outline-container-org9242a42" class="outline-3">
+<h3 id="org9242a42"><span class="section-number-3">11.2.</span> 日常</h3>
 <div class="outline-text-3" id="text-11-2">
+<p>
+日常事务记录。
+</p>
+</div>
+</div>
+<div id="outline-container-org2c83c22" class="outline-3">
+<h3 id="org2c83c22"><span class="section-number-3">11.3.</span> 公钥指纹</h3>
+<div class="outline-text-3" id="text-11-3">
 <p>
 我的公钥指纹：
 </p>
-<pre class="example">
+<pre class="example" id="org47623f9">
 pub   rsa2048 2019-05-07 [SC]
       E622 558B A9B8 4ACE 5E05  66D1 6F44 A889 D571 A5AA
 </pre>
@@ -375,7 +361,7 @@ pub   rsa2048 2019-05-07 [SC]
 <p>
 你可以使用如下命令获得我的公钥
 </p>
-<pre class="example">
+<pre class="example" id="org718489e">
 gpg --keyserver hkps://hkps.pool.sks-keyservers.net --search-keys bitman@163.com
 </pre>
 </div>
@@ -385,8 +371,8 @@ gpg --keyserver hkps://hkps.pool.sks-keyservers.net --search-keys bitman@163.com
 <div id="postamble" class="status">
 <p class="author">Author: 比克曼</p>
 <p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
-<p class="date">Created: 2020-11-20 周五 23:37</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+<p class="date">Created: 2026-07-12 日 12:41</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

@@ -6,7 +6,7 @@
 #+latex: \clearpage\pagenumbering{arabic} 
 #+options: h:4 
 #+startup: overview
-    
+
 * [[./math.org][数学]]
 汇总工作中需要用到数学知识。
 * [[./algorithm.org][算法]]
@@ -27,18 +27,26 @@
 总结通信系统的方方面面，从基础到LTE。
 * [[./security.org][安全]]
 总结安全行业相关概念和心得。
-* [[./encyclopedia.org][百科知识]]             :noexport:
+* [[./encyclopedia.org][百科]]                                                             :noexport:
 总结工作中接触到的百科知识比如GPS等。
-* [[./language.org][外语]]               :noexport:
+* [[./language.org][外语]]                                                             :noexport:
 总结平时用到的英语知识、短语、翻译技巧等。 
-* [[./decoration.org][装修]]               :noexport:
+* [[./decoration.org][装修]]                                                             :noexport:
 介绍一些装修常识和问题点。
 * 附录
 ** 帮助
 *** blog生成
 - 修改[[~/.emacs.d/org-mode/bitman-org-blog.el]]中的
   org-publish-project-alist变中的blog路径，并使之生效；
-- 执行“C-c C-e P(Publish) p(Current project)”;
+- 执行方式
+  + “C-c C-e P(Publish) p(Current project)”;
+  + M-x my-publish-html
+  + M-x org-publish
+- 如果没有生成，可以使用强制生成
+  + C-u M-x org-publish；
+  + 删除“~/.org-timestamps”文件夹；
+** 日常
+日常事务记录。
 ** 公钥指纹
 我的公钥指纹：
 #+BEGIN_EXAMPLE

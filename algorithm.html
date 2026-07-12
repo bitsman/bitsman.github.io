@@ -3,14 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-06-05 周五 00:04 -->
+<!-- 2026-07-12 日 12:30 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>算法</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="比克曼" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -31,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -40,22 +41,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -161,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -177,196 +191,159 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="css/org-manual.css"/>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2018 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
 </script>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        displayAlign: "center",
-        displayIndent: "0em",
 
-        "HTML-CSS": { scale: 100,
-                        linebreaks: { automatic: "false" },
-                        webFont: "TeX"
-                       },
-        SVG: {scale: 100,
-              linebreaks: { automatic: "false" },
-              font: "TeX"},
-        NativeMML: {scale: 100},
-        TeX: { equationNumbers: {autoNumber: "AMS"},
-               MultLineWidth: "85%",
-               TagSide: "right",
-               TagIndent: ".8em"
-             }
-});
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">算法</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org20906ea">1. 常规算法</a>
+<li><a href="#org1fe176f">1. 常规算法</a>
 <ul>
-<li><a href="#org2dc5122">1.1. 排序</a>
+<li><a href="#orgff2cc24">1.1. 排序</a>
 <ul>
-<li><a href="#orged56085">1.1.1. 快速排序</a></li>
+<li><a href="#orgbed41a7">1.1.1. 快速排序</a></li>
 </ul>
 </li>
-<li><a href="#orgac9b6c5">1.2. 最优化</a>
+<li><a href="#org961b9e2">1.2. 最优化</a>
 <ul>
-<li><a href="#org8389618">1.2.1. 梯度下降法</a></li>
-<li><a href="#orgba7283d">1.2.2. 共轭梯度法</a></li>
-<li><a href="#orga1650a7">1.2.3. 拉格朗日乘子法</a></li>
-<li><a href="#org1feb9da">1.2.4. 拉格朗日对偶</a>
+<li><a href="#org7862ef1">1.2.1. 梯度下降法</a></li>
+<li><a href="#org6dde4ea">1.2.2. 共轭梯度法</a></li>
+<li><a href="#orgf02e4ce">1.2.3. 拉格朗日乘子法</a></li>
+<li><a href="#org3b36bb3">1.2.4. 拉格朗日对偶</a>
 <ul>
-<li><a href="#orga34536f">1.2.4.1. 原始问题</a></li>
-<li><a href="#org8675cbf">1.2.4.2. 广义拉格朗日函数</a></li>
-<li><a href="#org80f02fa">1.2.4.3. 对偶问题</a></li>
-<li><a href="#org74b08e3">1.2.4.4. 原始问题和对偶问题关系</a></li>
-<li><a href="#org06e9553">1.2.4.5. KKT条件</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orgc1dc50a">1.3. cordic算法</a>
-<ul>
-<li><a href="#orgdd28869">1.3.1. 背景</a></li>
-<li><a href="#org68b5404">1.3.2. 从二分查找法说起</a></li>
-<li><a href="#orgec80ab1">1.3.3. 减少乘法运算</a></li>
-<li><a href="#org4f42461">1.3.4. 消除乘法运算</a></li>
+<li><a href="#org80c718d">1.2.4.1. 原始问题</a></li>
+<li><a href="#org056c06d">1.2.4.2. 广义拉格朗日函数</a></li>
+<li><a href="#orgeb8ec2e">1.2.4.3. 对偶问题</a></li>
+<li><a href="#orgd6ecf1a">1.2.4.4. 原始问题和对偶问题关系</a></li>
+<li><a href="#org37b6f85">1.2.4.5. KKT条件</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org1d25b0d">2. 滤波算法</a>
+<li><a href="#orgdd0eb00">1.3. cordic算法</a>
 <ul>
-<li><a href="#org39657fa">2.1. 中值滤波</a></li>
-<li><a href="#org2abc4a9">2.2. 全期平滑滤波</a></li>
-<li><a href="#orgbb1b8bb">2.3. 移动平滑滤波</a></li>
-<li><a href="#org642730d">2.4. 指数平滑滤波</a>
-<ul>
-<li><a href="#orga482173">2.4.1. 指数平滑的公式</a></li>
-<li><a href="#orgd6faa8e">2.4.2. 一次指数平滑</a></li>
-<li><a href="#orgc8e911c">2.4.3. 二次指数平滑</a></li>
-<li><a href="#org5de2d26">2.4.4. 三次指数平滑</a></li>
+<li><a href="#org4cb002d">1.3.1. 背景</a></li>
+<li><a href="#org2b9d6d9">1.3.2. 从二分查找法说起</a></li>
+<li><a href="#org262255c">1.3.3. 减少乘法运算</a></li>
+<li><a href="#orgbb8498b">1.3.4. 消除乘法运算</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgb4ecfd2">3. 图像处理</a>
+<li><a href="#orgfb43d34">2. 滤波算法</a>
 <ul>
-<li><a href="#orga4dbeac">3.1. 概念</a></li>
-<li><a href="#orge5e0620">3.2. 其他</a></li>
+<li><a href="#org0c02031">2.1. 中值滤波</a></li>
+<li><a href="#org4e1a092">2.2. 全期平滑滤波</a></li>
+<li><a href="#org06bef9f">2.3. 移动平滑滤波</a></li>
+<li><a href="#orgd0dd6e2">2.4. 指数平滑滤波</a>
+<ul>
+<li><a href="#org36aaf96">2.4.1. 指数平滑的公式</a></li>
+<li><a href="#org6b1bb78">2.4.2. 一次指数平滑</a></li>
+<li><a href="#org180eaaf">2.4.3. 二次指数平滑</a></li>
+<li><a href="#orgab08ef6">2.4.4. 三次指数平滑</a></li>
 </ul>
 </li>
-<li><a href="#orge145566">4. 机器学习</a>
-<ul>
-<li><a href="#orgd3ef0ad">4.1. 基本概念</a></li>
-<li><a href="#org1f2f041">4.2. 基本方法</a>
-<ul>
-<li><a href="#org87d832d">4.2.1. 最小二乘法</a>
-<ul>
-<li><a href="#org383400b">4.2.1.1. 解法一</a></li>
-<li><a href="#orgb719c8b">4.2.1.2. 解法二</a></li>
 </ul>
 </li>
-<li><a href="#org94587a0">4.2.2. 核函数</a></li>
+<li><a href="#org8e06877">3. 图像处理</a>
+<ul>
+<li><a href="#orgc436b24">3.1. 概念</a></li>
+<li><a href="#org04e9b06">3.2. 其他</a></li>
 </ul>
 </li>
-<li><a href="#org21e2b00">4.3. k临近算法</a></li>
-<li><a href="#orgf69bb09">4.4. 决策树</a>
+<li><a href="#orgaadea5b">4. 机器学习</a>
+<ul>
+<li><a href="#orgbec0907">4.1. 基本概念</a></li>
+<li><a href="#org01cf013">4.2. 基本方法</a>
+<ul>
+<li><a href="#org5dfa7a0">4.2.1. 最小二乘法</a>
+<ul>
+<li><a href="#org0ff5c19">4.2.1.1. 解法一</a></li>
+<li><a href="#org0ce3541">4.2.1.2. 解法二</a></li>
+</ul>
+</li>
+<li><a href="#org0dac3b1">4.2.2. 核函数</a></li>
+</ul>
+</li>
+<li><a href="#orgf6fd471">4.3. k临近算法</a></li>
+<li><a href="#orgc9d7037">4.4. 决策树</a>
 <ul>
 <li>
 <ul>
-<li><a href="#org9353ea4">4.4.0.1. 信息熵</a></li>
-<li><a href="#orge54cf5b">4.4.0.2. 算法逻辑</a></li>
-<li><a href="#org69e5837">4.4.0.3. 算法实例</a></li>
+<li><a href="#org49624a5">4.4.0.1. 信息熵</a></li>
+<li><a href="#orgcc05e27">4.4.0.2. 算法逻辑</a></li>
+<li><a href="#org4fa90f2">4.4.0.3. 算法实例</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgb2a28fd">4.5. 贝叶斯分类</a></li>
-<li><a href="#orgbfdef8f">4.6. 支持向量机</a></li>
-<li><a href="#org0f8fbc5">4.7. 回归分析</a>
+<li><a href="#org45ddd22">4.5. 贝叶斯分类</a></li>
+<li><a href="#orge81779e">4.6. 支持向量机</a></li>
+<li><a href="#orge60883e">4.7. 回归分析</a>
 <ul>
 <li>
 <ul>
-<li><a href="#org39d45d2">4.7.0.1. 线性回归</a></li>
-<li><a href="#org9801577">4.7.0.2. 岭回归</a></li>
-<li><a href="#org423e13a">4.7.0.3. 逻辑回归</a></li>
+<li><a href="#org2a9c318">4.7.0.1. 线性回归</a></li>
+<li><a href="#orgd840ddb">4.7.0.2. 岭回归</a></li>
+<li><a href="#orgffb76b1">4.7.0.3. 逻辑回归</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgc75bd58">4.8. 神经网络</a>
+<li><a href="#orgd4d7285">4.8. 神经网络</a>
 <ul>
-<li><a href="#org5a8e966">4.8.1. 概念</a></li>
-<li><a href="#org0fd56b7">4.8.2. 感知机</a></li>
+<li><a href="#org0ae0c93">4.8.1. 概念</a></li>
+<li><a href="#org493c227">4.8.2. 感知机</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgea695fc">5. 算法实现</a>
+<li><a href="#orgedea4b0">5. 算法实现</a>
 <ul>
-<li><a href="#org68c8073">5.1. 基于加速度数据计算速度算法</a>
+<li><a href="#orgf4be826">5.1. 基于加速度数据计算速度算法</a>
 <ul>
-<li><a href="#org7a9e147">5.1.1. 数据源</a></li>
-<li><a href="#orgb7d505c">5.1.2. 速度算法原理</a></li>
-<li><a href="#org7d802dc">5.1.3. 距离算法原理</a></li>
-<li><a href="#orgbf1fd2e">5.1.4. 着地时间算法原理</a></li>
-<li><a href="#org04f42c3">5.1.5. 冲刺次数算法原理</a></li>
+<li><a href="#orga15ef8d">5.1.1. 数据源</a></li>
+<li><a href="#orgb1bb4e0">5.1.2. 速度算法原理</a></li>
+<li><a href="#org474a41d">5.1.3. 距离算法原理</a></li>
+<li><a href="#org6cceaec">5.1.4. 着地时间算法原理</a></li>
+<li><a href="#orgb6de7ef">5.1.5. 冲刺次数算法原理</a></li>
 </ul>
 </li>
 </ul>
@@ -378,21 +355,21 @@ for the JavaScript code in this tag.
 <h2>List of Tables</h2>
 <div id="text-list-of-tables">
 <ul>
-<li><a href="#orgbfad1d3"><span class="table-number">Table 1:</span> 迭代次数</a></li>
+<li><a href="#org5a3ac88"><span class="table-number">Table 1:</span> 迭代次数</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org20906ea" class="outline-2">
-<h2 id="org20906ea"><span class="section-number-2">1</span> 常规算法</h2>
+<div id="outline-container-org1fe176f" class="outline-2">
+<h2 id="org1fe176f"><span class="section-number-2">1.</span> 常规算法</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org2dc5122" class="outline-3">
-<h3 id="org2dc5122"><span class="section-number-3">1.1</span> 排序</h3>
+<div id="outline-container-orgff2cc24" class="outline-3">
+<h3 id="orgff2cc24"><span class="section-number-3">1.1.</span> 排序</h3>
 <div class="outline-text-3" id="text-1-1">
 </div>
-<div id="outline-container-orged56085" class="outline-4">
-<h4 id="orged56085"><span class="section-number-4">1.1.1</span> 快速排序</h4>
+<div id="outline-container-orgbed41a7" class="outline-4">
+<h4 id="orgbed41a7"><span class="section-number-4">1.1.1.</span> 快速排序</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <p>
 快速排序是冒泡排序的改进版，其思想是选定待排序数据中的一个值作为比较轴，然
@@ -402,8 +379,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
-<div id="outline-container-orgac9b6c5" class="outline-3">
-<h3 id="orgac9b6c5"><span class="section-number-3">1.2</span> 最优化</h3>
+<div id="outline-container-org961b9e2" class="outline-3">
+<h3 id="org961b9e2"><span class="section-number-3">1.2.</span> 最优化</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 许多实际问题利用数学建模的方法得到下面常规的优化形式：\(min f(x),
@@ -431,15 +408,15 @@ x\in{D}\), 其中x是n维矢量，D是问题的定义域，F是可行域。关�
 不等式约束条件表示为\(g_{j}(x)<=0, j=1, ..., n\);</li>
 </ul>
 </div>
-<div id="outline-container-org8389618" class="outline-4">
-<h4 id="org8389618"><span class="section-number-4">1.2.1</span> 梯度下降法</h4>
+<div id="outline-container-org7862ef1" class="outline-4">
+<h4 id="org7862ef1"><span class="section-number-4">1.2.1.</span> 梯度下降法</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <p>
 梯度下降法属于无约束优化问题。
 </p>
 
-<div class="figure">
-<p><img src="file:///e:/LXC/work/bitman/KM/img/optimize1.png" alt="optimize1.png" />
+<div id="org5cce89d" class="figure">
+<p><img src="e:/LXC/work/bitman/KM/img/optimize1.png" alt="optimize1.png" />
 </p>
 </div>
 
@@ -483,8 +460,8 @@ y减小，相当于A点。要搜索极小值C点，在A点必须向x增加方向
 <li>……</li>
 </ol>
 
-<div class="figure">
-<p><img src="file:///e:/LXC/work/bitman/KM/img/optimize2.png" alt="optimize2.png" />
+<div id="org41ffa42" class="figure">
+<p><img src="e:/LXC/work/bitman/KM/img/optimize2.png" alt="optimize2.png" />
 </p>
 </div>
 
@@ -503,8 +480,8 @@ y减小，相当于A点。要搜索极小值C点，在A点必须向x增加方向
 </ol>
 </div>
 </div>
-<div id="outline-container-orgba7283d" class="outline-4">
-<h4 id="orgba7283d"><span class="section-number-4">1.2.2</span> 共轭梯度法</h4>
+<div id="outline-container-org6dde4ea" class="outline-4">
+<h4 id="org6dde4ea"><span class="section-number-4">1.2.2.</span> 共轭梯度法</h4>
 <div class="outline-text-4" id="text-1-2-2">
 <p>
 共轭梯度法也属于无约束优化问题。
@@ -516,8 +493,8 @@ y减小，相当于A点。要搜索极小值C点，在A点必须向x增加方向
 </p>
 </div>
 </div>
-<div id="outline-container-orga1650a7" class="outline-4">
-<h4 id="orga1650a7"><span class="section-number-4">1.2.3</span> 拉格朗日乘子法</h4>
+<div id="outline-container-orgf02e4ce" class="outline-4">
+<h4 id="orgf02e4ce"><span class="section-number-4">1.2.3.</span> 拉格朗日乘子法</h4>
 <div class="outline-text-4" id="text-1-2-3">
 <p>
 一般无约束优化问题f(x)，只需要求f的各个偏导数，并令其等于0，就可以解出所需
@@ -555,8 +532,8 @@ $$
 </p>
 </div>
 </div>
-<div id="outline-container-org1feb9da" class="outline-4">
-<h4 id="org1feb9da"><span class="section-number-4">1.2.4</span> 拉格朗日对偶</h4>
+<div id="outline-container-org3b36bb3" class="outline-4">
+<h4 id="org3b36bb3"><span class="section-number-4">1.2.4.</span> 拉格朗日对偶</h4>
 <div class="outline-text-4" id="text-1-2-4">
 <p>
 某些条件下，把原始的约束问题通过拉格朗日函数转化为无约束问题，如果原始问题
@@ -564,8 +541,8 @@ $$
 加容易。 
 </p>
 </div>
-<div id="outline-container-orga34536f" class="outline-5">
-<h5 id="orga34536f"><span class="section-number-5">1.2.4.1</span> 原始问题</h5>
+<div id="outline-container-org80c718d" class="outline-5">
+<h5 id="org80c718d"><span class="section-number-5">1.2.4.1.</span> 原始问题</h5>
 <div class="outline-text-5" id="text-1-2-4-1">
 <p>
 假设\(f(x), c_{i}(x), h_{j}(x)\)是定义在\(R^{n}\)上的连续可微函数，要解决如
@@ -586,8 +563,8 @@ s.t. & c_{i}(x)=0, i=1, ..., k\\
 </p>
 </div>
 </div>
-<div id="outline-container-org8675cbf" class="outline-5">
-<h5 id="org8675cbf"><span class="section-number-5">1.2.4.2</span> 广义拉格朗日函数</h5>
+<div id="outline-container-org056c06d" class="outline-5">
+<h5 id="org056c06d"><span class="section-number-5">1.2.4.2.</span> 广义拉格朗日函数</h5>
 <div class="outline-text-5" id="text-1-2-4-2">
 <p>
 一般意义下的拉格朗日函数如下
@@ -620,8 +597,8 @@ f(x)可以视为一个常量，常量的最大值就是本身。则在满足约�
 </p>
 </div>
 </div>
-<div id="outline-container-org80f02fa" class="outline-5">
-<h5 id="org80f02fa"><span class="section-number-5">1.2.4.3</span> 对偶问题</h5>
+<div id="outline-container-orgeb8ec2e" class="outline-5">
+<h5 id="orgeb8ec2e"><span class="section-number-5">1.2.4.3.</span> 对偶问题</h5>
 <div class="outline-text-5" id="text-1-2-4-3">
 <p>
 定义关于\(\alpha, \beta\)的函数：
@@ -634,8 +611,8 @@ f(x)可以视为一个常量，常量的最大值就是本身。则在满足约�
 </p>
 </div>
 </div>
-<div id="outline-container-org74b08e3" class="outline-5">
-<h5 id="org74b08e3"><span class="section-number-5">1.2.4.4</span> 原始问题和对偶问题关系</h5>
+<div id="outline-container-orgd6ecf1a" class="outline-5">
+<h5 id="orgd6ecf1a"><span class="section-number-5">1.2.4.4.</span> 原始问题和对偶问题关系</h5>
 <div class="outline-text-5" id="text-1-2-4-4">
 <p>
 定理：若原始问题和对偶问题都有最优值，则\[d^{'}\leq p^{'}\] 
@@ -661,8 +638,8 @@ f(x)可以视为一个常量，常量的最大值就是本身。则在满足约�
 </p>
 </div>
 </div>
-<div id="outline-container-org06e9553" class="outline-5">
-<h5 id="org06e9553"><span class="section-number-5">1.2.4.5</span> KKT条件</h5>
+<div id="outline-container-org37b6f85" class="outline-5">
+<h5 id="org37b6f85"><span class="section-number-5">1.2.4.5.</span> KKT条件</h5>
 <div class="outline-text-5" id="text-1-2-4-5">
 <p>
 定理：对于原始问题和对偶问题，假设函数f(x)和c<sub>i</sub>(x)是凸函数，h<sub>i</sub>(x)是仿
@@ -693,12 +670,12 @@ $$
 </div>
 </div>
 </div>
-<div id="outline-container-orgc1dc50a" class="outline-3">
-<h3 id="orgc1dc50a"><span class="section-number-3">1.3</span> cordic算法</h3>
+<div id="outline-container-orgdd0eb00" class="outline-3">
+<h3 id="orgdd0eb00"><span class="section-number-3">1.3.</span> cordic算法</h3>
 <div class="outline-text-3" id="text-1-3">
 </div>
-<div id="outline-container-orgdd28869" class="outline-4">
-<h4 id="orgdd28869"><span class="section-number-4">1.3.1</span> 背景</h4>
+<div id="outline-container-org4cb002d" class="outline-4">
+<h4 id="org4cb002d"><span class="section-number-4">1.3.1.</span> 背景</h4>
 <div class="outline-text-4" id="text-1-3-1">
 <p>
 三角函数的计算是个复杂的主题，有计算机之前，人们通常通过查找三角函数表来计
@@ -723,8 +700,8 @@ cordic(coordinate rotation digital computer) 算法，这个算法只利用移�
 </p>
 </div>
 </div>
-<div id="outline-container-org68b5404" class="outline-4">
-<h4 id="org68b5404"><span class="section-number-4">1.3.2</span> 从二分查找法说起</h4>
+<div id="outline-container-org2b9d6d9" class="outline-4">
+<h4 id="org2b9d6d9"><span class="section-number-4">1.3.2.</span> 从二分查找法说起</h4>
 <div class="outline-text-4" id="text-1-3-2">
 <p>
 先从一个例子说起，知道平面上一点在直角坐标系下的坐标（X,Y）=（100，200），
@@ -776,30 +753,30 @@ y' & = & -x\sin(\Theta) + ycos(\Theta) \\
 <div class="org-src-container">
 <pre class="src src-c"><span style="color: #87cefa; text-decoration: underline;">#include</span> <span style="color: #ffa07a;">&lt;stdio.h&gt;</span>
 <span style="color: #87cefa; text-decoration: underline;">#include</span> <span style="color: #ffa07a;">&lt;stdlib.h&gt;</span>
-        <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">my_atan2</span>(<span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">x</span>, <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">y</span>);
-        <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">main</span>(<span style="color: #ffff00; font-size: 105%;">void</span>)
-        {
-            <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">z</span> = my_atan2(100.0, 200.0);
-            printf(<span style="color: #ffa07a;">"\n z = %f \n"</span>, z);
+                <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">my_atan2</span>(<span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">x</span>, <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">y</span>);
+                <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">main</span>(<span style="color: #ffff00; font-size: 105%;">void</span>)
+                {
+                    <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">z</span> = my_atan2(100.0, 200.0);
+                    printf(<span style="color: #ffa07a;">"\n z = %f \n"</span>, z);
 
-            <span style="color: #ffb6c1; font-size: 105%;">return</span> 0;
-        }
+                    <span style="color: #ffb6c1; font-size: 105%;">return</span> 0;
+                }
 
-        <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">my_atan2</span>(<span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">x</span>, <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">y</span>)
-        {
-            <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">sine</span>[] =
-        {0.7071067811865,0.3826834323651,0.1950903220161,0.09801714032956, 
-        0.04906767432742,0.02454122852291,0.01227153828572,0.006135884649154,0.003067956762966 
-        ,0.001533980186285,7.669903187427045e-4,3.834951875713956e-4,1.917475973107033e-4, 
-        9.587379909597735e-5,4.793689960306688e-5,2.396844980841822e-5 
-        };
+                <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">my_atan2</span>(<span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">x</span>, <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">y</span>)
+                {
+                    <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">sine</span>[] =
+                {0.7071067811865,0.3826834323651,0.1950903220161,0.09801714032956, 
+                0.04906767432742,0.02454122852291,0.01227153828572,0.006135884649154,0.003067956762966 
+                ,0.001533980186285,7.669903187427045e-4,3.834951875713956e-4,1.917475973107033e-4, 
+                9.587379909597735e-5,4.793689960306688e-5,2.396844980841822e-5 
+                };
 
-            <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">cosine</span>[] =
-        {0.7071067811865,0.9238795325113,0.9807852804032,0.9951847266722, 
-        0.9987954562052,0.9996988186962,0.9999247018391,0.9999811752826,0.9999952938096, 
-        0.9999988234517,0.9999997058629,0.9999999264657,0.9999999816164,0.9999999954041,
-        0.999999998851,0.9999999997128
-        };
+                    <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">cosine</span>[] =
+                {0.7071067811865,0.9238795325113,0.9807852804032,0.9951847266722, 
+                0.9987954562052,0.9996988186962,0.9999247018391,0.9999811752826,0.9999952938096, 
+                0.9999988234517,0.9999997058629,0.9999999264657,0.9999999816164,0.9999999954041,
+                0.999999998851,0.9999999997128
+                };
 
     <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">i</span> = 0;
     <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">x_new</span>, <span style="color: #ffd700;">y_new</span>;
@@ -808,24 +785,24 @@ y' & = & -x\sin(\Theta) + ycos(\Theta) \\
 
     <span style="color: #ffb6c1; font-size: 105%;">for</span>(i = 0; i &lt; 15; i++)
     {
-    <span style="color: #ffb6c1; font-size: 105%;">if</span>(y &gt; 0)
-    {
-        x_new = x * cosine[i] + y * sine[i];
-        y_new = y * cosine[i] - x * sine[i];
-        x = x_new;
-        y = y_new;
-        angleSum += angle;
-    }
-    <span style="color: #ffb6c1; font-size: 105%;">else</span>
-    {
-        x_new = x * cosine[i] - y * sine[i];
-        y_new = y * cosine[i] + x * sine[i];
-        x = x_new;
-        y = y_new;
-        angleSum -= angle;
-    }
-    printf(<span style="color: #ffa07a;">"Debug: i = %d angleSum = %f, angle = %f\n"</span>, i, angleSum, angle);
-    angle /= 2;
+        <span style="color: #ffb6c1; font-size: 105%;">if</span>(y &gt; 0)
+        {
+            x_new = x * cosine[i] + y * sine[i];
+            y_new = y * cosine[i] - x * sine[i];
+            x = x_new;
+            y = y_new;
+            angleSum += angle;
+        }
+        <span style="color: #ffb6c1; font-size: 105%;">else</span>
+        {
+            x_new = x * cosine[i] - y * sine[i];
+            y_new = y * cosine[i] + x * sine[i];
+            x = x_new;
+            y = y_new;
+            angleSum -= angle;
+        }
+        printf(<span style="color: #ffa07a;">"Debug: i = %d angleSum = %f, angle = %f\n"</span>, i, angleSum, angle);
+        angle /= 2;
     }
     <span style="color: #ffb6c1; font-size: 105%;">return</span> angleSum;
 }
@@ -855,8 +832,8 @@ z = 63.432312
 </div>
 </div>
 </div>
-<div id="outline-container-orgec80ab1" class="outline-4">
-<h4 id="orgec80ab1"><span class="section-number-4">1.3.3</span> 减少乘法运算</h4>
+<div id="outline-container-org262255c" class="outline-4">
+<h4 id="org262255c"><span class="section-number-4">1.3.3.</span> 减少乘法运算</h4>
 <div class="outline-text-4" id="text-1-3-3">
 <p>
 现在已经有点cordic算法的样子了，但是我们看到没次循环都要计算4次浮点数的乘法
@@ -878,7 +855,7 @@ cos(θ) 给省略掉。省略cos(θ)后发生了什么呢，每次旋转后的�
 0.02454862210893,0.01227246237957,0.006136000157623,0.003067971201423,
 0.001533981991089,7.669905443430926e-4,3.83495215771441e-4,1.917476008357089e-4,
 9.587379953660303e-5,4.79368996581451e-5,2.3968449815303e-5
-             };
+                         };
 
 
     <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">i</span> = 0;
@@ -888,24 +865,24 @@ cos(θ) 给省略掉。省略cos(θ)后发生了什么呢，每次旋转后的�
 
     <span style="color: #ffb6c1; font-size: 105%;">for</span>(i = 0; i &lt; 15; i++)
     {
-    <span style="color: #ffb6c1; font-size: 105%;">if</span>(y &gt; 0)
-    {
-        x_new = x + y * tangent[i];
-        y_new = y - x * tangent[i];
-        x = x_new;
-        y = y_new;
-        angleSum += angle;
-    }
-    <span style="color: #ffb6c1; font-size: 105%;">else</span>
-    {
-        x_new = x - y * tangent[i];
-        y_new = y + x * tangent[i];
-        x = x_new;
-        y = y_new;
-        angleSum -= angle;
-    }
-    printf(<span style="color: #ffa07a;">"Debug: i = %d angleSum = %f, angle = %f, &#961; = %f\n"</span>, i, angleSum, angle, hypot(x,y));
-    angle /= 2;
+        <span style="color: #ffb6c1; font-size: 105%;">if</span>(y &gt; 0)
+        {
+            x_new = x + y * tangent[i];
+            y_new = y - x * tangent[i];
+            x = x_new;
+            y = y_new;
+            angleSum += angle;
+        }
+        <span style="color: #ffb6c1; font-size: 105%;">else</span>
+        {
+            x_new = x - y * tangent[i];
+            y_new = y + x * tangent[i];
+            x = x_new;
+            y = y_new;
+            angleSum -= angle;
+        }
+        printf(<span style="color: #ffa07a;">"Debug: i = %d angleSum = %f, angle = %f, &#961; = %f\n"</span>, i, angleSum, angle, hypot(x,y));
+        angle /= 2;
     }
     <span style="color: #ffb6c1; font-size: 105%;">return</span> angleSum;
 }
@@ -935,8 +912,8 @@ z = 63.432312
 </div>
 </div>
 </div>
-<div id="outline-container-org4f42461" class="outline-4">
-<h4 id="org4f42461"><span class="section-number-4">1.3.4</span> 消除乘法运算</h4>
+<div id="outline-container-orgbb8498b" class="outline-4">
+<h4 id="orgbb8498b"><span class="section-number-4">1.3.4.</span> 消除乘法运算</h4>
 <div class="outline-text-4" id="text-1-3-4">
 <p>
 我们已经成功的将乘法的次数减少了一半，还有没有可能进一步降低运算量呢？还要
@@ -974,16 +951,16 @@ tan(0.2238105003685)= 1/256
 <pre class="src src-c"><span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">my_atan4</span>(<span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">x</span>, <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">y</span>)
 {
     <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">tangent</span>[] = {1.0, 1/2.0, 1/4.0, 1/8.0, 1/16.0,
-                  1/32.0, 1/64.0, 1/128.0, 1/256.0, 1/512.0,
-                  1/1024.0, 1/2048.0, 1/4096.0, 1/8192.0, 1/16384.0
-                 };
+                              1/32.0, 1/64.0, 1/128.0, 1/256.0, 1/512.0,
+                              1/1024.0, 1/2048.0, 1/4096.0, 1/8192.0, 1/16384.0
+                             };
     <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">angle</span>[] = {45.0, 26.565051177078, 14.0362434679265,
 7.1250163489018, 3.57633437499735, 
-                1.78991060824607, 0.8951737102111,
+                            1.78991060824607, 0.8951737102111,
 0.4476141708606, 0.2238105003685, 0.1119056770662, 
-                0.0559528918938, 0.027976452617,
+                            0.0559528918938, 0.027976452617,
 0.01398822714227, 0.006994113675353, 0.003497056850704 
-               };
+                           };
 
     <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">i</span> = 0;
     <span style="color: #ffff00; font-size: 105%;">double</span> <span style="color: #ffd700;">x_new</span>, <span style="color: #ffd700;">y_new</span>;
@@ -991,23 +968,23 @@ tan(0.2238105003685)= 1/256
 
     <span style="color: #ffb6c1; font-size: 105%;">for</span>(i = 0; i &lt; 15; i++)
     {
-    <span style="color: #ffb6c1; font-size: 105%;">if</span>(y &gt; 0)
-    {
-        x_new = x + y * tangent[i];
-        y_new = y - x * tangent[i];
-        x = x_new;
-        y = y_new;
-        angleSum += angle[i];
-    }
-    <span style="color: #ffb6c1; font-size: 105%;">else</span>
-    {
-        x_new = x - y * tangent[i];
-        y_new = y + x * tangent[i];
-        x = x_new;
-        y = y_new;
-        angleSum -= angle[i];
-    }
-    printf(<span style="color: #ffa07a;">"Debug: i = %d angleSum = %f, angle = %f, &#961; = %f\n"</span>, i, angleSum, angle[i], hypot(x, y));
+        <span style="color: #ffb6c1; font-size: 105%;">if</span>(y &gt; 0)
+        {
+            x_new = x + y * tangent[i];
+            y_new = y - x * tangent[i];
+            x = x_new;
+            y = y_new;
+            angleSum += angle[i];
+        }
+        <span style="color: #ffb6c1; font-size: 105%;">else</span>
+        {
+            x_new = x - y * tangent[i];
+            y_new = y + x * tangent[i];
+            x = x_new;
+            y = y_new;
+            angleSum -= angle[i];
+        }
+        printf(<span style="color: #ffa07a;">"Debug: i = %d angleSum = %f, angle = %f, &#961; = %f\n"</span>, i, angleSum, angle[i], hypot(x, y));
     }
     <span style="color: #ffb6c1; font-size: 105%;">return</span> angleSum;
 }
@@ -1040,7 +1017,7 @@ z = 63.437356
 到1/256=0.00390625 度了，这对于大多数的情况都是足够精确的了。256 表示1度，那么45度就是 45*256 = 115200。其他的度数以此类
 推, 迭代次数见表\ref(tbl-dedaicishu)。
 </p>
-<table id="orgbfad1d3" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org5a3ac88" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 1:</span> 迭代次数</caption>
 
 <colgroup>
@@ -1199,23 +1176,23 @@ C 代码如下：
 
     <span style="color: #ffb6c1; font-size: 105%;">for</span>(i = 0; i &lt; 15; i++)
     {
-    <span style="color: #ffb6c1; font-size: 105%;">if</span>(y &gt; 0)
-    {
-        x_new = x + (y &gt;&gt; i);
-        y_new = y - (x &gt;&gt; i);
-        x = x_new;
-        y = y_new;
-        angleSum += angle[i];
-    }
-    <span style="color: #ffb6c1; font-size: 105%;">else</span>
-    {
-        x_new = x - (y &gt;&gt; i);
-        y_new = y + (x &gt;&gt; i);
-        x = x_new;
-        y = y_new;
-        angleSum -= angle[i];
-    }
-    printf(<span style="color: #ffa07a;">"Debug: i = %d angleSum = %d, angle = %d\n"</span>, i, angleSum, angle[i]);
+        <span style="color: #ffb6c1; font-size: 105%;">if</span>(y &gt; 0)
+        {
+            x_new = x + (y &gt;&gt; i);
+            y_new = y - (x &gt;&gt; i);
+            x = x_new;
+            y = y_new;
+            angleSum += angle[i];
+        }
+        <span style="color: #ffb6c1; font-size: 105%;">else</span>
+        {
+            x_new = x - (y &gt;&gt; i);
+            y_new = y + (x &gt;&gt; i);
+            x = x_new;
+            y = y_new;
+            angleSum -= angle[i];
+        }
+        printf(<span style="color: #ffa07a;">"Debug: i = %d angleSum = %d, angle = %d\n"</span>, i, angleSum, angle[i]);
     }
     <span style="color: #ffb6c1; font-size: 105%;">return</span> angleSum;
 }
@@ -1257,12 +1234,12 @@ cordic算法最基本的内容，实际上，利用cordic 算法不光可以计�
 </div>
 </div>
 
-<div id="outline-container-org1d25b0d" class="outline-2">
-<h2 id="org1d25b0d"><span class="section-number-2">2</span> 滤波算法</h2>
+<div id="outline-container-orgfb43d34" class="outline-2">
+<h2 id="orgfb43d34"><span class="section-number-2">2.</span> 滤波算法</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org39657fa" class="outline-3">
-<h3 id="org39657fa"><span class="section-number-3">2.1</span> 中值滤波</h3>
+<div id="outline-container-org0c02031" class="outline-3">
+<h3 id="org0c02031"><span class="section-number-3">2.1.</span> 中值滤波</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 中值滤波法是一种非线性的信号处理技术。中值滤波将一个长度为给定奇数的移动窗
@@ -1273,16 +1250,16 @@ cordic算法最基本的内容，实际上，利用cordic 算法不光可以计�
 </p>
 </div>
 </div>
-<div id="outline-container-org2abc4a9" class="outline-3">
-<h3 id="org2abc4a9"><span class="section-number-3">2.2</span> 全期平滑滤波</h3>
+<div id="outline-container-org4e1a092" class="outline-3">
+<h3 id="org4e1a092"><span class="section-number-3">2.2.</span> 全期平滑滤波</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 简单的全期平滑法是对时间数列的过去数据一个不漏的全部加以同等利用；
 </p>
 </div>
 </div>
-<div id="outline-container-orgbb1b8bb" class="outline-3">
-<h3 id="orgbb1b8bb"><span class="section-number-3">2.3</span> 移动平滑滤波</h3>
+<div id="outline-container-org06bef9f" class="outline-3">
+<h3 id="org06bef9f"><span class="section-number-3">2.3.</span> 移动平滑滤波</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 移动平滑法不考虑较远期的数据，并在加权移动平均法中给予近期资料更大的权重；
@@ -1296,16 +1273,16 @@ cordic算法最基本的内容，实际上，利用cordic 算法不光可以计�
 </ul>
 </div>
 </div>
-<div id="outline-container-org642730d" class="outline-3">
-<h3 id="org642730d"><span class="section-number-3">2.4</span> 指数平滑滤波</h3>
+<div id="outline-container-orgd0dd6e2" class="outline-3">
+<h3 id="orgd0dd6e2"><span class="section-number-3">2.4.</span> 指数平滑滤波</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 指数平滑法则兼容了全期平均和移动平均所长，不舍弃过去的数据，但是仅给与逐渐
 减弱的影响权重，即随着数据的远离，赋予逐渐收敛于零的权重。
 </p>
 </div>
-<div id="outline-container-orga482173" class="outline-4">
-<h4 id="orga482173"><span class="section-number-4">2.4.1</span> 指数平滑的公式</h4>
+<div id="outline-container-org36aaf96" class="outline-4">
+<h4 id="org36aaf96"><span class="section-number-4">2.4.1.</span> 指数平滑的公式</h4>
 <div class="outline-text-4" id="text-2-4-1">
 \begin{equation}
 \label{equ-pinghua}
@@ -1337,8 +1314,8 @@ y<sub>t</sub>和s<sub>t-1</sub>对s<sub>t</sub>的影响程度，当\alpha取1�
 </ol>
 </div>
 </div>
-<div id="outline-container-orgd6faa8e" class="outline-4">
-<h4 id="orgd6faa8e"><span class="section-number-4">2.4.2</span> 一次指数平滑</h4>
+<div id="outline-container-org6b1bb78" class="outline-4">
+<h4 id="org6b1bb78"><span class="section-number-4">2.4.2.</span> 一次指数平滑</h4>
 <div class="outline-text-4" id="text-2-4-2">
 <p>
 设时间序列为\(y_{1}, y_{2}, ..., y_{t}...\)，则一次指数平滑
@@ -1368,8 +1345,8 @@ s_{t} = \alpha\sum_{j=0}^{\infty}(1-\alpha)^{j}y_{t-j}
 </p>
 </div>
 </div>
-<div id="outline-container-orgc8e911c" class="outline-4">
-<h4 id="orgc8e911c"><span class="section-number-4">2.4.3</span> 二次指数平滑</h4>
+<div id="outline-container-org180eaaf" class="outline-4">
+<h4 id="org180eaaf"><span class="section-number-4">2.4.3.</span> 二次指数平滑</h4>
 <div class="outline-text-4" id="text-2-4-3">
 <p>
 当时间序列没有明显的趋势变动时，使用第t周期一次指数平滑就能直接预测第t+1
@@ -1388,8 +1365,8 @@ s_{t}^{(2)} = \alpha{}s_{t}^{(1)}+(1-\alpha)s_{t-1}^{(2)}
 </p>
 </div>
 </div>
-<div id="outline-container-org5de2d26" class="outline-4">
-<h4 id="org5de2d26"><span class="section-number-4">2.4.4</span> 三次指数平滑</h4>
+<div id="outline-container-orgab08ef6" class="outline-4">
+<h4 id="orgab08ef6"><span class="section-number-4">2.4.4.</span> 三次指数平滑</h4>
 <div class="outline-text-4" id="text-2-4-4">
 <p>
 若时间序列的变动呈现出二次曲线趋势，则需要用三次指数平滑法。三次指数平滑
@@ -1415,8 +1392,8 @@ s_{t}^{(3)}=\alpha{}s_{t}^{(2)}+(1-\alpha)s_{t-1}^{(3)}
 </div>
 </div>
 </div>
-<div id="outline-container-orgb4ecfd2" class="outline-2">
-<h2 id="orgb4ecfd2"><span class="section-number-2">3</span> 图像处理</h2>
+<div id="outline-container-org8e06877" class="outline-2">
+<h2 id="org8e06877"><span class="section-number-2">3.</span> 图像处理</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 数字图像定义：数字图像指的是一个被采样和量化后的二维函数(该二维函数由光学方
@@ -1424,8 +1401,8 @@ s_{t}^{(3)}=\alpha{}s_{t}^{(2)}+(1-\alpha)s_{t-1}^{(3)}
 个被量化的采样数值的二维矩阵，对维度、量化进行推广，还可以得到广义图像定义。 
 </p>
 </div>
-<div id="outline-container-orga4dbeac" class="outline-3">
-<h3 id="orga4dbeac"><span class="section-number-3">3.1</span> 概念</h3>
+<div id="outline-container-orgc436b24" class="outline-3">
+<h3 id="orgc436b24"><span class="section-number-3">3.1.</span> 概念</h3>
 <div class="outline-text-3" id="text-3-1">
 <ul class="org-ul">
 <li>数字化：是将一幅图像从其原来的形式转换为数字形式的处理过程。数字化的逆过
@@ -1443,8 +1420,8 @@ s_{t}^{(3)}=\alpha{}s_{t}^{(2)}+(1-\alpha)s_{t-1}^{(3)}
 </ul>
 </div>
 </div>
-<div id="outline-container-orge5e0620" class="outline-3">
-<h3 id="orge5e0620"><span class="section-number-3">3.2</span> 其他</h3>
+<div id="outline-container-org04e9b06" class="outline-3">
+<h3 id="org04e9b06"><span class="section-number-3">3.2.</span> 其他</h3>
 <div class="outline-text-3" id="text-3-2">
 <ul class="org-ul">
 <li>人眼只能分辨约40级灰度，也就是如果黑白之间的灰度范围被分为40个以上的等分，
@@ -1453,12 +1430,12 @@ s_{t}^{(3)}=\alpha{}s_{t}^{(2)}+(1-\alpha)s_{t-1}^{(3)}
 </div>
 </div>
 </div>
-<div id="outline-container-orge145566" class="outline-2">
-<h2 id="orge145566"><span class="section-number-2">4</span> 机器学习</h2>
+<div id="outline-container-orgaadea5b" class="outline-2">
+<h2 id="orgaadea5b"><span class="section-number-2">4.</span> 机器学习</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-orgd3ef0ad" class="outline-3">
-<h3 id="orgd3ef0ad"><span class="section-number-3">4.1</span> 基本概念</h3>
+<div id="outline-container-orgbec0907" class="outline-3">
+<h3 id="orgbec0907"><span class="section-number-3">4.1.</span> 基本概念</h3>
 <div class="outline-text-3" id="text-4-1">
 <ul class="org-ul">
 <li>过拟合：overfitting，一个过分复杂的系统单纯对训练样本集能获得完美的表现，
@@ -1503,16 +1480,16 @@ PAC学习模型，以使得我们对满足未来新数据的错误率被限制�
 </ul>
 </div>
 </div>
-<div id="outline-container-org1f2f041" class="outline-3">
-<h3 id="org1f2f041"><span class="section-number-3">4.2</span> 基本方法</h3>
+<div id="outline-container-org01cf013" class="outline-3">
+<h3 id="org01cf013"><span class="section-number-3">4.2.</span> 基本方法</h3>
 <div class="outline-text-3" id="text-4-2">
 </div>
-<div id="outline-container-org87d832d" class="outline-4">
-<h4 id="org87d832d"><span class="section-number-4">4.2.1</span> 最小二乘法</h4>
+<div id="outline-container-org5dfa7a0" class="outline-4">
+<h4 id="org5dfa7a0"><span class="section-number-4">4.2.1.</span> 最小二乘法</h4>
 <div class="outline-text-4" id="text-4-2-1">
 </div>
-<div id="outline-container-org383400b" class="outline-5">
-<h5 id="org383400b"><span class="section-number-5">4.2.1.1</span> 解法一</h5>
+<div id="outline-container-org0ff5c19" class="outline-5">
+<h5 id="org0ff5c19"><span class="section-number-5">4.2.1.1.</span> 解法一</h5>
 <div class="outline-text-5" id="text-4-2-1-1">
 <p>
 最小二乘法是为了求一组观察数据(变量X和Y)之间的函数关系Y=f(X)=A<sup>T</sup>X.其
@@ -1547,8 +1524,8 @@ PAC学习模型，以使得我们对满足未来新数据的错误率被限制�
 </p>
 </div>
 </div>
-<div id="outline-container-orgb719c8b" class="outline-5">
-<h5 id="orgb719c8b"><span class="section-number-5">4.2.1.2</span> 解法二</h5>
+<div id="outline-container-org0ce3541" class="outline-5">
+<h5 id="org0ce3541"><span class="section-number-5">4.2.1.2.</span> 解法二</h5>
 <div class="outline-text-5" id="text-4-2-1-2">
 <p>
 函数关系是\(Y=f(X)=A^{T}X\), 损失函数为平方差的和，写成矩阵的形式为
@@ -1564,8 +1541,8 @@ PAC学习模型，以使得我们对满足未来新数据的错误率被限制�
 </div>
 </div>
 </div>
-<div id="outline-container-org94587a0" class="outline-4">
-<h4 id="org94587a0"><span class="section-number-4">4.2.2</span> 核函数</h4>
+<div id="outline-container-org0dac3b1" class="outline-4">
+<h4 id="org0dac3b1"><span class="section-number-4">4.2.2.</span> 核函数</h4>
 <div class="outline-text-4" id="text-4-2-2">
 <p>
 核是一个函数K，对所有\(x, z \in{}X\)，满足：
@@ -1581,8 +1558,8 @@ PAC学习模型，以使得我们对满足未来新数据的错误率被限制�
 </div>
 </div>
 </div>
-<div id="outline-container-org21e2b00" class="outline-3">
-<h3 id="org21e2b00"><span class="section-number-3">4.3</span> k临近算法</h3>
+<div id="outline-container-orgf6fd471" class="outline-3">
+<h3 id="orgf6fd471"><span class="section-number-3">4.3.</span> k临近算法</h3>
 <div class="outline-text-3" id="text-4-3">
 <p>
 K临近算法举例，已知若干电影(训练集)的标签有“爱情片”，“动作片”，而这些标 
@@ -1645,17 +1622,17 @@ K临近算法举例，已知若干电影(训练集)的标签有“爱情片”�
 
 <span style="color: #ffd700;">point0</span> = [0, 0]
 <span style="color: #ffd700;">g</span>, <span style="color: #ffd700;">l</span> = createDataSet()
-<span style="color: #ffb6c1; font-size: 105%;">print</span>(<span style="color: #ffa07a;">"resualt: %r"</span> %classify0(point0, g, l, 3))
+<span style="color: #87cefa; text-decoration: underline;">print</span>(<span style="color: #ffa07a;">"resualt: %r"</span> %classify0(point0, g, l, 3))
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgf69bb09" class="outline-3">
-<h3 id="orgf69bb09"><span class="section-number-3">4.4</span> 决策树</h3>
+<div id="outline-container-orgc9d7037" class="outline-3">
+<h3 id="orgc9d7037"><span class="section-number-3">4.4.</span> 决策树</h3>
 <div class="outline-text-3" id="text-4-4">
 </div>
-<div id="outline-container-org9353ea4" class="outline-5">
-<h5 id="org9353ea4"><span class="section-number-5">4.4.0.1</span> 信息熵</h5>
+<div id="outline-container-org49624a5" class="outline-5">
+<h5 id="org49624a5"><span class="section-number-5">4.4.0.1.</span> 信息熵</h5>
 <div class="outline-text-5" id="text-4-4-0-1">
 <p>
 信息熵用来衡量信息量的大小
@@ -1679,8 +1656,8 @@ K临近算法举例，已知若干电影(训练集)的标签有“爱情片”�
 </ul>
 </div>
 </div>
-<div id="outline-container-orge54cf5b" class="outline-5">
-<h5 id="orge54cf5b"><span class="section-number-5">4.4.0.2</span> 算法逻辑</h5>
+<div id="outline-container-orgcc05e27" class="outline-5">
+<h5 id="orgcc05e27"><span class="section-number-5">4.4.0.2.</span> 算法逻辑</h5>
 <div class="outline-text-5" id="text-4-4-0-2">
 <p>
 构建决策树的过程，就是减小信息熵，减小不确定性。从而完整构造决策树模型。所
@@ -1702,12 +1679,12 @@ K临近算法举例，已知若干电影(训练集)的标签有“爱情片”�
 </p>
 </div>
 </div>
-<div id="outline-container-org69e5837" class="outline-5">
-<h5 id="org69e5837"><span class="section-number-5">4.4.0.3</span> 算法实例</h5>
+<div id="outline-container-org4fa90f2" class="outline-5">
+<h5 id="org4fa90f2"><span class="section-number-5">4.4.0.3.</span> 算法实例</h5>
 <div class="outline-text-5" id="text-4-4-0-3">
 </div>
 <ol class="org-ol">
-<li><a id="org724882f"></a>计算香农熵<br />
+<li><a id="org85fc86c"></a>计算香农熵<br />
 <div class="outline-text-6" id="text-4-4-0-3-1">
 <p>
 根据信息熵的计算公式计算某个数据集中的信息熵。一组数据dataSet包含若干特征属
@@ -1738,7 +1715,7 @@ K临近算法举例，已知若干电影(训练集)的标签有“爱情片”�
 </div>
 </div>
 </li>
-<li><a id="orgfec1a3b"></a>划分数据集<br />
+<li><a id="org0ad6096"></a>划分数据集<br />
 <div class="outline-text-6" id="text-4-4-0-3-2">
 <p>
 指按照给定的特征以及特征的值提取出这样的数据集。代码
@@ -1761,7 +1738,7 @@ K临近算法举例，已知若干电影(训练集)的标签有“爱情片”�
 </div>
 </div>
 </li>
-<li><a id="orga4ffb56"></a>选择最好的划分<br />
+<li><a id="org2c3a920"></a>选择最好的划分<br />
 <div class="outline-text-6" id="text-4-4-0-3-3">
 <p>
 在不同的特征，不同的特征值情况下，计算被splitDataSet()提取出来的样本的香农
@@ -1799,7 +1776,7 @@ K临近算法举例，已知若干电影(训练集)的标签有“爱情片”�
 </div>
 </div>
 </li>
-<li><a id="org565862e"></a>构造决策树<br />
+<li><a id="orgf32e4dc"></a>构造决策树<br />
 <div class="outline-text-6" id="text-4-4-0-3-4">
 <p>
 采用递归将决策树存储在字典中，使用字典可以存在于字典中的特性。最终，字典将
@@ -1839,8 +1816,8 @@ K临近算法举例，已知若干电影(训练集)的标签有“爱情片”�
 </ol>
 </div>
 </div>
-<div id="outline-container-orgb2a28fd" class="outline-3">
-<h3 id="orgb2a28fd"><span class="section-number-3">4.5</span> 贝叶斯分类</h3>
+<div id="outline-container-org45ddd22" class="outline-3">
+<h3 id="org45ddd22"><span class="section-number-3">4.5.</span> 贝叶斯分类</h3>
 <div class="outline-text-3" id="text-4-5">
 <p>
 贝叶斯分类一般是，训练集中有若干类样本c<sub>i</sub>, 每个样本有若干个特征构成特征向
@@ -1922,11 +1899,11 @@ p(v|c<sub>i</sub>)计算时可以计算所有子特征在类别c下的概率乘�
 </p>
 </div>
 </div>
-<div id="outline-container-orgbfdef8f" class="outline-3">
-<h3 id="orgbfdef8f"><span class="section-number-3">4.6</span> 支持向量机</h3>
+<div id="outline-container-orge81779e" class="outline-3">
+<h3 id="orge81779e"><span class="section-number-3">4.6.</span> 支持向量机</h3>
 </div>
-<div id="outline-container-org0f8fbc5" class="outline-3">
-<h3 id="org0f8fbc5"><span class="section-number-3">4.7</span> 回归分析</h3>
+<div id="outline-container-orge60883e" class="outline-3">
+<h3 id="orge60883e"><span class="section-number-3">4.7.</span> 回归分析</h3>
 <div class="outline-text-3" id="text-4-7">
 <p>
 回归是一种极易理解的模型，就相当于\(y=f(x)\)，表明自变量x与因变量y的关系。最常见问题有如医生治病时的望、闻、问、切，之后
@@ -1960,8 +1937,8 @@ p(v|c<sub>i</sub>)计算时可以计算所有子特征在类别c下的概率乘�
 <li>求模型参数：想办法使得J函数最小求出模型参数，常用最大似然，梯度下降，这一套可以归咎为 <span class="underline">最优化理论</span> 。</li>
 </ol>
 </div>
-<div id="outline-container-org39d45d2" class="outline-5">
-<h5 id="org39d45d2"><span class="section-number-5">4.7.0.1</span> 线性回归</h5>
+<div id="outline-container-org2a9c318" class="outline-5">
+<h5 id="org2a9c318"><span class="section-number-5">4.7.0.1.</span> 线性回归</h5>
 <div class="outline-text-5" id="text-4-7-0-1">
 <p>
 最简单的回归就是线性回归，包括单变量回归，和多变量回归。一个坐标系下(可以是n维)，有若干个点，找一直线(或其他图，圆)来最
@@ -1981,8 +1958,8 @@ p(v|c<sub>i</sub>)计算时可以计算所有子特征在类别c下的概率乘�
 </ol>
 </div>
 </div>
-<div id="outline-container-org9801577" class="outline-5">
-<h5 id="org9801577"><span class="section-number-5">4.7.0.2</span> 岭回归</h5>
+<div id="outline-container-orgd840ddb" class="outline-5">
+<h5 id="orgd840ddb"><span class="section-number-5">4.7.0.2.</span> 岭回归</h5>
 <div class="outline-text-5" id="text-4-7-0-2">
 <p>
 如果在最小二乘法中\(X'X\)矩阵不是满秩，或者在其他情况下数值解不稳定，则可以
@@ -1993,8 +1970,8 @@ R^{+}\)来得到，这里\(I_{n}\)是一个(n+1, n+1)项为0的单位矩阵，�
 </p>
 </div>
 </div>
-<div id="outline-container-org423e13a" class="outline-5">
-<h5 id="org423e13a"><span class="section-number-5">4.7.0.3</span> 逻辑回归</h5>
+<div id="outline-container-orgffb76b1" class="outline-5">
+<h5 id="orgffb76b1"><span class="section-number-5">4.7.0.3.</span> 逻辑回归</h5>
 <div class="outline-text-5" id="text-4-7-0-3">
 <p>
 线性回归的鲁棒性很差，主要是由于线性回归在整个实数域内敏感度一样，而我们一般的数据点都是有一定范围。这时逻辑回归就用于限
@@ -2007,11 +1984,11 @@ R^{+}\)来得到，这里\(I_{n}\)是一个(n+1, n+1)项为0的单位矩阵，�
 </div>
 </div>
 </div>
-<div id="outline-container-orgc75bd58" class="outline-3">
-<h3 id="orgc75bd58"><span class="section-number-3">4.8</span> 神经网络</h3>
+<div id="outline-container-orgd4d7285" class="outline-3">
+<h3 id="orgd4d7285"><span class="section-number-3">4.8.</span> 神经网络</h3>
 <div class="outline-text-3" id="text-4-8">
 <p>
-此处有斯坦福的课程网页：<a href="http://ufldl.stanford.edu/wiki/index.php/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">http://ufldl.stanford.edu/wiki/index.php/神经网络</a>
+此处有斯坦福的课程网页：<a href="http://ufldl.stanford.edu/wiki/index.php/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">http://ufldl.stanford.edu/wiki/index.php/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C</a>
 </p>
 <ul class="org-ul">
 <li>常用的激活函数
@@ -2039,8 +2016,8 @@ $$
 </ol></li>
 </ul>
 </div>
-<div id="outline-container-org5a8e966" class="outline-4">
-<h4 id="org5a8e966"><span class="section-number-4">4.8.1</span> 概念</h4>
+<div id="outline-container-org0ae0c93" class="outline-4">
+<h4 id="org0ae0c93"><span class="section-number-4">4.8.1.</span> 概念</h4>
 <div class="outline-text-4" id="text-4-8-1">
 <ul class="org-ul">
 <li>超平面：n维超平面的表达方式为\(f(X)=W^{T}X+B\), 其中W和X都是n维向量，一般
@@ -2052,8 +2029,8 @@ W表示权重向量同时也是超平面的法向量，X表示特征向量，B�
 </ul>
 </div>
 </div>
-<div id="outline-container-org0fd56b7" class="outline-4">
-<h4 id="org0fd56b7"><span class="section-number-4">4.8.2</span> 感知机</h4>
+<div id="outline-container-org493c227" class="outline-4">
+<h4 id="org493c227"><span class="section-number-4">4.8.2.</span> 感知机</h4>
 <div class="outline-text-4" id="text-4-8-2">
 <p>
 感知机（perceptron）是一种二类分类的线性分类模型，也就是说，使用于将数据分
@@ -2090,11 +2067,11 @@ R = max_{1&lt;=i&lt;=l}||x_{i}||
 <span style="color: #ffb6c1; font-size: 105%;">while</span>(1)
 {
     <span style="color: #ffb6c1; font-size: 105%;">for</span> i = 1 to l
-    <span style="color: #ffb6c1; font-size: 105%;">if</span> y_{i}(&lt;w_{k}*x_{i}&gt;+b_{k})&lt;=0 then
-        w_{k+1}=w_{k}+e*y_{i}*x_{i}
-        b_{k+1}=b_{k}+e*y_{i}*R^{2}
-        k=k+1
-    end <span style="color: #ffb6c1; font-size: 105%;">if</span>
+        <span style="color: #ffb6c1; font-size: 105%;">if</span> y_{i}(&lt;w_{k}*x_{i}&gt;+b_{k})&lt;=0 then
+            w_{k+1}=w_{k}+e*y_{i}*x_{i}
+            b_{k+1}=b_{k}+e*y_{i}*R^{2}
+            k=k+1
+        end <span style="color: #ffb6c1; font-size: 105%;">if</span>
     end <span style="color: #ffb6c1; font-size: 105%;">for</span>
 <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#30452;&#21040;&#22312;for&#24490;&#29615;&#20013;&#27809;&#26377;&#38169;&#35823;&#21457;&#29983;</span>
 <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#36820;&#22238;(w_{k}, b_{k})&#65292;&#36825;&#37324;k&#26159;&#38169;&#35823;&#27425;&#25968;</span>
@@ -2105,16 +2082,16 @@ R = max_{1&lt;=i&lt;=l}||x_{i}||
 </div>
 </div>
 </div>
-<div id="outline-container-orgea695fc" class="outline-2">
-<h2 id="orgea695fc"><span class="section-number-2">5</span> 算法实现</h2>
+<div id="outline-container-orgedea4b0" class="outline-2">
+<h2 id="orgedea4b0"><span class="section-number-2">5.</span> 算法实现</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-org68c8073" class="outline-3">
-<h3 id="org68c8073"><span class="section-number-3">5.1</span> 基于加速度数据计算速度算法</h3>
+<div id="outline-container-orgf4be826" class="outline-3">
+<h3 id="orgf4be826"><span class="section-number-3">5.1.</span> 基于加速度数据计算速度算法</h3>
 <div class="outline-text-3" id="text-5-1">
 </div>
-<div id="outline-container-org7a9e147" class="outline-4">
-<h4 id="org7a9e147"><span class="section-number-4">5.1.1</span> 数据源</h4>
+<div id="outline-container-orga15ef8d" class="outline-4">
+<h4 id="orga15ef8d"><span class="section-number-4">5.1.1.</span> 数据源</h4>
 <div class="outline-text-4" id="text-5-1-1">
 <p>
 基础数据来源于加速度数据，具体要求如下
@@ -2126,11 +2103,11 @@ R = max_{1&lt;=i&lt;=l}||x_{i}||
 </ul>
 </div>
 </div>
-<div id="outline-container-orgb7d505c" class="outline-4">
-<h4 id="orgb7d505c"><span class="section-number-4">5.1.2</span> 速度算法原理</h4>
+<div id="outline-container-orgb1bb4e0" class="outline-4">
+<h4 id="orgb1bb4e0"><span class="section-number-4">5.1.2.</span> 速度算法原理</h4>
 <div class="outline-text-4" id="text-5-1-2">
 <p>
-#<a id="orge3731ed"></a>
+#<a id="orgaad94a6"></a>
 在跑步时，X轴加速度数据呈现类正弦波波形，波峰为脚往前脚迈刚接触到大地的时刻，
 波谷为脚往后蹬刚离开大地时刻，两个波峰之间的数据刚好是脚迈出1步的数据。通过
 提取一个正弦波数据中的特征\(X\)，并经过线性回归分析，得出速度和特征之间的函
@@ -2144,30 +2121,30 @@ R = max_{1&lt;=i&lt;=l}||x_{i}||
 </ol>
 </div>
 </div>
-<div id="outline-container-org7d802dc" class="outline-4">
-<h4 id="org7d802dc"><span class="section-number-4">5.1.3</span> 距离算法原理</h4>
+<div id="outline-container-org474a41d" class="outline-4">
+<h4 id="org474a41d"><span class="section-number-4">5.1.3.</span> 距离算法原理</h4>
 <div class="outline-text-4" id="text-5-1-3">
 <p>
-通过<a href="#orge3731ed">速度算法</a>计算出1个正弦波速度V，在计算1个正弦波的时间T，1个正弦波的距离l
+通过<a href="#orgaad94a6">速度算法</a>计算出1个正弦波速度V，在计算1个正弦波的时间T，1个正弦波的距离l
 通过公式可以计算出1步的距离。通过总的步数N可以计算出总的距离\(L=N*l\)。
 \[l=V*T\] 
 </p>
 </div>
 </div>
-<div id="outline-container-orgbf1fd2e" class="outline-4">
-<h4 id="orgbf1fd2e"><span class="section-number-4">5.1.4</span> 着地时间算法原理</h4>
+<div id="outline-container-org6cceaec" class="outline-4">
+<h4 id="org6cceaec"><span class="section-number-4">5.1.4.</span> 着地时间算法原理</h4>
 <div class="outline-text-4" id="text-5-1-4">
 <p>
-通过<a href="#orge3731ed">速度算法原理</a>中描述的跑步过程，可知，1步的着地时间，可以通过计算波峰和
+通过<a href="#orgaad94a6">速度算法原理</a>中描述的跑步过程，可知，1步的着地时间，可以通过计算波峰和
 波谷之间的时间来估算，总的着地时间即为步数乘以1步的着地时间。
 </p>
 </div>
 </div>
-<div id="outline-container-org04f42c3" class="outline-4">
-<h4 id="org04f42c3"><span class="section-number-4">5.1.5</span> 冲刺次数算法原理</h4>
+<div id="outline-container-orgb6de7ef" class="outline-4">
+<h4 id="orgb6de7ef"><span class="section-number-4">5.1.5.</span> 冲刺次数算法原理</h4>
 <div class="outline-text-4" id="text-5-1-5">
 <p>
-基于<a href="#orge3731ed">速度算法原理</a>输出的速度参数，统计在一定时间t内，速度递增v，表示一次冲刺，
+基于<a href="#orgaad94a6">速度算法原理</a>输出的速度参数，统计在一定时间t内，速度递增v，表示一次冲刺，
 目前t阈值设置为5秒，v设置为1m/s，步骤如下；
 </p>
 <ol class="org-ol">
@@ -2184,8 +2161,8 @@ R = max_{1&lt;=i&lt;=l}||x_{i}||
 <div id="postamble" class="status">
 <p class="author">Author: 比克曼</p>
 <p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
-<p class="date">Created: 2020-06-05 周五 00:04</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+<p class="date">Created: 2026-07-12 日 12:30</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

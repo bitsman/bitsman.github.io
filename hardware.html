@@ -3,14 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-11-20 周五 23:37 -->
+<!-- 2026-07-12 日 12:30 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>硬件</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="比克曼" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -31,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -40,22 +41,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -161,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -177,158 +191,121 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="css/org-manual.css"/>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2018 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
 </script>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        displayAlign: "center",
-        displayIndent: "0em",
 
-        "HTML-CSS": { scale: 100,
-                        linebreaks: { automatic: "false" },
-                        webFont: "TeX"
-                       },
-        SVG: {scale: 100,
-              linebreaks: { automatic: "false" },
-              font: "TeX"},
-        NativeMML: {scale: 100},
-        TeX: { equationNumbers: {autoNumber: "AMS"},
-               MultLineWidth: "85%",
-               TagSide: "right",
-               TagIndent: ".8em"
-             }
-});
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">硬件</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orga15a962">1. 数字电路</a>
+<li><a href="#org8536adb">1. 数字电路</a>
 <ul>
-<li><a href="#org01cb287">1.1. 电平转换</a></li>
+<li><a href="#org60bb244">1.1. 电平转换</a></li>
 </ul>
 </li>
-<li><a href="#org56a8081">2. 模拟电路</a>
+<li><a href="#orgcbbb591">2. 模拟电路</a>
 <ul>
-<li><a href="#orgf576693">2.1. 放大器</a></li>
-<li><a href="#org5c9e2a8">2.2. 电源地和信号地</a></li>
-<li><a href="#org062889d">2.3. 阻抗</a></li>
+<li><a href="#org53e8e67">2.1. 放大器</a></li>
+<li><a href="#org9227110">2.2. 电源地和信号地</a></li>
+<li><a href="#orge5a3c9a">2.3. 阻抗</a></li>
 </ul>
 </li>
-<li><a href="#org3380757">3. 射频</a>
+<li><a href="#org113cb8b">3. 射频</a>
 <ul>
-<li><a href="#orga0517b7">3.1. 射频功率基本概念</a></li>
-<li><a href="#org6b9609d">3.2. 天线的基础知识</a></li>
-<li><a href="#orgfa02ac7">3.3. 晶振与射频</a></li>
+<li><a href="#orgbb75fc0">3.1. 射频功率基本概念</a></li>
+<li><a href="#org34b8843">3.2. 天线的基础知识</a></li>
+<li><a href="#orgca9024d">3.3. 晶振与射频</a></li>
 </ul>
 </li>
-<li><a href="#orgad36d19">4. 器件</a>
+<li><a href="#orgacb7c26">4. 器件</a>
 <ul>
-<li><a href="#org4843b07">4.1. 磁珠</a></li>
-<li><a href="#org7aec134">4.2. 电容</a></li>
-<li><a href="#orgd61993b">4.3. 电阻</a></li>
-<li><a href="#org0706833">4.4. 加速度传感器</a></li>
-<li><a href="#orgfe86c64">4.5. 陀螺仪传感器</a></li>
-<li><a href="#org5ac9e68">4.6. 磁传感器</a></li>
+<li><a href="#org423c191">4.1. 磁珠</a></li>
+<li><a href="#orgc912b83">4.2. 电容</a></li>
+<li><a href="#orgbed848f">4.3. 电阻</a></li>
+<li><a href="#orgc21f8ea">4.4. 加速度传感器</a></li>
+<li><a href="#org6b7f640">4.5. 陀螺仪传感器</a></li>
+<li><a href="#orgf79d10a">4.6. 磁传感器</a></li>
 </ul>
 </li>
-<li><a href="#orgdc2c7e5">5. 芯片内核</a>
+<li><a href="#org35ac030">5. 芯片内核</a>
 <ul>
-<li><a href="#orgc54143b">5.1. 51</a>
+<li><a href="#orge367bca">5.1. 51</a>
 <ul>
-<li><a href="#org71b0b99">5.1.1. 存储结构</a></li>
-<li><a href="#org244996c">5.1.2. 寻址方式</a>
+<li><a href="#org4845d3a">5.1.1. 存储结构</a></li>
+<li><a href="#org4d4d25d">5.1.2. 寻址方式</a>
 <ul>
-<li><a href="#orgb28ec18">5.1.2.1. 立即数寻址</a></li>
-<li><a href="#orge43979e">5.1.2.2. 寄存器寻址</a></li>
-<li><a href="#orga14fdea">5.1.2.3. 直接寻址</a></li>
-<li><a href="#org440d2a3">5.1.2.4. 间接寻址</a></li>
-<li><a href="#org42380d0">5.1.2.5. 变址寻址</a></li>
-<li><a href="#org37984df">5.1.2.6. 相对寻址</a></li>
-<li><a href="#org88f8d58">5.1.2.7. 位寻址</a></li>
+<li><a href="#org01d8a61">5.1.2.1. 立即数寻址</a></li>
+<li><a href="#org7ddfa67">5.1.2.2. 寄存器寻址</a></li>
+<li><a href="#orgb51a63b">5.1.2.3. 直接寻址</a></li>
+<li><a href="#org3ff6f77">5.1.2.4. 间接寻址</a></li>
+<li><a href="#org0959c24">5.1.2.5. 变址寻址</a></li>
+<li><a href="#org7feb9ff">5.1.2.6. 相对寻址</a></li>
+<li><a href="#org0307fb7">5.1.2.7. 位寻址</a></li>
 </ul>
 </li>
-<li><a href="#org54a1726">5.1.3. 操作数符号</a></li>
-<li><a href="#org851c13f">5.1.4. 中断</a></li>
-<li><a href="#orged2c848">5.1.5. 汇编</a></li>
-<li><a href="#org886fef1">5.1.6. 程序</a>
+<li><a href="#org5bc29ad">5.1.3. 操作数符号</a></li>
+<li><a href="#org51c46ba">5.1.4. 中断</a></li>
+<li><a href="#org9127295">5.1.5. 汇编</a></li>
+<li><a href="#org34e2fff">5.1.6. 程序</a>
 <ul>
-<li><a href="#org114b2d8">5.1.6.1. 关键字</a></li>
-<li><a href="#org8532157">5.1.6.2. 指针和存储空间</a></li>
-<li><a href="#org1aa21bb">5.1.6.3. 大小端</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orgde40351">5.2. arm</a>
-<ul>
-<li><a href="#org44d9d8a">5.2.1. cortex-m</a>
-<ul>
-<li><a href="#org7fa1867">5.2.1.1. 总线</a></li>
-<li><a href="#orgc56a370">5.2.1.2. 寄存器组</a></li>
-<li><a href="#org01d76ae">5.2.1.3. 操作模式</a></li>
-<li><a href="#org9810776">5.2.1.4. 中断异常</a></li>
-<li><a href="#orga6ba60b">5.2.1.5. 存储</a></li>
-<li><a href="#org9fd3fd5">5.2.1.6. 编程</a></li>
+<li><a href="#org8dfc48d">5.1.6.1. 关键字</a></li>
+<li><a href="#org9a66907">5.1.6.2. 指针和存储空间</a></li>
+<li><a href="#org7a951ac">5.1.6.3. 大小端</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org1109717">5.3. 测试</a></li>
+<li><a href="#org81824eb">5.2. arm</a>
+<ul>
+<li><a href="#org303b635">5.2.1. cortex-m</a>
+<ul>
+<li><a href="#org1b1802b">5.2.1.1. 总线</a></li>
+<li><a href="#orgc4bcffc">5.2.1.2. 寄存器组</a></li>
+<li><a href="#org6b8dd3f">5.2.1.3. 操作模式</a></li>
+<li><a href="#org182ca07">5.2.1.4. 中断异常</a></li>
+<li><a href="#org6253cdd">5.2.1.5. 存储</a></li>
+<li><a href="#org7e5a6bf">5.2.1.6. 编程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org018c716">5.3. 测试</a></li>
 </ul>
 </li>
 </ul>
@@ -338,20 +315,20 @@ for the JavaScript code in this tag.
 <h2>List of Tables</h2>
 <div id="text-list-of-tables">
 <ul>
-<li><a href="#org7dfa19c"><span class="table-number">Table 1:</span> 功率与dbm的对照见表</a></li>
-<li><a href="#org10354b5"><span class="table-number">Table 2:</span> 寄存器</a></li>
-<li><a href="#org8960f30"><span class="table-number">Table 3:</span> 特殊功能寄存器</a></li>
-<li><a href="#orgf41abc0"><span class="table-number">Table 4:</span> 操作模式和特权级别</a></li>
+<li><a href="#orgf52607c"><span class="table-number">Table 1:</span> 功率与dbm的对照见表</a></li>
+<li><a href="#org0783e35"><span class="table-number">Table 2:</span> 寄存器</a></li>
+<li><a href="#org9a8c4e9"><span class="table-number">Table 3:</span> 特殊功能寄存器</a></li>
+<li><a href="#org03d5e8c"><span class="table-number">Table 4:</span> 操作模式和特权级别</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orga15a962" class="outline-2">
-<h2 id="orga15a962"><span class="section-number-2">1</span> 数字电路</h2>
+<div id="outline-container-org8536adb" class="outline-2">
+<h2 id="org8536adb"><span class="section-number-2">1.</span> 数字电路</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org01cb287" class="outline-3">
-<h3 id="org01cb287"><span class="section-number-3">1.1</span> 电平转换</h3>
+<div id="outline-container-org60bb244" class="outline-3">
+<h3 id="org60bb244"><span class="section-number-3">1.1.</span> 电平转换</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 现在低压、低耗器件越来越多，3.3v、2.1v电平信号越来越常见。这就存在了一个电平转换问题。当然很多时候都不需要转化，一些器件
@@ -578,12 +555,12 @@ CMOS电平：0.7Vcc以上为逻辑正，0.3Vcc以下为负, 输出逻辑1电平�
 </div>
 </div>
 </div>
-<div id="outline-container-org56a8081" class="outline-2">
-<h2 id="org56a8081"><span class="section-number-2">2</span> 模拟电路</h2>
+<div id="outline-container-orgcbbb591" class="outline-2">
+<h2 id="orgcbbb591"><span class="section-number-2">2.</span> 模拟电路</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgf576693" class="outline-3">
-<h3 id="orgf576693"><span class="section-number-3">2.1</span> 放大器</h3>
+<div id="outline-container-org53e8e67" class="outline-3">
+<h3 id="org53e8e67"><span class="section-number-3">2.1.</span> 放大器</h3>
 <div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li>虚短和虚断
@@ -603,7 +580,7 @@ CMOS电平：0.7Vcc以上为逻辑正，0.3Vcc以下为负, 输出逻辑1电平�
 器的输入输出关系式了。 
 </p>
 
-<div id="orgeb67e36" class="figure">
+<div id="org661474d" class="figure">
 <p><img src="./img/amplifer1.jpg" alt="amplifer1.jpg" />
 </p>
 <p><span class="figure-number">Figure 1: </span>反向放大器</p>
@@ -614,7 +591,7 @@ CMOS电平：0.7Vcc以上为逻辑正，0.3Vcc以下为负, 输出逻辑1电平�
 式子式得 \[V_{out}=V_{i}*(R_{1}+R_{2})/R_{2}\]　这就是同向放大器。
 </p>
 
-<div id="org15aa580" class="figure">
+<div id="orgfe67510" class="figure">
 <p><img src="./img/amplifer2.jpg" alt="amplifer2.jpg" />
 </p>
 <p><span class="figure-number">Figure 2: </span>同向放大器</p>
@@ -625,7 +602,7 @@ CMOS电平：0.7Vcc以上为逻辑正，0.3Vcc以下为负, 输出逻辑1电平�
 \[V_{1}/R_{1} + V_{2}/R_{2} = V_{out}/R_{3}\] 如果取R<sub>1</sub>=R<sub>2</sub>=R<sub>3</sub>，则上式变为 \[V_{out}=V_{1}1+V_{2}\] ，这就是加法器。
 </p>
 
-<div id="org373f3da" class="figure">
+<div id="org0409c18" class="figure">
 <p><img src="./img/amplifer3.jpg" alt="amplifer3.jpg" />
 </p>
 <p><span class="figure-number">Figure 3: </span>加法器</p>
@@ -637,7 +614,7 @@ CMOS电平：0.7Vcc以上为逻辑正，0.3Vcc以下为负, 输出逻辑1电平�
 \[V_{out} = V_{1}+V_{2}\]　也是一个加法器.
 </p>
 
-<div id="org6299d26" class="figure">
+<div id="orgc5cf4ac" class="figure">
 <p><img src="./img/amplifer4.jpg" alt="amplifer4.jpg" />
 </p>
 <p><span class="figure-number">Figure 4: </span>加法器2</p>
@@ -649,7 +626,7 @@ CMOS电平：0.7Vcc以上为逻辑正，0.3Vcc以下为负, 输出逻辑1电平�
 这就是减法器。
 </p>
 
-<div id="org0290ec2" class="figure">
+<div id="org6fde425" class="figure">
 <p><img src="./img/amplifer5.jpg" alt="amplifer5.jpg" />
 </p>
 <p><span class="figure-number">Figure 5: </span>减法器</p>
@@ -661,7 +638,7 @@ CMOS电平：0.7Vcc以上为逻辑正，0.3Vcc以下为负, 输出逻辑1电平�
 则上式变换为 \[V_{out} = -U*t/(R_{1}*C_{1}) \]　t是时间，则V<sub>out</sub>输出电压是一条从0至负电源电压按时间变化的直线。
 </p>
 
-<div id="org8360784" class="figure">
+<div id="org11d203f" class="figure">
 <p><img src="./img/amplifer6.jpg" alt="amplifer6.jpg" />
 </p>
 <p><span class="figure-number">Figure 6: </span>积分电路</p>
@@ -672,7 +649,7 @@ CMOS电平：0.7Vcc以上为逻辑正，0.3Vcc以下为负, 输出逻辑1电平�
 V<sub>out</sub>对应一个方向与V<sub>1相反的脉</sub> 
 </p>
 
-<div id="orga316d6d" class="figure">
+<div id="org00dbf2e" class="figure">
 <p><img src="./img/amplifer7.jpg" alt="amplifer7.jpg" />
 </p>
 <p><span class="figure-number">Figure 7: </span>微分电路</p>
@@ -681,8 +658,8 @@ V<sub>out</sub>对应一个方向与V<sub>1相反的脉</sub>
 </ul>
 </div>
 </div>
-<div id="outline-container-org5c9e2a8" class="outline-3">
-<h3 id="org5c9e2a8"><span class="section-number-3">2.2</span> 电源地和信号地</h3>
+<div id="outline-container-org9227110" class="outline-3">
+<h3 id="org9227110"><span class="section-number-3">2.2.</span> 电源地和信号地</h3>
 <div class="outline-text-3" id="text-2-2">
 <ol class="org-ol">
 <li>电源地主要是针对电源回路电流所走的路径而言的，一般来说电源地流过的电流较大，而信号地主要是针对两块芯片或者模块之间的
@@ -738,8 +715,8 @@ V<sub>out</sub>对应一个方向与V<sub>1相反的脉</sub>
 </p>
 </div>
 </div>
-<div id="outline-container-org062889d" class="outline-3">
-<h3 id="org062889d"><span class="section-number-3">2.3</span> 阻抗</h3>
+<div id="outline-container-orge5a3c9a" class="outline-3">
+<h3 id="orge5a3c9a"><span class="section-number-3">2.3.</span> 阻抗</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 阻抗一般分为输入阻抗和输出阻抗。
@@ -751,12 +728,12 @@ V<sub>out</sub>对应一个方向与V<sub>1相反的脉</sub>
 </div>
 </div>
 </div>
-<div id="outline-container-org3380757" class="outline-2">
-<h2 id="org3380757"><span class="section-number-2">3</span> 射频</h2>
+<div id="outline-container-org113cb8b" class="outline-2">
+<h2 id="org113cb8b"><span class="section-number-2">3.</span> 射频</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orga0517b7" class="outline-3">
-<h3 id="orga0517b7"><span class="section-number-3">3.1</span> 射频功率基本概念</h3>
+<div id="outline-container-orgbb75fc0" class="outline-3">
+<h3 id="orgbb75fc0"><span class="section-number-3">3.1.</span> 射频功率基本概念</h3>
 <div class="outline-text-3" id="text-3-1">
 <ul class="org-ul">
 <li>dB
@@ -790,7 +767,7 @@ dBi和dBd是考征增益的值（功率增益），两者都是一个相对值�
 以1mW 为基准的dB算法，即0dBm=1mW，dBm=10*log(Power/1mW)。发射功率dBm－路径损失dB＝接收信号强度dBm, 最小通信功率dBm－路径
 损失dB≥接收灵敏度下限dBm,最小通信功率dBm≥路径损失dB＋接收灵敏度下限dBm,功率与dbm的对照见表\ref{tbl-power-dbm-compare}
 </p>
-<table id="org7dfa19c" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="orgf52607c" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 1:</span> 功率与dbm的对照见表</caption>
 
 <colgroup>
@@ -1068,8 +1045,8 @@ dBi和dBd是考征增益的值（功率增益），两者都是一个相对值�
 </table>
 </div>
 </div>
-<div id="outline-container-org6b9609d" class="outline-3">
-<h3 id="org6b9609d"><span class="section-number-3">3.2</span> 天线的基础知识</h3>
+<div id="outline-container-org34b8843" class="outline-3">
+<h3 id="org34b8843"><span class="section-number-3">3.2.</span> 天线的基础知识</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 表征天线性能的主要参数有方向图，增益，输入阻抗，驻波比，极化方式等
@@ -1119,8 +1096,8 @@ beamwidth）45°, 60°,90°等)定义了天线水平平面的波束宽度。角�
 </ul>
 </div>
 </div>
-<div id="outline-container-orgfa02ac7" class="outline-3">
-<h3 id="orgfa02ac7"><span class="section-number-3">3.3</span> 晶振与射频</h3>
+<div id="outline-container-orgca9024d" class="outline-3">
+<h3 id="orgca9024d"><span class="section-number-3">3.3.</span> 晶振与射频</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 晶振，作为一个系统时钟的提供者，在每个系统中必不可少，只是在一般的单片机系统中，由于对通信速率的要求不高，对晶体的要求比
@@ -1134,12 +1111,12 @@ beamwidth）45°, 60°,90°等)定义了天线水平平面的波束宽度。角�
 </div>
 </div>
 </div>
-<div id="outline-container-orgad36d19" class="outline-2">
-<h2 id="orgad36d19"><span class="section-number-2">4</span> 器件</h2>
+<div id="outline-container-orgacb7c26" class="outline-2">
+<h2 id="orgacb7c26"><span class="section-number-2">4.</span> 器件</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org4843b07" class="outline-3">
-<h3 id="org4843b07"><span class="section-number-3">4.1</span> 磁珠</h3>
+<div id="outline-container-org423c191" class="outline-3">
+<h3 id="org423c191"><span class="section-number-3">4.1.</span> 磁珠</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 EMC分为EMI和EMS，可以理解为EMI是自己对别人的干扰，EMS是别人对自己的干扰。那么磁珠的作用是就有EMI的作用，也有EMS的作用，
@@ -1149,8 +1126,8 @@ EMC分为EMI和EMS，可以理解为EMI是自己对别人的干扰，EMS是别�
 </p>
 </div>
 </div>
-<div id="outline-container-org7aec134" class="outline-3">
-<h3 id="org7aec134"><span class="section-number-3">4.2</span> 电容</h3>
+<div id="outline-container-orgc912b83" class="outline-3">
+<h3 id="orgc912b83"><span class="section-number-3">4.2.</span> 电容</h3>
 <div class="outline-text-3" id="text-4-2">
 <ul class="org-ul">
 <li><p>
@@ -1159,7 +1136,7 @@ EMC分为EMI和EMS，可以理解为EMI是自己对别人的干扰，EMS是别�
 前级携带的高频杂波滤除，而去耦（decoupling）电容也称退耦电容，是把输出信号的干扰作为滤除对象。 
 </p>
 
-<div id="org2909c52" class="figure">
+<div id="org282c32e" class="figure">
 <p><img src="./img/psu.jpg" alt="psu.jpg" />
 </p>
 <p><span class="figure-number">Figure 8: </span>电容的不同用法</p>
@@ -1186,8 +1163,8 @@ AC旁路消除无意的能量进入敏感的部分，另外还可以提供基带
 </ul>
 </div>
 </div>
-<div id="outline-container-orgd61993b" class="outline-3">
-<h3 id="orgd61993b"><span class="section-number-3">4.3</span> 电阻</h3>
+<div id="outline-container-orgbed848f" class="outline-3">
+<h3 id="orgbed848f"><span class="section-number-3">4.3.</span> 电阻</h3>
 <div class="outline-text-3" id="text-4-3">
 <ul class="org-ul">
 <li>贴片电阻的标称阻值问题：贴片电阻又叫"矩形片状电阻，是由ROHM公司发明并最早推出市场的。特点是耐潮湿高温，外观尺寸均匀，
@@ -1230,8 +1207,8 @@ AC旁路消除无意的能量进入敏感的部分，另外还可以提供基带
 </ul>
 </div>
 </div>
-<div id="outline-container-org0706833" class="outline-3">
-<h3 id="org0706833"><span class="section-number-3">4.4</span> 加速度传感器</h3>
+<div id="outline-container-orgc21f8ea" class="outline-3">
+<h3 id="orgc21f8ea"><span class="section-number-3">4.4.</span> 加速度传感器</h3>
 <div class="outline-text-3" id="text-4-4">
 <p>
 指外界对传感器用力(包括重力)，在传感器物体三维坐标系下获得3个力分量，也就是
@@ -1239,8 +1216,8 @@ AC旁路消除无意的能量进入敏感的部分，另外还可以提供基带
 </p>
 </div>
 </div>
-<div id="outline-container-orgfe86c64" class="outline-3">
-<h3 id="orgfe86c64"><span class="section-number-3">4.5</span> 陀螺仪传感器</h3>
+<div id="outline-container-org6b7f640" class="outline-3">
+<h3 id="org6b7f640"><span class="section-number-3">4.5.</span> 陀螺仪传感器</h3>
 <div class="outline-text-3" id="text-4-5">
 <p>
 指外界让传感器围绕某轴旋转，传感器将会有一个角度变化率，也就是角加速度，同
@@ -1248,8 +1225,8 @@ AC旁路消除无意的能量进入敏感的部分，另外还可以提供基带
 </p>
 </div>
 </div>
-<div id="outline-container-org5ac9e68" class="outline-3">
-<h3 id="org5ac9e68"><span class="section-number-3">4.6</span> 磁传感器</h3>
+<div id="outline-container-orgf79d10a" class="outline-3">
+<h3 id="orgf79d10a"><span class="section-number-3">4.6.</span> 磁传感器</h3>
 <div class="outline-text-3" id="text-4-6">
 <p>
 地球表面存在天然磁场，其方向大约指向地理北极，实际上地球磁场方向和地理北极
@@ -1259,20 +1236,20 @@ AC旁路消除无意的能量进入敏感的部分，另外还可以提供基带
 </div>
 </div>
 </div>
-<div id="outline-container-orgdc2c7e5" class="outline-2">
-<h2 id="orgdc2c7e5"><span class="section-number-2">5</span> 芯片内核</h2>
+<div id="outline-container-org35ac030" class="outline-2">
+<h2 id="org35ac030"><span class="section-number-2">5.</span> 芯片内核</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-orgc54143b" class="outline-3">
-<h3 id="orgc54143b"><span class="section-number-3">5.1</span> 51</h3>
+<div id="outline-container-orge367bca" class="outline-3">
+<h3 id="orge367bca"><span class="section-number-3">5.1.</span> 51</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 51单片机属于准‘哈佛结构’，数据总线和地址总线是分开的, 数据总线8bit，地址
 总线16bit，这也导致片内统一寻址最大64K的空间；
 </p>
 </div>
-<div id="outline-container-org71b0b99" class="outline-4">
-<h4 id="org71b0b99"><span class="section-number-4">5.1.1</span> 存储结构</h4>
+<div id="outline-container-org4845d3a" class="outline-4">
+<h4 id="org4845d3a"><span class="section-number-4">5.1.1.</span> 存储结构</h4>
 <div class="outline-text-4" id="text-5-1-1">
 <p>
 物理结构上有4个存储空间。
@@ -1327,36 +1304,36 @@ AC旁路消除无意的能量进入敏感的部分，另外还可以提供基带
 </ul>
 </div>
 </div>
-<div id="outline-container-org244996c" class="outline-4">
-<h4 id="org244996c"><span class="section-number-4">5.1.2</span> 寻址方式</h4>
+<div id="outline-container-org4d4d25d" class="outline-4">
+<h4 id="org4d4d25d"><span class="section-number-4">5.1.2.</span> 寻址方式</h4>
 <div class="outline-text-4" id="text-5-1-2">
 </div>
-<div id="outline-container-orgb28ec18" class="outline-5">
-<h5 id="orgb28ec18"><span class="section-number-5">5.1.2.1</span> 立即数寻址</h5>
+<div id="outline-container-org01d8a61" class="outline-5">
+<h5 id="org01d8a61"><span class="section-number-5">5.1.2.1.</span> 立即数寻址</h5>
 <div class="outline-text-5" id="text-5-1-2-1">
 <p>
 如指令：MOV A, #3AH 就是将立即数3AH送到累加器A中；
 </p>
 </div>
 </div>
-<div id="outline-container-orge43979e" class="outline-5">
-<h5 id="orge43979e"><span class="section-number-5">5.1.2.2</span> 寄存器寻址</h5>
+<div id="outline-container-org7ddfa67" class="outline-5">
+<h5 id="org7ddfa67"><span class="section-number-5">5.1.2.2.</span> 寄存器寻址</h5>
 <div class="outline-text-5" id="text-5-1-2-2">
 <p>
 如指令：MOV A, R0 将寄存器RO中的值放入累加器A中；
 </p>
 </div>
 </div>
-<div id="outline-container-orga14fdea" class="outline-5">
-<h5 id="orga14fdea"><span class="section-number-5">5.1.2.3</span> 直接寻址</h5>
+<div id="outline-container-orgb51a63b" class="outline-5">
+<h5 id="orgb51a63b"><span class="section-number-5">5.1.2.3.</span> 直接寻址</h5>
 <div class="outline-text-5" id="text-5-1-2-3">
 <p>
 如指令：MOV A, 30H 将地址为30H的存储器中的值放入累加器A中；
 </p>
 </div>
 </div>
-<div id="outline-container-org440d2a3" class="outline-5">
-<h5 id="org440d2a3"><span class="section-number-5">5.1.2.4</span> 间接寻址</h5>
+<div id="outline-container-org3ff6f77" class="outline-5">
+<h5 id="org3ff6f77"><span class="section-number-5">5.1.2.4.</span> 间接寻址</h5>
 <div class="outline-text-5" id="text-5-1-2-4">
 <p>
 如指令：MOV A, @R0 寄存器R0中存放的是存储单元的地址，指令是将这个地址处的存
@@ -1364,8 +1341,8 @@ AC旁路消除无意的能量进入敏感的部分，另外还可以提供基带
 </p>
 </div>
 </div>
-<div id="outline-container-org42380d0" class="outline-5">
-<h5 id="org42380d0"><span class="section-number-5">5.1.2.5</span> 变址寻址</h5>
+<div id="outline-container-org0959c24" class="outline-5">
+<h5 id="org0959c24"><span class="section-number-5">5.1.2.5.</span> 变址寻址</h5>
 <div class="outline-text-5" id="text-5-1-2-5">
 <p>
 如指令：MOVC A, @A+DPTR 指将基址寄存器（DPTR或PC）和变址寄存器（A）的内容相
@@ -1373,8 +1350,8 @@ AC旁路消除无意的能量进入敏感的部分，另外还可以提供基带
 </p>
 </div>
 </div>
-<div id="outline-container-org37984df" class="outline-5">
-<h5 id="org37984df"><span class="section-number-5">5.1.2.6</span> 相对寻址</h5>
+<div id="outline-container-org7feb9ff" class="outline-5">
+<h5 id="org7feb9ff"><span class="section-number-5">5.1.2.6.</span> 相对寻址</h5>
 <div class="outline-text-5" id="text-5-1-2-6">
 <p>
 如指令：SJMP rel 指PC的当前内容与指令中的操作数相加，其结果作为跳转指令的目
@@ -1382,8 +1359,8 @@ AC旁路消除无意的能量进入敏感的部分，另外还可以提供基带
 </p>
 </div>
 </div>
-<div id="outline-container-org88f8d58" class="outline-5">
-<h5 id="org88f8d58"><span class="section-number-5">5.1.2.7</span> 位寻址</h5>
+<div id="outline-container-org0307fb7" class="outline-5">
+<h5 id="org0307fb7"><span class="section-number-5">5.1.2.7.</span> 位寻址</h5>
 <div class="outline-text-5" id="text-5-1-2-7">
 <p>
 如指令：SETB ACC.1 指令中操作数为8位二进制数的某一位；
@@ -1391,8 +1368,8 @@ AC旁路消除无意的能量进入敏感的部分，另外还可以提供基带
 </div>
 </div>
 </div>
-<div id="outline-container-org54a1726" class="outline-4">
-<h4 id="org54a1726"><span class="section-number-4">5.1.3</span> 操作数符号</h4>
+<div id="outline-container-org5bc29ad" class="outline-4">
+<h4 id="org5bc29ad"><span class="section-number-4">5.1.3.</span> 操作数符号</h4>
 <div class="outline-text-4" id="text-5-1-3">
 <ul class="org-ul">
 <li>#data：表示8位立即数，如#3AH；</li>
@@ -1407,8 +1384,8 @@ AC旁路消除无意的能量进入敏感的部分，另外还可以提供基带
 </ul>
 </div>
 </div>
-<div id="outline-container-org851c13f" class="outline-4">
-<h4 id="org851c13f"><span class="section-number-4">5.1.4</span> 中断</h4>
+<div id="outline-container-org51c46ba" class="outline-4">
+<h4 id="org51c46ba"><span class="section-number-4">5.1.4.</span> 中断</h4>
 <div class="outline-text-4" id="text-5-1-4">
 <ul class="org-ul">
 <li>MCS-51中断函数注意如下
@@ -1429,8 +1406,8 @@ PSW入栈后还要修改PSW中的工作寄存器组选择位。</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orged2c848" class="outline-4">
-<h4 id="orged2c848"><span class="section-number-4">5.1.5</span> 汇编</h4>
+<div id="outline-container-org9127295" class="outline-4">
+<h4 id="org9127295"><span class="section-number-4">5.1.5.</span> 汇编</h4>
 <div class="outline-text-4" id="text-5-1-5">
 <p>
 格式为：标号段：操作码段    第一操作数，第二操作数，如START： MOV A，#00H
@@ -1453,8 +1430,8 @@ PSW入栈后还要修改PSW中的工作寄存器组选择位。</li>
 </ol>
 </div>
 </div>
-<div id="outline-container-org886fef1" class="outline-4">
-<h4 id="org886fef1"><span class="section-number-4">5.1.6</span> 程序</h4>
+<div id="outline-container-org34e2fff" class="outline-4">
+<h4 id="org34e2fff"><span class="section-number-4">5.1.6.</span> 程序</h4>
 <div class="outline-text-4" id="text-5-1-6">
 <p>
 当使用到指针时,要指定指针指向的内存类型。在C51中
@@ -1469,8 +1446,8 @@ PSW入栈后还要修改PSW中的工作寄存器组选择位。</li>
 型,如：char data* xdata p其含义是指针p指向data区变量,而其本身存放在xdata区 
 </p>
 </div>
-<div id="outline-container-org114b2d8" class="outline-5">
-<h5 id="org114b2d8"><span class="section-number-5">5.1.6.1</span> 关键字</h5>
+<div id="outline-container-org8dfc48d" class="outline-5">
+<h5 id="org8dfc48d"><span class="section-number-5">5.1.6.1.</span> 关键字</h5>
 <div class="outline-text-5" id="text-5-1-6-1">
 <ol class="org-ol">
 <li>bit：定义在内部RAM，20H～2FH区域中位的地址，或可以位寻址的SFR的位地址；</li>
@@ -1481,8 +1458,8 @@ PSW入栈后还要修改PSW中的工作寄存器组选择位。</li>
 </ol>
 </div>
 </div>
-<div id="outline-container-org8532157" class="outline-5">
-<h5 id="org8532157"><span class="section-number-5">5.1.6.2</span> 指针和存储空间</h5>
+<div id="outline-container-org9a66907" class="outline-5">
+<h5 id="org9a66907"><span class="section-number-5">5.1.6.2.</span> 指针和存储空间</h5>
 <div class="outline-text-5" id="text-5-1-6-2">
 <p>
 在外部RAM定义一个数组, 地址是外RAM的0000H～0009H。
@@ -1609,8 +1586,8 @@ MOVX @DPTR, A
 </ul>
 </div>
 </div>
-<div id="outline-container-org1aa21bb" class="outline-5">
-<h5 id="org1aa21bb"><span class="section-number-5">5.1.6.3</span> 大小端</h5>
+<div id="outline-container-org7a951ac" class="outline-5">
+<h5 id="org7a951ac"><span class="section-number-5">5.1.6.3.</span> 大小端</h5>
 <div class="outline-text-5" id="text-5-1-6-3">
 <p>
 51应该属于小端地址结构；在结构体位段中，先声明的位段是从一个字节的低位到高
@@ -1621,13 +1598,13 @@ MOVX @DPTR, A
 {
     <span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">EL</span>
     {
-    <span style="color: #ffff00; font-size: 105%;">CARD_FORMAT_T</span> <span style="color: #ffd700;">card_format</span>:2 ;<span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">0x01</span>
-    <span style="color: #ffff00; font-size: 105%;">UINT8</span> <span style="color: #ffd700;">division</span>:6 ;            <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">0x29  </span>
+        <span style="color: #ffff00; font-size: 105%;">CARD_FORMAT_T</span> <span style="color: #ffd700;">card_format</span>:2 ;<span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">0x01</span>
+        <span style="color: #ffff00; font-size: 105%;">UINT8</span> <span style="color: #ffd700;">division</span>:6 ;            <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">0x29  </span>
 
-    <span style="color: #ffff00; font-size: 105%;">UINT8</span> <span style="color: #ffd700;">reserved2</span>: 3;           <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">0x02</span>
-    <span style="color: #ffff00; font-size: 105%;">UINT8</span> <span style="color: #ffd700;">reserved</span>: 1;            <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">0x01</span>
-    <span style="color: #ffff00; font-size: 105%;">BOOL</span> <span style="color: #ffd700;">protocol</span>:3 ;             <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">0x05</span>
-    <span style="color: #ffff00; font-size: 105%;">PARITY_T</span> <span style="color: #ffd700;">parity</span>:1 ;           <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">0x00</span>
+        <span style="color: #ffff00; font-size: 105%;">UINT8</span> <span style="color: #ffd700;">reserved2</span>: 3;           <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">0x02</span>
+        <span style="color: #ffff00; font-size: 105%;">UINT8</span> <span style="color: #ffd700;">reserved</span>: 1;            <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">0x01</span>
+        <span style="color: #ffff00; font-size: 105%;">BOOL</span> <span style="color: #ffd700;">protocol</span>:3 ;             <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">0x05</span>
+        <span style="color: #ffff00; font-size: 105%;">PARITY_T</span> <span style="color: #ffd700;">parity</span>:1 ;           <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">0x00</span>
     } <span style="color: #ffd700;">testelement</span>;                    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">0xA55A</span>
     <span style="color: #ffff00; font-size: 105%;">UINT16</span> <span style="color: #ffd700;">testentirety</span> ;             <span style="color: #90ee90; font-style: italic;">//</span>
 } ;
@@ -1640,20 +1617,20 @@ MOVX @DPTR, A
 </div>
 </div>
 </div>
-<div id="outline-container-orgde40351" class="outline-3">
-<h3 id="orgde40351"><span class="section-number-3">5.2</span> arm</h3>
+<div id="outline-container-org81824eb" class="outline-3">
+<h3 id="org81824eb"><span class="section-number-3">5.2.</span> arm</h3>
 <div class="outline-text-3" id="text-5-2">
 </div>
-<div id="outline-container-org44d9d8a" class="outline-4">
-<h4 id="org44d9d8a"><span class="section-number-4">5.2.1</span> cortex-m</h4>
+<div id="outline-container-org303b635" class="outline-4">
+<h4 id="org303b635"><span class="section-number-4">5.2.1.</span> cortex-m</h4>
 <div class="outline-text-4" id="text-5-2-1">
 <p>
 cortex-m是哈佛结构，指令总线和数据总线分开，都是32位宽，但是指令和数据公用
 存储器，所以不是4G+4G=8G的映射而是4G的映射空间。
 </p>
 </div>
-<div id="outline-container-org7fa1867" class="outline-5">
-<h5 id="org7fa1867"><span class="section-number-5">5.2.1.1</span> 总线</h5>
+<div id="outline-container-org1b1802b" class="outline-5">
+<h5 id="org1b1802b"><span class="section-number-5">5.2.1.1.</span> 总线</h5>
 <div class="outline-text-5" id="text-5-2-1-1">
 <p>
 内部有若干总线接口，这样可以同时取指和取数。
@@ -1667,14 +1644,14 @@ cortex-m是哈佛结构，指令总线和数据总线分开，都是32位宽，�
 </ul>
 </div>
 </div>
-<div id="outline-container-orgc56a370" class="outline-5">
-<h5 id="orgc56a370"><span class="section-number-5">5.2.1.2</span> 寄存器组</h5>
+<div id="outline-container-orgc4bcffc" class="outline-5">
+<h5 id="orgc4bcffc"><span class="section-number-5">5.2.1.2.</span> 寄存器组</h5>
 <div class="outline-text-5" id="text-5-2-1-2">
 <p>
 cortex-m包含R0～R15寄存器，其中R13作为堆栈指针寄存器SP，共有2个（PSP和MSP），
 但是同一时刻只能有一个可以看到, 结构见表\ref{tbl-cortexm-reg}
 </p>
-<table id="org10354b5" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org0783e35" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 2:</span> 寄存器</caption>
 
 <colgroup>
@@ -1806,7 +1783,7 @@ MMU和cache的就更加不确定了），把返回地址直接存储在寄存器
 <li><p>
 特殊功能寄存器：见表\ref{tbl-cortex-sfr-reg}
 </p>
-<table id="org8960f30" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org9a8c4e9" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 3:</span> 特殊功能寄存器</caption>
 
 <colgroup>
@@ -1871,14 +1848,14 @@ MMU和cache的就更加不确定了），把返回地址直接存储在寄存器
 </ul>
 </div>
 </div>
-<div id="outline-container-org01d76ae" class="outline-5">
-<h5 id="org01d76ae"><span class="section-number-5">5.2.1.3</span> 操作模式</h5>
+<div id="outline-container-org6b8dd3f" class="outline-5">
+<h5 id="org6b8dd3f"><span class="section-number-5">5.2.1.3.</span> 操作模式</h5>
 <div class="outline-text-5" id="text-5-2-1-3">
 <p>
 分两种操作模式（handler和thread）和两种特权操作（特权级和用户级），见表
 \ref{tbl-cortexm-model}所示。
 </p>
-<table id="orgf41abc0" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org03d5e8c" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 4:</span> 操作模式和特权级别</caption>
 
 <colgroup>
@@ -1925,8 +1902,8 @@ MMU和cache的就更加不确定了），把返回地址直接存储在寄存器
 </p>
 </div>
 </div>
-<div id="outline-container-org9810776" class="outline-5">
-<h5 id="org9810776"><span class="section-number-5">5.2.1.4</span> 中断异常</h5>
+<div id="outline-container-org182ca07" class="outline-5">
+<h5 id="org182ca07"><span class="section-number-5">5.2.1.4.</span> 中断异常</h5>
 <div class="outline-text-5" id="text-5-2-1-4">
 <ul class="org-ul">
 <li><p>
@@ -1959,11 +1936,11 @@ SVC异常必须立即得到相应，而PENDSVC则不是，他可以像普通中�
 </div>
 </div>
 
-<div id="outline-container-orga6ba60b" class="outline-5">
-<h5 id="orga6ba60b"><span class="section-number-5">5.2.1.5</span> 存储</h5>
+<div id="outline-container-org6253cdd" class="outline-5">
+<h5 id="org6253cdd"><span class="section-number-5">5.2.1.5.</span> 存储</h5>
 </div>
-<div id="outline-container-org9fd3fd5" class="outline-5">
-<h5 id="org9fd3fd5"><span class="section-number-5">5.2.1.6</span> 编程</h5>
+<div id="outline-container-org7e5a6bf" class="outline-5">
+<h5 id="org7e5a6bf"><span class="section-number-5">5.2.1.6.</span> 编程</h5>
 <div class="outline-text-5" id="text-5-2-1-6">
 <ul class="org-ul">
 <li><p>
@@ -1979,8 +1956,8 @@ SVC异常必须立即得到相应，而PENDSVC则不是，他可以像普通中�
 </div>
 </div>
 
-<div id="outline-container-org1109717" class="outline-3">
-<h3 id="org1109717"><span class="section-number-3">5.3</span> 测试</h3>
+<div id="outline-container-org018c716" class="outline-3">
+<h3 id="org018c716"><span class="section-number-3">5.3.</span> 测试</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 芯片测试有很多种。
@@ -2022,8 +1999,8 @@ Rdson(导通电阻), BVdss(源漏击穿电压)，Igss(栅源漏电流)，Idss(�
 <div id="postamble" class="status">
 <p class="author">Author: 比克曼</p>
 <p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
-<p class="date">Created: 2020-11-20 周五 23:37</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+<p class="date">Created: 2026-07-12 日 12:30</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

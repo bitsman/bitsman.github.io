@@ -3,14 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-06-05 周五 00:05 -->
+<!-- 2026-07-12 日 12:30 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>信号与系统</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="比克曼" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -31,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -40,22 +41,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -161,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -177,163 +191,126 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="css/org-manual.css"/>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2018 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
 </script>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        displayAlign: "center",
-        displayIndent: "0em",
 
-        "HTML-CSS": { scale: 100,
-                        linebreaks: { automatic: "false" },
-                        webFont: "TeX"
-                       },
-        SVG: {scale: 100,
-              linebreaks: { automatic: "false" },
-              font: "TeX"},
-        NativeMML: {scale: 100},
-        TeX: { equationNumbers: {autoNumber: "AMS"},
-               MultLineWidth: "85%",
-               TagSide: "right",
-               TagIndent: ".8em"
-             }
-});
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">信号与系统</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgbd0e44e">1. 基本概念</a>
+<li><a href="#org0017262">1. 基本概念</a>
 <ul>
-<li><a href="#org7c3dee2">1.1. 频率</a></li>
-<li><a href="#org91f1461">1.2. 正交</a>
+<li><a href="#orgba2117a">1.1. 频率</a></li>
+<li><a href="#orgf1e1e63">1.2. 正交</a>
 <ul>
-<li><a href="#orga684f5b">1.2.1. 正交函数</a></li>
+<li><a href="#org2b015a1">1.2.1. 正交函数</a></li>
 </ul>
 </li>
-<li><a href="#orgb237bd2">1.3. 其他</a></li>
+<li><a href="#org6369e5b">1.3. 其他</a></li>
 </ul>
 </li>
-<li><a href="#org763f31e">2. 线性时不变系统</a>
+<li><a href="#org0814054">2. 线性时不变系统</a>
 <ul>
-<li><a href="#org2b3ce52">2.1. 概念</a></li>
-<li><a href="#org19cf164">2.2. 公式</a>
+<li><a href="#orgfdfc3ed">2.1. 概念</a></li>
+<li><a href="#orgbd7a1bc">2.2. 公式</a>
 <ul>
-<li><a href="#org0b50047">2.2.1. 傅里叶级数(FT)</a>
+<li><a href="#orgdf68bef">2.2.1. 傅里叶级数(FT)</a>
 <ul>
-<li><a href="#org39af530">2.2.1.1. 正变换</a></li>
-<li><a href="#org1a96e95">2.2.1.2. 逆变换</a></li>
+<li><a href="#org73de128">2.2.1.1. 正变换</a></li>
+<li><a href="#orgfde607a">2.2.1.2. 逆变换</a></li>
 </ul>
 </li>
-<li><a href="#org686da81">2.2.2. 傅里叶变换(CTFT)</a>
+<li><a href="#orga0d1fe3">2.2.2. 傅里叶变换(CTFT)</a>
 <ul>
-<li><a href="#orga66a499">2.2.2.1. 正变换</a></li>
-<li><a href="#org41d401e">2.2.2.2. 逆变换</a></li>
-<li><a href="#orgb52d64f">2.2.2.3. 关系</a></li>
-<li><a href="#org3ca38d2">2.2.2.4. 离散时间傅里叶变换</a></li>
+<li><a href="#orga0f2da4">2.2.2.1. 正变换</a></li>
+<li><a href="#orgd3b1b78">2.2.2.2. 逆变换</a></li>
+<li><a href="#orgf2e96e2">2.2.2.3. 关系</a></li>
+<li><a href="#org5ac7e66">2.2.2.4. 离散时间傅里叶变换</a></li>
 </ul>
 </li>
-<li><a href="#org2a6c476">2.2.3. 傅里叶变换(DFT)</a>
+<li><a href="#orgc80aeed">2.2.3. 傅里叶变换(DFT)</a>
 <ul>
-<li><a href="#org28a7b41">2.2.3.1. 正变换</a></li>
-<li><a href="#orgd2fa943">2.2.3.2. 逆变换</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orge139114">2.3. 卷积</a></li>
-<li><a href="#orgd8a9970">2.4. 傅里叶级数</a>
-<ul>
-<li><a href="#org0b3a373">2.4.1. 泰勒级数</a></li>
-<li><a href="#orgc1e2a0e">2.4.2. 傅里叶级数</a>
-<ul>
-<li><a href="#org88fcd8b">2.4.2.1. 问题</a></li>
+<li><a href="#orgb987b79">2.2.3.1. 正变换</a></li>
+<li><a href="#org32f2a28">2.2.3.2. 逆变换</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org9f70154">2.5. 连续时间傅里叶变换(CTFT)</a></li>
-<li><a href="#orgee6baa9">2.6. 离散时间傅里叶变换(DTFT)</a>
+<li><a href="#orgc0e4a84">2.3. 卷积</a></li>
+<li><a href="#org56d5b9d">2.4. 傅里叶级数</a>
 <ul>
-<li><a href="#org862335e">2.6.1. DTFT算法过程</a></li>
-<li><a href="#orgd88f248">2.6.2. 物理意义</a></li>
-</ul>
-</li>
-<li><a href="#orgfd72ef8">2.7. 离散傅里叶变换(DFT)</a>
+<li><a href="#org1b3a0bb">2.4.1. 泰勒级数</a></li>
+<li><a href="#org32f6f53">2.4.2. 傅里叶级数</a>
 <ul>
-<li><a href="#org076e8df">2.7.1. 应用</a></li>
+<li><a href="#orgc68bf79">2.4.2.1. 问题</a></li>
 </ul>
 </li>
-<li><a href="#org60fa1ef">2.8. 滤波器</a>
+</ul>
+</li>
+<li><a href="#org25a5025">2.5. 连续时间傅里叶变换(CTFT)</a></li>
+<li><a href="#orgf62b4ae">2.6. 离散时间傅里叶变换(DTFT)</a>
 <ul>
-<li><a href="#org772eaa3">2.8.1. 设计思路</a></li>
-<li><a href="#org78fbd87">2.8.2. FIR滤波</a></li>
-<li><a href="#org0693c68">2.8.3. IIR滤波</a></li>
+<li><a href="#orgf9fb447">2.6.1. DTFT算法过程</a></li>
+<li><a href="#org456cfea">2.6.2. 物理意义</a></li>
 </ul>
 </li>
-<li><a href="#orgf5813a7">2.9. 采样重构</a>
+<li><a href="#org2f444f7">2.7. 离散傅里叶变换(DFT)</a>
 <ul>
-<li><a href="#org4cc1fac">2.9.1. 采样</a></li>
-<li><a href="#orgffb75ba">2.9.2. 重构</a></li>
+<li><a href="#org447cf0b">2.7.1. 应用</a></li>
+</ul>
+</li>
+<li><a href="#org7575083">2.8. 滤波器</a>
+<ul>
+<li><a href="#orgac10f12">2.8.1. 设计思路</a></li>
+<li><a href="#org3557ddb">2.8.2. FIR滤波</a></li>
+<li><a href="#orge069979">2.8.3. IIR滤波</a></li>
+</ul>
+</li>
+<li><a href="#orgf4851b4">2.9. 采样重构</a>
+<ul>
+<li><a href="#org721c513">2.9.1. 采样</a></li>
+<li><a href="#orge92e267">2.9.2. 重构</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org1327d8b">3. 小波变换</a></li>
+<li><a href="#org97478bc">3. 小波变换</a></li>
 </ul>
 </div>
 </div>
@@ -341,17 +318,17 @@ for the JavaScript code in this tag.
 <h2>List of Tables</h2>
 <div id="text-list-of-tables">
 <ul>
-<li><a href="#orgb55d5c2"><span class="table-number">Table 1:</span> 变换时频特性</a></li>
+<li><a href="#org1076cfa"><span class="table-number">Table 1:</span> 变换时频特性</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgbd0e44e" class="outline-2">
-<h2 id="orgbd0e44e"><span class="section-number-2">1</span> 基本概念</h2>
+<div id="outline-container-org0017262" class="outline-2">
+<h2 id="org0017262"><span class="section-number-2">1.</span> 基本概念</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org7c3dee2" class="outline-3">
-<h3 id="org7c3dee2"><span class="section-number-3">1.1</span> 频率</h3>
+<div id="outline-container-orgba2117a" class="outline-3">
+<h3 id="orgba2117a"><span class="section-number-3">1.1.</span> 频率</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 通常说的频率，在没有特别指明的情况下，指的是模拟频率，其单位为赫兹(Hz)，数
@@ -398,12 +375,12 @@ f=100Hz，幅度为A，初始相位为0，则这个信号用公式可以表示�
 </ul>
 </div>
 </div>
-<div id="outline-container-org91f1461" class="outline-3">
-<h3 id="org91f1461"><span class="section-number-3">1.2</span> 正交</h3>
+<div id="outline-container-orgf1e1e63" class="outline-3">
+<h3 id="orgf1e1e63"><span class="section-number-3">1.2.</span> 正交</h3>
 <div class="outline-text-3" id="text-1-2">
 </div>
-<div id="outline-container-orga684f5b" class="outline-4">
-<h4 id="orga684f5b"><span class="section-number-4">1.2.1</span> 正交函数</h4>
+<div id="outline-container-org2b015a1" class="outline-4">
+<h4 id="org2b015a1"><span class="section-number-4">1.2.1.</span> 正交函数</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <p>
 在区间[t1, t2]上定义的非零实函数f1(t)与f2(2), 若满足条件
@@ -432,8 +409,8 @@ g(x)的\(v=(g(0),g(1),g(2),g(3),g(4),g(5),...,g(N))\) , 现在让这两个N+1维
 </div>
 </div>
 </div>
-<div id="outline-container-orgb237bd2" class="outline-3">
-<h3 id="orgb237bd2"><span class="section-number-3">1.3</span> 其他</h3>
+<div id="outline-container-org6369e5b" class="outline-3">
+<h3 id="org6369e5b"><span class="section-number-3">1.3.</span> 其他</h3>
 <div class="outline-text-3" id="text-1-3">
 <ul class="org-ul">
 <li>特征函数：一个信号函数，若系统对该信号的输出响应仅是一个常数(可以是复数)乘以
@@ -447,12 +424,12 @@ g(x)的\(v=(g(0),g(1),g(2),g(3),g(4),g(5),...,g(N))\) , 现在让这两个N+1维
 </div>
 </div>
 </div>
-<div id="outline-container-org763f31e" class="outline-2">
-<h2 id="org763f31e"><span class="section-number-2">2</span> 线性时不变系统</h2>
+<div id="outline-container-org0814054" class="outline-2">
+<h2 id="org0814054"><span class="section-number-2">2.</span> 线性时不变系统</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org2b3ce52" class="outline-3">
-<h3 id="org2b3ce52"><span class="section-number-3">2.1</span> 概念</h3>
+<div id="outline-container-orgfdfc3ed" class="outline-3">
+<h3 id="orgfdfc3ed"><span class="section-number-3">2.1.</span> 概念</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 线性时不变系统简称LTI系统，可以用它对单位脉冲序列的响应(h(n))来表示。
@@ -537,13 +514,13 @@ H(s)和H(z)就是该系统的系统函数。当s和n是纯虚数j&Omega;时，H(
 </ul>
 </div>
 </div>
-<div id="outline-container-org19cf164" class="outline-3">
-<h3 id="org19cf164"><span class="section-number-3">2.2</span> 公式</h3>
+<div id="outline-container-orgbd7a1bc" class="outline-3">
+<h3 id="orgbd7a1bc"><span class="section-number-3">2.2.</span> 公式</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 几种变换的时域和频域特性见表\ref{tbl-trans-way}所示
 </p>
-<table id="orgb55d5c2" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org1076cfa" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 1:</span> 变换时频特性</caption>
 
 <colgroup>
@@ -587,12 +564,12 @@ H(s)和H(z)就是该系统的系统函数。当s和n是纯虚数j&Omega;时，H(
 </tbody>
 </table>
 </div>
-<div id="outline-container-org0b50047" class="outline-4">
-<h4 id="org0b50047"><span class="section-number-4">2.2.1</span> 傅里叶级数(FT)</h4>
+<div id="outline-container-orgdf68bef" class="outline-4">
+<h4 id="orgdf68bef"><span class="section-number-4">2.2.1.</span> 傅里叶级数(FT)</h4>
 <div class="outline-text-4" id="text-2-2-1">
 </div>
-<div id="outline-container-org39af530" class="outline-5">
-<h5 id="org39af530"><span class="section-number-5">2.2.1.1</span> 正变换</h5>
+<div id="outline-container-org73de128" class="outline-5">
+<h5 id="org73de128"><span class="section-number-5">2.2.1.1.</span> 正变换</h5>
 <div class="outline-text-5" id="text-2-2-1-1">
 <p>
 \[x(t)=\sum_{k=-\infty}^{\infty}a_{k}e^{jk\Omega{}_{0}t}\] 
@@ -600,8 +577,8 @@ H(s)和H(z)就是该系统的系统函数。当s和n是纯虚数j&Omega;时，H(
 </p>
 </div>
 </div>
-<div id="outline-container-org1a96e95" class="outline-5">
-<h5 id="org1a96e95"><span class="section-number-5">2.2.1.2</span> 逆变换</h5>
+<div id="outline-container-orgfde607a" class="outline-5">
+<h5 id="orgfde607a"><span class="section-number-5">2.2.1.2.</span> 逆变换</h5>
 <div class="outline-text-5" id="text-2-2-1-2">
 <p>
 \[a_{k}=\frac{1}{T}\int_{T}x(t)e^{-jk\Omega{}_{0}t}dt\] 
@@ -614,20 +591,20 @@ H(s)和H(z)就是该系统的系统函数。当s和n是纯虚数j&Omega;时，H(
 </div>
 </div>
 </div>
-<div id="outline-container-org686da81" class="outline-4">
-<h4 id="org686da81"><span class="section-number-4">2.2.2</span> 傅里叶变换(CTFT)</h4>
+<div id="outline-container-orga0d1fe3" class="outline-4">
+<h4 id="orga0d1fe3"><span class="section-number-4">2.2.2.</span> 傅里叶变换(CTFT)</h4>
 <div class="outline-text-4" id="text-2-2-2">
 </div>
-<div id="outline-container-orga66a499" class="outline-5">
-<h5 id="orga66a499"><span class="section-number-5">2.2.2.1</span> 正变换</h5>
+<div id="outline-container-orga0f2da4" class="outline-5">
+<h5 id="orga0f2da4"><span class="section-number-5">2.2.2.1.</span> 正变换</h5>
 <div class="outline-text-5" id="text-2-2-2-1">
 <p>
 \[x(t)=\frac{1}{2\pi}\int_{-\infty}^{\infty}X(jw)e^{jwt}dw\] 
 </p>
 </div>
 </div>
-<div id="outline-container-org41d401e" class="outline-5">
-<h5 id="org41d401e"><span class="section-number-5">2.2.2.2</span> 逆变换</h5>
+<div id="outline-container-orgd3b1b78" class="outline-5">
+<h5 id="orgd3b1b78"><span class="section-number-5">2.2.2.2.</span> 逆变换</h5>
 <div class="outline-text-5" id="text-2-2-2-2">
 <p>
 \[X(jw)=\int_{-\infty}^{\infty}x(t)e^{-jwt}dt\] 
@@ -635,8 +612,8 @@ H(s)和H(z)就是该系统的系统函数。当s和n是纯虚数j&Omega;时，H(
 </p>
 </div>
 </div>
-<div id="outline-container-orgb52d64f" class="outline-5">
-<h5 id="orgb52d64f"><span class="section-number-5">2.2.2.3</span> 关系</h5>
+<div id="outline-container-orgf2e96e2" class="outline-5">
+<h5 id="orgf2e96e2"><span class="section-number-5">2.2.2.3.</span> 关系</h5>
 <div class="outline-text-5" id="text-2-2-2-3">
 <ul class="org-ul">
 <li>和傅里叶级数关系：一个周期信号的傅里叶级数a<sub>k</sub>能够利用其在一个周期内的信
@@ -645,17 +622,17 @@ H(s)和H(z)就是该系统的系统函数。当s和n是纯虚数j&Omega;时，H(
 </ul>
 </div>
 </div>
-<div id="outline-container-org3ca38d2" class="outline-5">
-<h5 id="org3ca38d2"><span class="section-number-5">2.2.2.4</span> 离散时间傅里叶变换</h5>
+<div id="outline-container-org5ac7e66" class="outline-5">
+<h5 id="org5ac7e66"><span class="section-number-5">2.2.2.4.</span> 离散时间傅里叶变换</h5>
 </div>
 </div>
 
-<div id="outline-container-org2a6c476" class="outline-4">
-<h4 id="org2a6c476"><span class="section-number-4">2.2.3</span> 傅里叶变换(DFT)</h4>
+<div id="outline-container-orgc80aeed" class="outline-4">
+<h4 id="orgc80aeed"><span class="section-number-4">2.2.3.</span> 傅里叶变换(DFT)</h4>
 <div class="outline-text-4" id="text-2-2-3">
 </div>
-<div id="outline-container-org28a7b41" class="outline-5">
-<h5 id="org28a7b41"><span class="section-number-5">2.2.3.1</span> 正变换</h5>
+<div id="outline-container-orgb987b79" class="outline-5">
+<h5 id="orgb987b79"><span class="section-number-5">2.2.3.1.</span> 正变换</h5>
 <div class="outline-text-5" id="text-2-2-3-1">
 <p>
 \[X[k]=\sum_{n=0}^{N-1}x[n]e^{-j\frac{k2\pi{}}{N}n}\] 
@@ -664,8 +641,8 @@ H(s)和H(z)就是该系统的系统函数。当s和n是纯虚数j&Omega;时，H(
 </p>
 </div>
 </div>
-<div id="outline-container-orgd2fa943" class="outline-5">
-<h5 id="orgd2fa943"><span class="section-number-5">2.2.3.2</span> 逆变换</h5>
+<div id="outline-container-org32f2a28" class="outline-5">
+<h5 id="org32f2a28"><span class="section-number-5">2.2.3.2.</span> 逆变换</h5>
 <div class="outline-text-5" id="text-2-2-3-2">
 <p>
 \[x[n]=\frac{1}{N}\sum_{k=0}^{N-1}X[k]e^{j\frac{k2\pi{}}{N}n}\]
@@ -675,8 +652,8 @@ H(s)和H(z)就是该系统的系统函数。当s和n是纯虚数j&Omega;时，H(
 </div>
 </div>
 </div>
-<div id="outline-container-orge139114" class="outline-3">
-<h3 id="orge139114"><span class="section-number-3">2.3</span> 卷积</h3>
+<div id="outline-container-orgc0e4a84" class="outline-3">
+<h3 id="orgc0e4a84"><span class="section-number-3">2.3.</span> 卷积</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 如果一个系统的冲击响应为h(n), 表示方式如\ref{equ-hn}，可以理解为由于一个k时
@@ -696,15 +673,15 @@ MATLAB或者python的卷积计算函数都不用带时间信息，只需要输�
 \end{equation}
 </div>
 </div>
-<div id="outline-container-orgd8a9970" class="outline-3">
-<h3 id="orgd8a9970"><span class="section-number-3">2.4</span> 傅里叶级数</h3>
+<div id="outline-container-org56d5b9d" class="outline-3">
+<h3 id="org56d5b9d"><span class="section-number-3">2.4.</span> 傅里叶级数</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 傅里叶级数和泰勒级数都是为了将一个函数分解成若干基函数叠加形式。
 </p>
 </div>
-<div id="outline-container-org0b3a373" class="outline-4">
-<h4 id="org0b3a373"><span class="section-number-4">2.4.1</span> 泰勒级数</h4>
+<div id="outline-container-org1b3a0bb" class="outline-4">
+<h4 id="org1b3a0bb"><span class="section-number-4">2.4.1.</span> 泰勒级数</h4>
 <div class="outline-text-4" id="text-2-4-1">
 <p>
 一个函数
@@ -733,8 +710,8 @@ f(x)=\sum_{n=0}^{\infty}\frac{f^{(n)}(x_{0})}{n!}(x-x_{0})^{n}
 </p>
 </div>
 </div>
-<div id="outline-container-orgc1e2a0e" class="outline-4">
-<h4 id="orgc1e2a0e"><span class="section-number-4">2.4.2</span> 傅里叶级数</h4>
+<div id="outline-container-org32f6f53" class="outline-4">
+<h4 id="org32f6f53"><span class="section-number-4">2.4.2.</span> 傅里叶级数</h4>
 <div class="outline-text-4" id="text-2-4-2">
 <p>
 傅里叶级数也叫三角级数一般为
@@ -826,8 +803,8 @@ a_{n} = \frac{\int_{-l}^{l}f(x)cos(\frac{n\pi x}{l})dx}{l}
 b_{n} = \frac{\int_{-l}^{l}f(x)sin(\frac{n\pi x}{l})dx}{l}
 \end{equation}
 </div>
-<div id="outline-container-org88fcd8b" class="outline-5">
-<h5 id="org88fcd8b"><span class="section-number-5">2.4.2.1</span> 问题</h5>
+<div id="outline-container-orgc68bf79" class="outline-5">
+<h5 id="orgc68bf79"><span class="section-number-5">2.4.2.1.</span> 问题</h5>
 <div class="outline-text-5" id="text-2-4-2-1">
 <p>
 连续时间或者离散时间周期信号的傅里叶级数的系数a<sub>k</sub>是离散的
@@ -851,8 +828,8 @@ b_{n} = \frac{\int_{-l}^{l}f(x)sin(\frac{n\pi x}{l})dx}{l}
 </div>
 </div>
 </div>
-<div id="outline-container-org9f70154" class="outline-3">
-<h3 id="org9f70154"><span class="section-number-3">2.5</span> 连续时间傅里叶变换(CTFT)</h3>
+<div id="outline-container-org25a5025" class="outline-3">
+<h3 id="org25a5025"><span class="section-number-3">2.5.</span> 连续时间傅里叶变换(CTFT)</h3>
 <div class="outline-text-3" id="text-2-5">
 <p>
 令x(t)是一绝对可积的模拟信号，它的CTFT表示为
@@ -867,8 +844,8 @@ b_{n} = \frac{\int_{-l}^{l}f(x)sin(\frac{n\pi x}{l})dx}{l}
 </ul>
 </div>
 </div>
-<div id="outline-container-orgee6baa9" class="outline-3">
-<h3 id="orgee6baa9"><span class="section-number-3">2.6</span> 离散时间傅里叶变换(DTFT)</h3>
+<div id="outline-container-orgf62b4ae" class="outline-3">
+<h3 id="orgf62b4ae"><span class="section-number-3">2.6.</span> 离散时间傅里叶变换(DTFT)</h3>
 <div class="outline-text-3" id="text-2-6">
 <p>
 如果x(n)是绝对可加的，即\(\sum_{-\infty}^{\infty}|x(n)| < \infty\)，则其离
@@ -900,8 +877,8 @@ b_{n} = \frac{\int_{-l}^{l}f(x)sin(\frac{n\pi x}{l})dx}{l}
 复指数信号是时域的信号，频率是w，则频域就是在频率轴上w处的一个冲击；</li>
 </ul>
 </div>
-<div id="outline-container-org862335e" class="outline-4">
-<h4 id="org862335e"><span class="section-number-4">2.6.1</span> DTFT算法过程</h4>
+<div id="outline-container-orgf9fb447" class="outline-4">
+<h4 id="orgf9fb447"><span class="section-number-4">2.6.1.</span> DTFT算法过程</h4>
 <div class="outline-text-4" id="text-2-6-1">
 <p>
 如果x(n)是有限长的，则x(n)肯定是绝对可加的，即x(n)肯定有DTFT，则可以用
@@ -947,8 +924,8 @@ w_{k} \Rightarrow \frac{\pi}{M}k, (k = 0, 1, ...,M)
 \end{equation}
 </div>
 </div>
-<div id="outline-container-orgd88f248" class="outline-4">
-<h4 id="orgd88f248"><span class="section-number-4">2.6.2</span> 物理意义</h4>
+<div id="outline-container-org456cfea" class="outline-4">
+<h4 id="org456cfea"><span class="section-number-4">2.6.2.</span> 物理意义</h4>
 <div class="outline-text-4" id="text-2-6-2">
 <p>
 DFT的快速算法叫FFT，在MATLAB和Python中都有相关库，一个模拟信号，经过ADC采样
@@ -990,8 +967,8 @@ atan2(b,a)计算。atan2(b,a)是求坐标为(a,b)点的角度值，范围从-pi�
 </div>
 </div>
 </div>
-<div id="outline-container-orgfd72ef8" class="outline-3">
-<h3 id="orgfd72ef8"><span class="section-number-3">2.7</span> 离散傅里叶变换(DFT)</h3>
+<div id="outline-container-org2f444f7" class="outline-3">
+<h3 id="org2f444f7"><span class="section-number-3">2.7.</span> 离散傅里叶变换(DFT)</h3>
 <div class="outline-text-3" id="text-2-7">
 <p>
 离散时间傅里叶变换（DTFT）有时也称为序列傅里叶变换。DTFT实质上就是单位圆上
@@ -1043,8 +1020,8 @@ N点的频率值；</li>
 率, 一个直流和谐波频率，超过奈奎斯特频率后就对称重复了。</li>
 </ul>
 </div>
-<div id="outline-container-org076e8df" class="outline-4">
-<h4 id="org076e8df"><span class="section-number-4">2.7.1</span> 应用</h4>
+<div id="outline-container-org447cf0b" class="outline-4">
+<h4 id="org447cf0b"><span class="section-number-4">2.7.1.</span> 应用</h4>
 <div class="outline-text-4" id="text-2-7-1">
 <p>
 假设有N=4的一个信号x(n)，x(n)={x(0), x(1), x(2), x(3)}, 则按照DFT的公式计算
@@ -1082,8 +1059,8 @@ x(0) \\ x(1) \\ x(2) \\ x(3)\\
 </div>
 </div>
 </div>
-<div id="outline-container-org60fa1ef" class="outline-3">
-<h3 id="org60fa1ef"><span class="section-number-3">2.8</span> 滤波器</h3>
+<div id="outline-container-org7575083" class="outline-3">
+<h3 id="org7575083"><span class="section-number-3">2.8.</span> 滤波器</h3>
 <div class="outline-text-3" id="text-2-8">
 <p>
 数字滤波器与LTI系统是等价的，描述方式可以有4种。
@@ -1125,8 +1102,8 @@ x(0) \\ x(1) \\ x(2) \\ x(3)\\
 <li>延时单元；</li>
 </ol>
 </div>
-<div id="outline-container-org772eaa3" class="outline-4">
-<h4 id="org772eaa3"><span class="section-number-4">2.8.1</span> 设计思路</h4>
+<div id="outline-container-orgac10f12" class="outline-4">
+<h4 id="orgac10f12"><span class="section-number-4">2.8.1.</span> 设计思路</h4>
 <div class="outline-text-4" id="text-2-8-1">
 <ol class="org-ol">
 <li>在具体的应用背景中提取出数字滤波器的性能参数；</li>
@@ -1138,8 +1115,8 @@ x(0) \\ x(1) \\ x(2) \\ x(3)\\
 </ol>
 </div>
 </div>
-<div id="outline-container-org78fbd87" class="outline-4">
-<h4 id="org78fbd87"><span class="section-number-4">2.8.2</span> FIR滤波</h4>
+<div id="outline-container-org3557ddb" class="outline-4">
+<h4 id="org3557ddb"><span class="section-number-4">2.8.2.</span> FIR滤波</h4>
 <div class="outline-text-4" id="text-2-8-2">
 <p>
 如果一个LTI系统的单位脉冲响应长度有限，则此系统称为有限长度脉冲响应(FIR)滤
@@ -1147,8 +1124,8 @@ x(0) \\ x(1) \\ x(2) \\ x(3)\\
 </p>
 </div>
 </div>
-<div id="outline-container-org0693c68" class="outline-4">
-<h4 id="org0693c68"><span class="section-number-4">2.8.3</span> IIR滤波</h4>
+<div id="outline-container-orge069979" class="outline-4">
+<h4 id="orge069979"><span class="section-number-4">2.8.3.</span> IIR滤波</h4>
 <div class="outline-text-4" id="text-2-8-3">
 <p>
 如果一个LTI系统的脉冲响应具有无线长度，则此系统称为无限长脉冲响应(IIR)滤波
@@ -1157,12 +1134,12 @@ x(0) \\ x(1) \\ x(2) \\ x(3)\\
 </div>
 </div>
 </div>
-<div id="outline-container-orgf5813a7" class="outline-3">
-<h3 id="orgf5813a7"><span class="section-number-3">2.9</span> 采样重构</h3>
+<div id="outline-container-orgf4851b4" class="outline-3">
+<h3 id="orgf4851b4"><span class="section-number-3">2.9.</span> 采样重构</h3>
 <div class="outline-text-3" id="text-2-9">
 </div>
-<div id="outline-container-org4cc1fac" class="outline-4">
-<h4 id="org4cc1fac"><span class="section-number-4">2.9.1</span> 采样</h4>
+<div id="outline-container-org721c513" class="outline-4">
+<h4 id="org721c513"><span class="section-number-4">2.9.1.</span> 采样</h4>
 <div class="outline-text-4" id="text-2-9-1">
 <ul class="org-ul">
 <li>采样定理：如果采样频率\(F_{s}\)大于有限带宽信号\(x_{a}(t)\)带宽\(F_{D}\)
@@ -1172,8 +1149,8 @@ x(0) \\ x(1) \\ x(2) \\ x(3)\\
 </ul>
 </div>
 </div>
-<div id="outline-container-orgffb75ba" class="outline-4">
-<h4 id="orgffb75ba"><span class="section-number-4">2.9.2</span> 重构</h4>
+<div id="outline-container-orge92e267" class="outline-4">
+<h4 id="orge92e267"><span class="section-number-4">2.9.2.</span> 重构</h4>
 <div class="outline-text-4" id="text-2-9-2">
 <p>
 当我们以合适的采样频率\(F_{s}\)采样到若干样本点x(n)后，这些样本点x(n)的频域
@@ -1222,15 +1199,15 @@ $$
 </div>
 </div>
 </div>
-<div id="outline-container-org1327d8b" class="outline-2">
-<h2 id="org1327d8b"><span class="section-number-2">3</span> 小波变换</h2>
+<div id="outline-container-org97478bc" class="outline-2">
+<h2 id="org97478bc"><span class="section-number-2">3.</span> 小波变换</h2>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: 比克曼</p>
 <p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
-<p class="date">Created: 2020-06-05 周五 00:05</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+<p class="date">Created: 2026-07-12 日 12:30</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

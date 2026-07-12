@@ -3,14 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-06-05 周五 00:04 -->
+<!-- 2026-07-12 日 12:30 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>百科知识</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="比克曼" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -31,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -40,22 +41,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -161,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -177,143 +191,106 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="css/org-manual.css"/>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2018 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
 </script>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        displayAlign: "center",
-        displayIndent: "0em",
 
-        "HTML-CSS": { scale: 100,
-                        linebreaks: { automatic: "false" },
-                        webFont: "TeX"
-                       },
-        SVG: {scale: 100,
-              linebreaks: { automatic: "false" },
-              font: "TeX"},
-        NativeMML: {scale: 100},
-        TeX: { equationNumbers: {autoNumber: "AMS"},
-               MultLineWidth: "85%",
-               TagSide: "right",
-               TagIndent: ".8em"
-             }
-});
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">百科知识</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org2b8fdd2">1. 百科理工</a>
+<li><a href="#org33ca4e3">1. 百科理工</a>
 <ul>
-<li><a href="#org6e68ffb">1.1. GPS</a>
+<li><a href="#org25bde20">1.1. GPS</a>
 <ul>
-<li><a href="#org8a2b5d8">1.1.1. GPS组成</a>
+<li><a href="#org4edf325">1.1.1. GPS组成</a>
 <ul>
-<li><a href="#org26acee8">1.1.1.1. 空间段</a></li>
-<li><a href="#org9521292">1.1.1.2. 控制段</a></li>
-<li><a href="#org4553e7a">1.1.1.3. 用户段</a></li>
-<li><a href="#org971e845">1.1.1.4. GPS通信信号</a></li>
+<li><a href="#org342b08b">1.1.1.1. 空间段</a></li>
+<li><a href="#orgf84ee02">1.1.1.2. 控制段</a></li>
+<li><a href="#org4c3ee97">1.1.1.3. 用户段</a></li>
+<li><a href="#org1cf81a8">1.1.1.4. GPS通信信号</a></li>
 </ul>
 </li>
-<li><a href="#orge31f23e">1.1.2. 时间系统</a></li>
-<li><a href="#org0f6c3a5">1.1.3. GPS定位</a>
+<li><a href="#org156c8c5">1.1.2. 时间系统</a></li>
+<li><a href="#orgfd240fc">1.1.3. GPS定位</a>
 <ul>
-<li><a href="#orgf965585">1.1.3.1. 定位原理</a></li>
-<li><a href="#org6d7bb0d">1.1.3.2. 定位精度影响</a></li>
-<li><a href="#orgb5f074a">1.1.3.3. 首次定位时间</a></li>
-<li><a href="#org24718dd">1.1.3.4. AGPS</a></li>
-<li><a href="#org049f433">1.1.3.5. 网络定位</a></li>
+<li><a href="#orga546c8c">1.1.3.1. 定位原理</a></li>
+<li><a href="#orgd8c07e8">1.1.3.2. 定位精度影响</a></li>
+<li><a href="#orge7d7d8b">1.1.3.3. 首次定位时间</a></li>
+<li><a href="#orgf2f8643">1.1.3.4. AGPS</a></li>
+<li><a href="#org30063d1">1.1.3.5. 网络定位</a></li>
 </ul>
 </li>
-<li><a href="#org77f176a">1.1.4. 经纬度转换</a></li>
-<li><a href="#org3e57d38">1.1.5. 经纬度转换米</a></li>
-<li><a href="#org5fa11b2">1.1.6. 任意两点的经纬度计算两点距离</a></li>
+<li><a href="#orge5e5c11">1.1.4. 经纬度转换</a></li>
+<li><a href="#orgeeaa945">1.1.5. 经纬度转换米</a></li>
+<li><a href="#org8cb9287">1.1.6. 任意两点的经纬度计算两点距离</a></li>
 </ul>
 </li>
-<li><a href="#orgcd40297">1.2. 汽车</a>
+<li><a href="#org48e87f4">1.2. 汽车</a>
 <ul>
-<li><a href="#org5e1cefd">1.2.1. 概念</a></li>
+<li><a href="#orgafc439d">1.2.1. 概念</a></li>
 </ul>
 </li>
-<li><a href="#orge6ed83e">1.3. 跑鞋</a>
+<li><a href="#org986e27d">1.3. 跑鞋</a>
 <ul>
-<li><a href="#orge0aefb6">1.3.1. 鞋底结构</a>
+<li><a href="#org3ece353">1.3.1. 鞋底结构</a>
 <ul>
-<li><a href="#orge2855b9">1.3.1.1. 外底</a></li>
-<li><a href="#orgc47ce5b">1.3.1.2. 中底</a></li>
-<li><a href="#org0729e0a">1.3.1.3. 内底</a></li>
+<li><a href="#orge1f0a2c">1.3.1.1. 外底</a></li>
+<li><a href="#org1b42069">1.3.1.2. 中底</a></li>
+<li><a href="#orgc8d9316">1.3.1.3. 内底</a></li>
 </ul>
 </li>
-<li><a href="#org40f7683">1.3.2. 数据项</a>
+<li><a href="#orgb7b736c">1.3.2. 数据项</a>
 <ul>
-<li><a href="#org771e9ae">1.3.2.1. 最大垂直力</a></li>
-<li><a href="#orgd0a54b5">1.3.2.2. 加载率</a></li>
-<li><a href="#orge5417ee">1.3.2.3. 足底压强</a></li>
-<li><a href="#orgde76f05">1.3.2.4. 能量回弹</a></li>
+<li><a href="#org9583942">1.3.2.1. 最大垂直力</a></li>
+<li><a href="#org967a798">1.3.2.2. 加载率</a></li>
+<li><a href="#org16ff6f6">1.3.2.3. 足底压强</a></li>
+<li><a href="#org72c1138">1.3.2.4. 能量回弹</a></li>
 </ul>
 </li>
-<li><a href="#orgb264293">1.3.3. 观点</a></li>
+<li><a href="#org93876c9">1.3.3. 观点</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org5e0a5f9">2. 百科经济</a>
+<li><a href="#orgb10bd91">2. 百科经济</a>
 <ul>
-<li><a href="#org6330cb5">2.1. 基本概念</a></li>
+<li><a href="#org4f4f719">2.1. 基本概念</a></li>
 </ul>
 </li>
 </ul>
@@ -323,17 +300,17 @@ for the JavaScript code in this tag.
 <h2>List of Tables</h2>
 <div id="text-list-of-tables">
 <ul>
-<li><a href="#org6fe0c4d"><span class="table-number">Table 1:</span> 导航电文内容</a></li>
+<li><a href="#org6c7c104"><span class="table-number">Table 1:</span> 导航电文内容</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2b8fdd2" class="outline-2">
-<h2 id="org2b8fdd2"><span class="section-number-2">1</span> 百科理工</h2>
+<div id="outline-container-org33ca4e3" class="outline-2">
+<h2 id="org33ca4e3"><span class="section-number-2">1.</span> 百科理工</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org6e68ffb" class="outline-3">
-<h3 id="org6e68ffb"><span class="section-number-3">1.1</span> GPS</h3>
+<div id="outline-container-org25bde20" class="outline-3">
+<h3 id="org25bde20"><span class="section-number-3">1.1.</span> GPS</h3>
 <div class="outline-text-3" id="text-1-1">
 <ul class="org-ul">
 <li>地球经纬线：地轴是一根通过地球南北极和地球中心的假想线，在地球中腰画一个与地轴垂直的大圆圈，使圆圈的每个点都和南北极的
@@ -357,20 +334,20 @@ for the JavaScript code in this tag.
 <li>历书：包含卫星的位置等信息；</li>
 </ul>
 </div>
-<div id="outline-container-org8a2b5d8" class="outline-4">
-<h4 id="org8a2b5d8"><span class="section-number-4">1.1.1</span> GPS组成</h4>
+<div id="outline-container-org4edf325" class="outline-4">
+<h4 id="org4edf325"><span class="section-number-4">1.1.1.</span> GPS组成</h4>
 <div class="outline-text-4" id="text-1-1-1">
 </div>
-<div id="outline-container-org26acee8" class="outline-5">
-<h5 id="org26acee8"><span class="section-number-5">1.1.1.1</span> 空间段</h5>
+<div id="outline-container-org342b08b" class="outline-5">
+<h5 id="org342b08b"><span class="section-number-5">1.1.1.1.</span> 空间段</h5>
 <div class="outline-text-5" id="text-1-1-1-1">
 <p>
 空间段由GPS卫星组成；
 </p>
 </div>
 </div>
-<div id="outline-container-org9521292" class="outline-5">
-<h5 id="org9521292"><span class="section-number-5">1.1.1.2</span> 控制段</h5>
+<div id="outline-container-orgf84ee02" class="outline-5">
+<h5 id="orgf84ee02"><span class="section-number-5">1.1.1.2.</span> 控制段</h5>
 <div class="outline-text-5" id="text-1-1-1-2">
 <p>
 控制段用来控制和监视GPS的运行，控制段包含
@@ -383,8 +360,8 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-org4553e7a" class="outline-5">
-<h5 id="org4553e7a"><span class="section-number-5">1.1.1.3</span> 用户段</h5>
+<div id="outline-container-org4c3ee97" class="outline-5">
+<h5 id="org4c3ee97"><span class="section-number-5">1.1.1.3.</span> 用户段</h5>
 <div class="outline-text-5" id="text-1-1-1-3">
 <ul class="org-ul">
 <li>民用用户：提供标准定位服务；</li>
@@ -392,8 +369,8 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-<div id="outline-container-org971e845" class="outline-5">
-<h5 id="org971e845"><span class="section-number-5">1.1.1.4</span> GPS通信信号</h5>
+<div id="outline-container-org1cf81a8" class="outline-5">
+<h5 id="org1cf81a8"><span class="section-number-5">1.1.1.4.</span> GPS通信信号</h5>
 <div class="outline-text-5" id="text-1-1-1-4">
 <p>
 GPS通信频率都位于L频段，共有3个频率；
@@ -420,7 +397,7 @@ D码：也叫导航电文，星历和时间信息就封装在导航电文中，�
 以得到更新，共37500bit=4688byte=4.7k，所以传输完需要12.5分钟, 导航电文帧数据内容见表  
 \ref{tbl-dcode}；  
 </p>
-<table id="org6fe0c4d" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org6c7c104" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 1:</span> 导航电文内容</caption>
 
 <colgroup>
@@ -501,8 +478,8 @@ D码：也叫导航电文，星历和时间信息就封装在导航电文中，�
 </div>
 </div>
 
-<div id="outline-container-orge31f23e" class="outline-4">
-<h4 id="orge31f23e"><span class="section-number-4">1.1.2</span> 时间系统</h4>
+<div id="outline-container-org156c8c5" class="outline-4">
+<h4 id="org156c8c5"><span class="section-number-4">1.1.2.</span> 时间系统</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <ul class="org-ul">
 <li>国际原子时钟：IAT，international atomic time；</li>
@@ -512,16 +489,16 @@ D码：也叫导航电文，星历和时间信息就封装在导航电文中，�
 </ul>
 </div>
 </div>
-<div id="outline-container-org0f6c3a5" class="outline-4">
-<h4 id="org0f6c3a5"><span class="section-number-4">1.1.3</span> GPS定位</h4>
+<div id="outline-container-orgfd240fc" class="outline-4">
+<h4 id="orgfd240fc"><span class="section-number-4">1.1.3.</span> GPS定位</h4>
 <div class="outline-text-4" id="text-1-1-3">
 <p>
 纯粹利用GPS卫星做的定位，叫autonomous模式定位，为了加快定位速度，还可以采用AGPS模式定位，在没有卫星信号时还可以采用移动
 蜂窝定位；
 </p>
 </div>
-<div id="outline-container-orgf965585" class="outline-5">
-<h5 id="orgf965585"><span class="section-number-5">1.1.3.1</span> 定位原理</h5>
+<div id="outline-container-orga546c8c" class="outline-5">
+<h5 id="orga546c8c"><span class="section-number-5">1.1.3.1.</span> 定位原理</h5>
 <div class="outline-text-5" id="text-1-1-3-1">
 <ul class="org-ul">
 <li>定位：GPS定位时，需要求出接收器的笛卡尔坐标系下的坐标(x, y, z), 已知的东西有如下，但是卫星的时间是精确的同步的，而接收
@@ -538,8 +515,8 @@ D码：也叫导航电文，星历和时间信息就封装在导航电文中，�
 </ul>
 </div>
 </div>
-<div id="outline-container-org6d7bb0d" class="outline-5">
-<h5 id="org6d7bb0d"><span class="section-number-5">1.1.3.2</span> 定位精度影响</h5>
+<div id="outline-container-orgd8c07e8" class="outline-5">
+<h5 id="orgd8c07e8"><span class="section-number-5">1.1.3.2.</span> 定位精度影响</h5>
 <div class="outline-text-5" id="text-1-1-3-2">
 <p>
 定位精度的影响因素有
@@ -553,8 +530,8 @@ D码：也叫导航电文，星历和时间信息就封装在导航电文中，�
 </ol>
 </div>
 </div>
-<div id="outline-container-orgb5f074a" class="outline-5">
-<h5 id="orgb5f074a"><span class="section-number-5">1.1.3.3</span> 首次定位时间</h5>
+<div id="outline-container-orge7d7d8b" class="outline-5">
+<h5 id="orge7d7d8b"><span class="section-number-5">1.1.3.3.</span> 首次定位时间</h5>
 <div class="outline-text-5" id="text-1-1-3-3">
 <p>
 首次定位时间(TTFF), time to first fix, 描述的是GPS接收器需要花费多长时间来捕获GPS卫星信号并计算出自己的位置，因启动模式
@@ -571,8 +548,8 @@ D码：也叫导航电文，星历和时间信息就封装在导航电文中，�
 </ul>
 </div>
 </div>
-<div id="outline-container-org24718dd" class="outline-5">
-<h5 id="org24718dd"><span class="section-number-5">1.1.3.4</span> AGPS</h5>
+<div id="outline-container-orgf2f8643" class="outline-5">
+<h5 id="orgf2f8643"><span class="section-number-5">1.1.3.4.</span> AGPS</h5>
 <div class="outline-text-5" id="text-1-1-3-4">
 <p>
 AGPS就是通过本地网络下载星历数据，从而减小等待时间；AGPS需要在全球建造一个用于收集GPS卫星数据的参考网络，对卫星做跟踪，
@@ -588,8 +565,8 @@ AGPS就是通过本地网络下载星历数据，从而减小等待时间；AGPS
 </ol>
 </div>
 </div>
-<div id="outline-container-org049f433" class="outline-5">
-<h5 id="org049f433"><span class="section-number-5">1.1.3.5</span> 网络定位</h5>
+<div id="outline-container-org30063d1" class="outline-5">
+<h5 id="org30063d1"><span class="section-number-5">1.1.3.5.</span> 网络定位</h5>
 <div class="outline-text-5" id="text-1-1-3-5">
 <p>
 某地区的移动通信基站或者无线网络AP的位置信息都已经事先获取并保存在相关服务器上，当手机使用网络定位时，手机首先向服务器查询
@@ -598,8 +575,8 @@ AGPS就是通过本地网络下载星历数据，从而减小等待时间；AGPS
 </div>
 </div>
 </div>
-<div id="outline-container-org77f176a" class="outline-4">
-<h4 id="org77f176a"><span class="section-number-4">1.1.4</span> 经纬度转换</h4>
+<div id="outline-container-orge5e5c11" class="outline-4">
+<h4 id="orge5e5c11"><span class="section-number-4">1.1.4.</span> 经纬度转换</h4>
 <div class="outline-text-4" id="text-1-1-4">
 <ul class="org-ul">
 <li>度转度分秒
@@ -611,8 +588,8 @@ AGPS就是通过本地网络下载星历数据，从而减小等待时间；AGPS
 </ul>
 </div>
 </div>
-<div id="outline-container-org3e57d38" class="outline-4">
-<h4 id="org3e57d38"><span class="section-number-4">1.1.5</span> 经纬度转换米</h4>
+<div id="outline-container-orgeeaa945" class="outline-4">
+<h4 id="orgeeaa945"><span class="section-number-4">1.1.5.</span> 经纬度转换米</h4>
 <div class="outline-text-4" id="text-1-1-5">
 <ul class="org-ul">
 <li>子午线总长度大约L=40008km；</li>
@@ -625,8 +602,8 @@ AGPS就是通过本地网络下载星历数据，从而减小等待时间；AGPS
 </ul>
 </div>
 </div>
-<div id="outline-container-org5fa11b2" class="outline-4">
-<h4 id="org5fa11b2"><span class="section-number-4">1.1.6</span> 任意两点的经纬度计算两点距离</h4>
+<div id="outline-container-org8cb9287" class="outline-4">
+<h4 id="org8cb9287"><span class="section-number-4">1.1.6.</span> 任意两点的经纬度计算两点距离</h4>
 <div class="outline-text-4" id="text-1-1-6">
 <p>
 地球是一个近乎标准的椭球体，它的赤道半径为6378.140千米，极半径为 6356.755千米，平均半径6371.004千米。如果我们假设地球是
@@ -697,12 +674,12 @@ Distance = R*Arccos(C) = 6371.004*Arccos(C) kilometer = 0.621371192*6371.004*Arc
 </div>
 </div>
 
-<div id="outline-container-orgcd40297" class="outline-3">
-<h3 id="orgcd40297"><span class="section-number-3">1.2</span> 汽车</h3>
+<div id="outline-container-org48e87f4" class="outline-3">
+<h3 id="org48e87f4"><span class="section-number-3">1.2.</span> 汽车</h3>
 <div class="outline-text-3" id="text-1-2">
 </div>
-<div id="outline-container-org5e1cefd" class="outline-4">
-<h4 id="org5e1cefd"><span class="section-number-4">1.2.1</span> 概念</h4>
+<div id="outline-container-orgafc439d" class="outline-4">
+<h4 id="orgafc439d"><span class="section-number-4">1.2.1.</span> 概念</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <ul class="org-ul">
 <li>四冲程：
@@ -724,24 +701,24 @@ Distance = R*Arccos(C) = 6371.004*Arccos(C) kilometer = 0.621371192*6371.004*Arc
 </div>
 </div>
 </div>
-<div id="outline-container-orge6ed83e" class="outline-3">
-<h3 id="orge6ed83e"><span class="section-number-3">1.3</span> 跑鞋</h3>
+<div id="outline-container-org986e27d" class="outline-3">
+<h3 id="org986e27d"><span class="section-number-3">1.3.</span> 跑鞋</h3>
 <div class="outline-text-3" id="text-1-3">
 </div>
-<div id="outline-container-orge0aefb6" class="outline-4">
-<h4 id="orge0aefb6"><span class="section-number-4">1.3.1</span> 鞋底结构</h4>
+<div id="outline-container-org3ece353" class="outline-4">
+<h4 id="org3ece353"><span class="section-number-4">1.3.1.</span> 鞋底结构</h4>
 <div class="outline-text-4" id="text-1-3-1">
 </div>
-<div id="outline-container-orge2855b9" class="outline-5">
-<h5 id="orge2855b9"><span class="section-number-5">1.3.1.1</span> 外底</h5>
+<div id="outline-container-orge1f0a2c" class="outline-5">
+<h5 id="orge1f0a2c"><span class="section-number-5">1.3.1.1.</span> 外底</h5>
 <div class="outline-text-5" id="text-1-3-1-1">
 <p>
 功能是增加地面与运动鞋之间的摩擦力。
 </p>
 </div>
 </div>
-<div id="outline-container-orgc47ce5b" class="outline-5">
-<h5 id="orgc47ce5b"><span class="section-number-5">1.3.1.2</span> 中底</h5>
+<div id="outline-container-org1b42069" class="outline-5">
+<h5 id="org1b42069"><span class="section-number-5">1.3.1.2.</span> 中底</h5>
 <div class="outline-text-5" id="text-1-3-1-2">
 <ul class="org-ul">
 <li>功能：位于外底和内底之间，是运动鞋缓冲性能以及能量回弹的主要来源。</li>
@@ -753,8 +730,8 @@ Distance = R*Arccos(C) = 6371.004*Arccos(C) kilometer = 0.621371192*6371.004*Arc
 </ul>
 </div>
 </div>
-<div id="outline-container-org0729e0a" class="outline-5">
-<h5 id="org0729e0a"><span class="section-number-5">1.3.1.3</span> 内底</h5>
+<div id="outline-container-orgc8d9316" class="outline-5">
+<h5 id="orgc8d9316"><span class="section-number-5">1.3.1.3.</span> 内底</h5>
 <div class="outline-text-5" id="text-1-3-1-3">
 <p>
 功能是提供舒适性。
@@ -762,12 +739,12 @@ Distance = R*Arccos(C) = 6371.004*Arccos(C) kilometer = 0.621371192*6371.004*Arc
 </div>
 </div>
 </div>
-<div id="outline-container-org40f7683" class="outline-4">
-<h4 id="org40f7683"><span class="section-number-4">1.3.2</span> 数据项</h4>
+<div id="outline-container-orgb7b736c" class="outline-4">
+<h4 id="orgb7b736c"><span class="section-number-4">1.3.2.</span> 数据项</h4>
 <div class="outline-text-4" id="text-1-3-2">
 </div>
-<div id="outline-container-org771e9ae" class="outline-5">
-<h5 id="org771e9ae"><span class="section-number-5">1.3.2.1</span> 最大垂直力</h5>
+<div id="outline-container-org9583942" class="outline-5">
+<h5 id="org9583942"><span class="section-number-5">1.3.2.1.</span> 最大垂直力</h5>
 <div class="outline-text-5" id="text-1-3-2-1">
 <p>
 最大垂直力，是运动学研究的物理用词，简化来说，慢跑时地面作用于垂直方向碰撞
@@ -778,8 +755,8 @@ Distance = R*Arccos(C) = 6371.004*Arccos(C) kilometer = 0.621371192*6371.004*Arc
 </p>
 </div>
 </div>
-<div id="outline-container-orgd0a54b5" class="outline-5">
-<h5 id="orgd0a54b5"><span class="section-number-5">1.3.2.2</span> 加载率</h5>
+<div id="outline-container-org967a798" class="outline-5">
+<h5 id="org967a798"><span class="section-number-5">1.3.2.2.</span> 加载率</h5>
 <div class="outline-text-5" id="text-1-3-2-2">
 <p>
 平均加载率是指跑步每一次脚与地面接触时，单位时间内身体受到的总的作用力，通
@@ -788,8 +765,8 @@ Distance = R*Arccos(C) = 6371.004*Arccos(C) kilometer = 0.621371192*6371.004*Arc
 </p>
 </div>
 </div>
-<div id="outline-container-orge5417ee" class="outline-5">
-<h5 id="orge5417ee"><span class="section-number-5">1.3.2.3</span> 足底压强</h5>
+<div id="outline-container-org16ff6f6" class="outline-5">
+<h5 id="org16ff6f6"><span class="section-number-5">1.3.2.3.</span> 足底压强</h5>
 <div class="outline-text-5" id="text-1-3-2-3">
 <p>
 足底压强，反映出人在运动时脚受到作用力在不同区域的分布情况。如果在相同的运
@@ -815,8 +792,8 @@ Distance = R*Arccos(C) = 6371.004*Arccos(C) kilometer = 0.621371192*6371.004*Arc
 </ul>
 </div>
 </div>
-<div id="outline-container-orgde76f05" class="outline-5">
-<h5 id="orgde76f05"><span class="section-number-5">1.3.2.4</span> 能量回弹</h5>
+<div id="outline-container-org72c1138" class="outline-5">
+<h5 id="org72c1138"><span class="section-number-5">1.3.2.4.</span> 能量回弹</h5>
 <div class="outline-text-5" id="text-1-3-2-4">
 <p>
 可以增加跳高高度和加快跑步速度，回弹的能量主要来自鞋受到冲击后鞋底受到挤压
@@ -826,8 +803,8 @@ Distance = R*Arccos(C) = 6371.004*Arccos(C) kilometer = 0.621371192*6371.004*Arc
 </div>
 </div>
 </div>
-<div id="outline-container-orgb264293" class="outline-4">
-<h4 id="orgb264293"><span class="section-number-4">1.3.3</span> 观点</h4>
+<div id="outline-container-org93876c9" class="outline-4">
+<h4 id="org93876c9"><span class="section-number-4">1.3.3.</span> 观点</h4>
 <div class="outline-text-4" id="text-1-3-3">
 <ul class="org-ul">
 <li>磨损与距离：规律运动跑者，跑500～800公里就得换鞋，一双跑鞋能穿多久？目
@@ -852,12 +829,12 @@ Distance = R*Arccos(C) = 6371.004*Arccos(C) kilometer = 0.621371192*6371.004*Arc
 </div>
 </div>
 </div>
-<div id="outline-container-org5e0a5f9" class="outline-2">
-<h2 id="org5e0a5f9"><span class="section-number-2">2</span> 百科经济</h2>
+<div id="outline-container-orgb10bd91" class="outline-2">
+<h2 id="orgb10bd91"><span class="section-number-2">2.</span> 百科经济</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org6330cb5" class="outline-3">
-<h3 id="org6330cb5"><span class="section-number-3">2.1</span> 基本概念</h3>
+<div id="outline-container-org4f4f719" class="outline-3">
+<h3 id="org4f4f719"><span class="section-number-3">2.1.</span> 基本概念</h3>
 <div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li>利率：储蓄存款利率由国家统一规定，人民银行挂牌公告。利率也称为利息率，是在一定日期内利息与本金的比率，一般分为年利率、
@@ -914,8 +891,8 @@ Distance = R*Arccos(C) = 6371.004*Arccos(C) kilometer = 0.621371192*6371.004*Arc
 <div id="postamble" class="status">
 <p class="author">Author: 比克曼</p>
 <p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
-<p class="date">Created: 2020-06-05 周五 00:04</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+<p class="date">Created: 2026-07-12 日 12:30</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

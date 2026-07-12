@@ -3,14 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-06-05 周五 00:05 -->
+<!-- 2026-07-12 日 12:30 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>协议</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="比克曼" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -31,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -40,22 +41,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -161,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -177,186 +191,149 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="css/org-manual.css"/>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2018 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
 </script>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        displayAlign: "center",
-        displayIndent: "0em",
 
-        "HTML-CSS": { scale: 100,
-                        linebreaks: { automatic: "false" },
-                        webFont: "TeX"
-                       },
-        SVG: {scale: 100,
-              linebreaks: { automatic: "false" },
-              font: "TeX"},
-        NativeMML: {scale: 100},
-        TeX: { equationNumbers: {autoNumber: "AMS"},
-               MultLineWidth: "85%",
-               TagSide: "right",
-               TagIndent: ".8em"
-             }
-});
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">协议</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org3d9a898">1. 大族协议</a>
+<li><a href="#orgbc02dfd">1. 大族协议</a>
 <ul>
-<li><a href="#orgc52ead4">1.1. bt</a></li>
-<li><a href="#orgc2c8e26">1.2. ble</a>
+<li><a href="#org992cad1">1.1. bt</a></li>
+<li><a href="#orged64288">1.2. ble</a>
 <ul>
-<li><a href="#org8dbc76a">1.2.1. 器件</a></li>
-<li><a href="#org6f732c5">1.2.2. controller物理层</a>
+<li><a href="#orge2aab98">1.2.1. 器件</a></li>
+<li><a href="#orgc9fc6ee">1.2.2. controller物理层</a>
 <ul>
-<li><a href="#org65f69ab">1.2.2.1. 频率带宽</a></li>
-<li><a href="#org3596eef">1.2.2.2. 接收灵敏度</a></li>
-<li><a href="#org2ec8720">1.2.2.3. 距离</a></li>
+<li><a href="#org15d861e">1.2.2.1. 频率带宽</a></li>
+<li><a href="#org71810f2">1.2.2.2. 接收灵敏度</a></li>
+<li><a href="#org9d2b0b6">1.2.2.3. 距离</a></li>
 </ul>
 </li>
-<li><a href="#org2910a8f">1.2.3. controller链路层</a>
+<li><a href="#org6268385">1.2.3. controller链路层</a>
 <ul>
-<li><a href="#org9da49b4">1.2.3.1. standby状态</a></li>
-<li><a href="#org8588243">1.2.3.2. advertising状态</a></li>
-<li><a href="#orgf7b9483">1.2.3.3. scanning状态</a></li>
-<li><a href="#org8c5a09b">1.2.3.4. initiating状态</a></li>
-<li><a href="#org497a343">1.2.3.5. connecting状态</a></li>
-<li><a href="#orgeda8e39">1.2.3.6. master</a></li>
-<li><a href="#org77a8f92">1.2.3.7. slave</a></li>
-<li><a href="#orgfb19184">1.2.3.8. 包(package)</a></li>
-<li><a href="#org0b6ddf9">1.2.3.9. 配对绑定(pairing bonding)</a></li>
+<li><a href="#org9ae8bca">1.2.3.1. standby状态</a></li>
+<li><a href="#org4085220">1.2.3.2. advertising状态</a></li>
+<li><a href="#orgc9f8e03">1.2.3.3. scanning状态</a></li>
+<li><a href="#org463d358">1.2.3.4. initiating状态</a></li>
+<li><a href="#org039603d">1.2.3.5. connecting状态</a></li>
+<li><a href="#orge437669">1.2.3.6. master</a></li>
+<li><a href="#org94ed4a2">1.2.3.7. slave</a></li>
+<li><a href="#org37f3698">1.2.3.8. 包(package)</a></li>
+<li><a href="#orgd019f1b">1.2.3.9. 配对绑定(pairing bonding)</a></li>
 </ul>
 </li>
-<li><a href="#orgec62abb">1.2.4. controller HCI层</a></li>
-<li><a href="#orgdbff419">1.2.5. host l2cap层</a></li>
-<li><a href="#org5de7c4e">1.2.6. attribute</a></li>
-<li><a href="#org7f6a8a4">1.2.7. secure</a></li>
-<li><a href="#org71184fa">1.2.8. android</a>
+<li><a href="#orgbcf8161">1.2.4. controller HCI层</a></li>
+<li><a href="#org33e9846">1.2.5. host l2cap层</a></li>
+<li><a href="#orgb729f7e">1.2.6. attribute</a></li>
+<li><a href="#org05bbbf1">1.2.7. secure</a></li>
+<li><a href="#orga7ffcf2">1.2.8. android</a>
 <ul>
-<li><a href="#org63353bd">1.2.8.1. android-ble梳理</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#org7e4b62d">1.3. ant</a></li>
-<li><a href="#org99dc980">1.4. nfc</a>
-<ul>
-<li><a href="#org6679ae0">1.4.1. 特点</a></li>
-<li><a href="#orgd002b9a">1.4.2. 区别RFID</a></li>
-<li><a href="#orgd4970b1">1.4.3. 读取器(reader)</a></li>
-<li><a href="#org814e69f">1.4.4. 感应器(rf tag)</a>
-<ul>
-<li><a href="#org862fc5e">1.4.4.1. 分类</a></li>
-</ul>
-</li>
-<li><a href="#org5136e78">1.4.5. 天线(antenna)</a>
-<ul>
-<li><a href="#org61efe79">1.4.5.1. 分类</a></li>
-</ul>
-</li>
-<li><a href="#org879d7e4">1.4.6. 通信模式</a></li>
-<li><a href="#orgba00291">1.4.7. 应用模式</a></li>
-<li><a href="#orgc9a0e9d">1.4.8. 协议</a>
-<ul>
-<li><a href="#orgb5a5416">1.4.8.1. 射频层(rf layer)</a></li>
-<li><a href="#org27a13b7">1.4.8.2. 模式切换层(mode switch)</a></li>
-<li><a href="#org96abb2d">1.4.8.3. nfc IP1</a></li>
-<li><a href="#orgcc2115c">1.4.8.4. 逻辑链路控制协议(LLCP)</a></li>
-<li><a href="#org9f41f8a">1.4.8.5. nfc forum protocol binding</a></li>
-<li><a href="#orgc1dbd58">1.4.8.6. tag type</a></li>
-<li><a href="#orgdf301c1">1.4.8.7. ndef</a></li>
-<li><a href="#org6a0c092">1.4.8.8. rtd</a></li>
-<li><a href="#orgf11559f">1.4.8.9. card emulation</a></li>
+<li><a href="#org954f888">1.2.8.1. android-ble梳理</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org3070a27">1.5. usb</a>
+<li><a href="#org02124fd">1.3. ant</a></li>
+<li><a href="#org5b2cdb7">1.4. nfc</a>
 <ul>
-<li><a href="#orgf7593f1">1.5.1. usb枚举过程</a></li>
+<li><a href="#org0b15261">1.4.1. 特点</a></li>
+<li><a href="#orgfd7887b">1.4.2. 区别RFID</a></li>
+<li><a href="#orgb54e5ae">1.4.3. 读取器(reader)</a></li>
+<li><a href="#orge2fdc00">1.4.4. 感应器(rf tag)</a>
+<ul>
+<li><a href="#orgf8e8c20">1.4.4.1. 分类</a></li>
+</ul>
+</li>
+<li><a href="#org1cfc4af">1.4.5. 天线(antenna)</a>
+<ul>
+<li><a href="#orgd3bbfb5">1.4.5.1. 分类</a></li>
+</ul>
+</li>
+<li><a href="#org16d353d">1.4.6. 通信模式</a></li>
+<li><a href="#orgf26f7c9">1.4.7. 应用模式</a></li>
+<li><a href="#orgcf8324d">1.4.8. 协议</a>
+<ul>
+<li><a href="#orgde16cf2">1.4.8.1. 射频层(rf layer)</a></li>
+<li><a href="#orge89aaea">1.4.8.2. 模式切换层(mode switch)</a></li>
+<li><a href="#orgd6e7ff8">1.4.8.3. nfc IP1</a></li>
+<li><a href="#org8fd93bf">1.4.8.4. 逻辑链路控制协议(LLCP)</a></li>
+<li><a href="#orgc18aca5">1.4.8.5. nfc forum protocol binding</a></li>
+<li><a href="#orgf38e549">1.4.8.6. tag type</a></li>
+<li><a href="#orgec0edbd">1.4.8.7. ndef</a></li>
+<li><a href="#orgd92a1ce">1.4.8.8. rtd</a></li>
+<li><a href="#org39eff59">1.4.8.9. card emulation</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org689d893">2. 小族协议</a>
+<li><a href="#orgd05d0bc">1.5. usb</a>
 <ul>
-<li><a href="#org6b2bf16">2.1. SPI</a></li>
-<li><a href="#orgba1ffc0">2.2. UART</a></li>
-<li><a href="#org6418806">2.3. IIC</a>
-<ul>
-<li><a href="#orgf3c7027">2.3.1. 概念</a></li>
-<li><a href="#org03a3fc7">2.3.2. 信号</a>
-<ul>
-<li><a href="#org104e47a">2.3.2.1. 信号类型</a></li>
-<li><a href="#orgc69f10b">2.3.2.2. 信号时间</a></li>
+<li><a href="#org5237b4a">1.5.1. usb枚举过程</a></li>
 </ul>
 </li>
-<li><a href="#org6a71419">2.3.3. 机制</a>
+</ul>
+</li>
+<li><a href="#orgc619245">2. 小族协议</a>
 <ul>
-<li><a href="#org0a70353">2.3.3.1. 同步</a></li>
-<li><a href="#orgf3f4fb3">2.3.3.2. 仲裁</a></li>
+<li><a href="#orgaff1da6">2.1. SPI</a></li>
+<li><a href="#orgf1d4b53">2.2. UART</a></li>
+<li><a href="#org08425f7">2.3. IIC</a>
+<ul>
+<li><a href="#org140948c">2.3.1. 概念</a></li>
+<li><a href="#org4f517df">2.3.2. 信号</a>
+<ul>
+<li><a href="#orgb15fd5e">2.3.2.1. 信号类型</a></li>
+<li><a href="#org744edbf">2.3.2.2. 信号时间</a></li>
 </ul>
 </li>
-<li><a href="#org4e31ae5">2.3.4. 流程</a></li>
+<li><a href="#orga35fa67">2.3.3. 机制</a>
+<ul>
+<li><a href="#orgbba1355">2.3.3.1. 同步</a></li>
+<li><a href="#org3b58b4a">2.3.3.2. 仲裁</a></li>
 </ul>
 </li>
-<li><a href="#org51dbf99">2.4. 7816</a></li>
+<li><a href="#org588275f">2.3.4. 流程</a></li>
+</ul>
+</li>
+<li><a href="#org2926cde">2.4. 7816</a></li>
 </ul>
 </li>
 </ul>
@@ -366,44 +343,44 @@ for the JavaScript code in this tag.
 <h2>List of Tables</h2>
 <div id="text-list-of-tables">
 <ul>
-<li><a href="#org9e560d3"><span class="table-number">Table 1:</span> 路径损耗和距离的关系</a></li>
-<li><a href="#orgbf8890d"><span class="table-number">Table 2:</span> 配对模式</a></li>
-<li><a href="#org7cbaee6"><span class="table-number">Table 3:</span> BLE的UUID分类</a></li>
-<li><a href="#org852c518"><span class="table-number">Table 4:</span> 最小的attribute数据库</a></li>
-<li><a href="#org51919a2"><span class="table-number">Table 5:</span> Gatt操作对应表</a></li>
-<li><a href="#orgd4f9808"><span class="table-number">Table 6:</span> nfc tag对比表</a></li>
+<li><a href="#org15dcc99"><span class="table-number">Table 1:</span> 路径损耗和距离的关系</a></li>
+<li><a href="#org361f6f7"><span class="table-number">Table 2:</span> 配对模式</a></li>
+<li><a href="#org0fc5c32"><span class="table-number">Table 3:</span> BLE的UUID分类</a></li>
+<li><a href="#orga3f2b84"><span class="table-number">Table 4:</span> 最小的attribute数据库</a></li>
+<li><a href="#org9a75bd3"><span class="table-number">Table 5:</span> Gatt操作对应表</a></li>
+<li><a href="#orgc17fae3"><span class="table-number">Table 6:</span> nfc tag对比表</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org3d9a898" class="outline-2">
-<h2 id="org3d9a898"><span class="section-number-2">1</span> 大族协议</h2>
+<div id="outline-container-orgbc02dfd" class="outline-2">
+<h2 id="orgbc02dfd"><span class="section-number-2">1.</span> 大族协议</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgc52ead4" class="outline-3">
-<h3 id="orgc52ead4"><span class="section-number-3">1.1</span> bt</h3>
+<div id="outline-container-org992cad1" class="outline-3">
+<h3 id="org992cad1"><span class="section-number-3">1.1.</span> bt</h3>
 </div>
-<div id="outline-container-orgc2c8e26" class="outline-3">
-<h3 id="orgc2c8e26"><span class="section-number-3">1.2</span> ble</h3>
+<div id="outline-container-orged64288" class="outline-3">
+<h3 id="orged64288"><span class="section-number-3">1.2.</span> ble</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 BLE采用星型拓扑结构，1个master最多连接3个slave，1个slave只能有1个master
 </p>
 </div>
-<div id="outline-container-org8dbc76a" class="outline-4">
-<h4 id="org8dbc76a"><span class="section-number-4">1.2.1</span> 器件</h4>
+<div id="outline-container-orge2aab98" class="outline-4">
+<h4 id="orge2aab98"><span class="section-number-4">1.2.1.</span> 器件</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <ul class="org-ul">
 <li>晶振：一般ble芯片需要一个16MHz和32.768KHz的时钟源，16MHz的时钟源为RF收发器提供频率精度，32.768KHz的时钟源提供协议定时；</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org6f732c5" class="outline-4">
-<h4 id="org6f732c5"><span class="section-number-4">1.2.2</span> controller物理层</h4>
+<div id="outline-container-orgc9fc6ee" class="outline-4">
+<h4 id="orgc9fc6ee"><span class="section-number-4">1.2.2.</span> controller物理层</h4>
 <div class="outline-text-4" id="text-1-2-2">
 </div>
-<div id="outline-container-org65f69ab" class="outline-5">
-<h5 id="org65f69ab"><span class="section-number-5">1.2.2.1</span> 频率带宽</h5>
+<div id="outline-container-org15d861e" class="outline-5">
+<h5 id="org15d861e"><span class="section-number-5">1.2.2.1.</span> 频率带宽</h5>
 <div class="outline-text-5" id="text-1-2-2-1">
 <ul class="org-ul">
 <li>BLE使用频率为2.4GHz；</li>
@@ -424,8 +401,8 @@ BLE采用星型拓扑结构，1个master最多连接3个slave，1个slave只能�
 </ul>
 </div>
 </div>
-<div id="outline-container-org3596eef" class="outline-5">
-<h5 id="org3596eef"><span class="section-number-5">1.2.2.2</span> 接收灵敏度</h5>
+<div id="outline-container-org71810f2" class="outline-5">
+<h5 id="org71810f2"><span class="section-number-5">1.2.2.2.</span> 接收灵敏度</h5>
 <div class="outline-text-5" id="text-1-2-2-2">
 <ul class="org-ul">
 <li>接收灵敏度用 dBm 来衡量，规则规定 BLE 的接收灵敏度至少为 -70dBm，也就是说必须能够接收到 0.0000001mW 的电磁波信号，大多</li>
@@ -435,8 +412,8 @@ BLE采用星型拓扑结构，1个master最多连接3个slave，1个slave只能�
 </p>
 </div>
 </div>
-<div id="outline-container-org2ec8720" class="outline-5">
-<h5 id="org2ec8720"><span class="section-number-5">1.2.2.3</span> 距离</h5>
+<div id="outline-container-org9d2b0b6" class="outline-5">
+<h5 id="org9d2b0b6"><span class="section-number-5">1.2.2.3.</span> 距离</h5>
 <div class="outline-text-5" id="text-1-2-2-3">
 <ul class="org-ul">
 <li>BLE的电磁波在空中主要的损耗来自路径损耗，经验公式：path loss = 40 + 25log（distance）, 如果发送功率为 -20dBm，接收机灵</li>
@@ -444,7 +421,7 @@ BLE采用星型拓扑结构，1个master最多连接3个slave，1个slave只能�
 <p>
 敏度为-70dBm，则路径损失为50dB，则目前两设备的距离为 2.5 米, 具体如表\ref{tbl-pathloss-distance}所示
 </p>
-<table id="org9e560d3" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org15dcc99" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 1:</span> 路径损耗和距离的关系</caption>
 
 <colgroup>
@@ -499,21 +476,21 @@ BLE采用星型拓扑结构，1个master最多连接3个slave，1个slave只能�
 </div>
 </div>
 
-<div id="outline-container-org2910a8f" class="outline-4">
-<h4 id="org2910a8f"><span class="section-number-4">1.2.3</span> controller链路层</h4>
+<div id="outline-container-org6268385" class="outline-4">
+<h4 id="org6268385"><span class="section-number-4">1.2.3.</span> controller链路层</h4>
 <div class="outline-text-4" id="text-1-2-3">
 <p>
 状态机有standby、advertising、scanning、initiating、connecting，其转换状态如图\ref{img-ll-state-matchine}
 </p>
 
-<div class="figure">
+<div id="org23e9572" class="figure">
 <p><img src="./img/img-ll-state-matchine.png" alt="img-ll-state-matchine.png" />
 </p>
 </div>
 </div>
 
-<div id="outline-container-org9da49b4" class="outline-5">
-<h5 id="org9da49b4"><span class="section-number-5">1.2.3.1</span> standby状态</h5>
+<div id="outline-container-org9ae8bca" class="outline-5">
+<h5 id="org9ae8bca"><span class="section-number-5">1.2.3.1.</span> standby状态</h5>
 <div class="outline-text-5" id="text-1-2-3-1">
 <ul class="org-ul">
 <li>使用广播通道</li>
@@ -530,8 +507,8 @@ BLE采用星型拓扑结构，1个master最多连接3个slave，1个slave只能�
 </p>
 </div>
 </div>
-<div id="outline-container-org8588243" class="outline-5">
-<h5 id="org8588243"><span class="section-number-5">1.2.3.2</span> advertising状态</h5>
+<div id="outline-container-org4085220" class="outline-5">
+<h5 id="org4085220"><span class="section-number-5">1.2.3.2.</span> advertising状态</h5>
 <div class="outline-text-5" id="text-1-2-3-2">
 <ul class="org-ul">
 <li>使用广播通道，之后设备变成slave；</li>
@@ -540,7 +517,7 @@ BLE采用星型拓扑结构，1个master最多连接3个slave，1个slave只能�
 在1次广播事件中，广播包在3个广播信道上同时发送, 如图\ref{img-adv-event}；
 </p>
 
-<div class="figure">
+<div id="org5a5331c" class="figure">
 <p><img src="./img/img-adv-event.png" alt="img-adv-event.png" />
 </p>
 </div></li>
@@ -551,7 +528,7 @@ BLE采用星型拓扑结构，1个master最多连接3个slave，1个slave只能�
 \ref{img-adv-model}, 在adv event time间，发送完adv后，将立马转到接收状态，看能否接收到SCAN<sub>REQ</sub> or CONN<sub>REQ</sub>;
 </p>
 
-<div class="figure">
+<div id="org958c9a6" class="figure">
 <p><img src="./img/img-adv-model.png" alt="img-adv-model.png" />
 </p>
 </div></li>
@@ -578,8 +555,8 @@ direct型广播包中也不能包含额外的数据，只能包含2个地址, �
 </div>
 </div>
 
-<div id="outline-container-orgf7b9483" class="outline-5">
-<h5 id="orgf7b9483"><span class="section-number-5">1.2.3.3</span> scanning状态</h5>
+<div id="outline-container-orgc9f8e03" class="outline-5">
+<h5 id="orgc9f8e03"><span class="section-number-5">1.2.3.3.</span> scanning状态</h5>
 <div class="outline-text-5" id="text-1-2-3-3">
 <p>
 使用广播通道
@@ -591,7 +568,7 @@ direct型广播包中也不能包含额外的数据，只能包含2个地址, �
 rsp"包，如图\ref{img-active-scan-flow}；
 </p>
 
-<div class="figure">
+<div id="orgb61910b" class="figure">
 <p><img src="./img/img-active-scan-flow.png" alt="img-active-scan-flow.png" />
 </p>
 </div></li>
@@ -599,8 +576,8 @@ rsp"包，如图\ref{img-active-scan-flow}；
 </div>
 </div>
 
-<div id="outline-container-org8c5a09b" class="outline-5">
-<h5 id="org8c5a09b"><span class="section-number-5">1.2.3.4</span> initiating状态</h5>
+<div id="outline-container-org463d358" class="outline-5">
+<h5 id="org463d358"><span class="section-number-5">1.2.3.4.</span> initiating状态</h5>
 <div class="outline-text-5" id="text-1-2-3-4">
 <ul class="org-ul">
 <li>使用广播通道；</li>
@@ -608,8 +585,8 @@ rsp"包，如图\ref{img-active-scan-flow}；
 </ul>
 </div>
 </div>
-<div id="outline-container-org497a343" class="outline-5">
-<h5 id="org497a343"><span class="section-number-5">1.2.3.5</span> connecting状态</h5>
+<div id="outline-container-org039603d" class="outline-5">
+<h5 id="org039603d"><span class="section-number-5">1.2.3.5.</span> connecting状态</h5>
 <div class="outline-text-5" id="text-1-2-3-5">
 <p>
 连接过程：当一个设备使用可连接广播包(general型、direct型)进行广播时，设备(初始化者，initiator)可以发起一次连接请求进行连
@@ -635,7 +612,7 @@ interval后重试，说白了就是决定接收机开多少时间；
 如图\ref{img-conn-model}；
 </p>
 
-<div class="figure">
+<div id="orga59609b" class="figure">
 <p><img src="./img/img-conn-model.png" alt="img-conn-model.png" />
 </p>
 </div></li>
@@ -650,8 +627,8 @@ interval后重试，说白了就是决定接收机开多少时间；
 </ul>
 </div>
 </div>
-<div id="outline-container-orgeda8e39" class="outline-5">
-<h5 id="orgeda8e39"><span class="section-number-5">1.2.3.6</span> master</h5>
+<div id="outline-container-orge437669" class="outline-5">
+<h5 id="orge437669"><span class="section-number-5">1.2.3.6.</span> master</h5>
 <div class="outline-text-5" id="text-1-2-3-6">
 <ul class="org-ul">
 <li>一个设备不能既是master，又是slave；</li>
@@ -659,8 +636,8 @@ interval后重试，说白了就是决定接收机开多少时间；
 </ul>
 </div>
 </div>
-<div id="outline-container-org77a8f92" class="outline-5">
-<h5 id="org77a8f92"><span class="section-number-5">1.2.3.7</span> slave</h5>
+<div id="outline-container-org94ed4a2" class="outline-5">
+<h5 id="org94ed4a2"><span class="section-number-5">1.2.3.7.</span> slave</h5>
 <div class="outline-text-5" id="text-1-2-3-7">
 <ul class="org-ul">
 <li>一个设备不能同时是多个master的的slave；</li>
@@ -669,8 +646,8 @@ interval后重试，说白了就是决定接收机开多少时间；
 </ul>
 </div>
 </div>
-<div id="outline-container-orgfb19184" class="outline-5">
-<h5 id="orgfb19184"><span class="section-number-5">1.2.3.8</span> 包(package)</h5>
+<div id="outline-container-org37f3698" class="outline-5">
+<h5 id="org37f3698"><span class="section-number-5">1.2.3.8.</span> 包(package)</h5>
 <div class="outline-text-5" id="text-1-2-3-8">
 <ul class="org-ul">
 <li>preamble
@@ -704,7 +681,7 @@ interval后重试，说白了就是决定接收机开多少时间；
 0b01：标识高层数据的继续，见图\ref{img-llid-use}, 可以利用此包一直发送0包；
 </p>
 
-<div class="figure">
+<div id="org1602e0a" class="figure">
 <p><img src="./img/img-llid-use.png" alt="img-llid-use.png" />
 </p>
 </div></li>
@@ -737,8 +714,8 @@ PDU(29B)+CRC(3B)= 41B, 协议规定BLE射频PHY传输速率1Mbps(1us per 1bit)�
 </ul>
 </div>
 </div>
-<div id="outline-container-org0b6ddf9" class="outline-5">
-<h5 id="org0b6ddf9"><span class="section-number-5">1.2.3.9</span> 配对绑定(pairing bonding)</h5>
+<div id="outline-container-orgd019f1b" class="outline-5">
+<h5 id="orgd019f1b"><span class="section-number-5">1.2.3.9.</span> 配对绑定(pairing bonding)</h5>
 <div class="outline-text-5" id="text-1-2-3-9">
 <p>
 详细过程参考<a href="https://community.freescale.com/thread/332191">https://community.freescale.com/thread/332191</a> ;包的CRC值计算加密的payload数据，另外，header和length域不做加
@@ -750,7 +727,7 @@ PDU(29B)+CRC(3B)= 41B, 协议规定BLE射频PHY传输速率1Mbps(1us per 1bit)�
 加密payload数据，加密的数据包格式如图\ref{img-encry-data}，其中MIC是message integrity check，消息完整性值；
 </p>
 
-<div class="figure">
+<div id="org78ded3b" class="figure">
 <p><img src="./img/img-encry-data.png" alt="img-encry-data.png" />
 </p>
 </div></li>
@@ -773,7 +750,7 @@ PDU(29B)+CRC(3B)= 41B, 协议规定BLE射频PHY传输速率1Mbps(1us per 1bit)�
 <li>分发密钥:使用STK分发密钥信息, 包括LTK、EDIV、Rand、IRK、CSRK；</li>
 </ul>
 
-<div class="figure">
+<div id="orgbd883f0" class="figure">
 <p><img src="./img/img-encry-procedure.png" alt="img-encry-procedure.png" />
 </p>
 </div></li>
@@ -806,7 +783,7 @@ SSP(secure simple pairing)的配对模式总共有4种，所谓的SSP，就是�
 <li>Passkey Entry：一个有显示设备，一个有输入设备，显示设备上显示一个数字，然后在输入设备上输入就配对；</li>
 <li>Out Of Band：利用其他技术进行配对，比如NFC；</li>
 </ul>
-<table id="orgbf8890d" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org361f6f7" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 2:</span> 配对模式</caption>
 
 <colgroup>
@@ -875,8 +852,8 @@ random\<sub>address</sub> = [hash || prand || 0b10]，说白了就是产生addre
 </div>
 </div>
 </div>
-<div id="outline-container-orgec62abb" class="outline-4">
-<h4 id="orgec62abb"><span class="section-number-4">1.2.4</span> controller HCI层</h4>
+<div id="outline-container-orgbcf8161" class="outline-4">
+<h4 id="orgbcf8161"><span class="section-number-4">1.2.4.</span> controller HCI层</h4>
 <div class="outline-text-4" id="text-1-2-4">
 <p>
 HCI分物理接口和逻辑接口，逻辑接口定义了一系列的命令包格式，物理接口还定义了这些命令包如何在host和controller间传输；
@@ -886,8 +863,8 @@ HCI分物理接口和逻辑接口，逻辑接口定义了一系列的命令包�
 </ul>
 </div>
 </div>
-<div id="outline-container-orgdbff419" class="outline-4">
-<h4 id="orgdbff419"><span class="section-number-4">1.2.5</span> host l2cap层</h4>
+<div id="outline-container-org33e9846" class="outline-4">
+<h4 id="org33e9846"><span class="section-number-4">1.2.5.</span> host l2cap层</h4>
 <div class="outline-text-4" id="text-1-2-5">
 <p>
 L2CAP：logical link control and adaptation protocol，它为上层提供面向连接和无连接的数据服务，并提供多协议功能和分割重组
@@ -895,8 +872,8 @@ L2CAP：logical link control and adaptation protocol，它为上层提供面向�
 </p>
 </div>
 </div>
-<div id="outline-container-org5de7c4e" class="outline-4">
-<h4 id="org5de7c4e"><span class="section-number-4">1.2.6</span> attribute</h4>
+<div id="outline-container-orgb729f7e" class="outline-4">
+<h4 id="orgb729f7e"><span class="section-number-4">1.2.6.</span> attribute</h4>
 <div class="outline-text-4" id="text-1-2-6">
 <p>
 一个attribute包含3要素：attribute handle/attribute type/attribute value，一般还要包含attribute permission；
@@ -910,7 +887,7 @@ attribute type：使用UUID来表示，用于识别不同的事务，比如温�
 128bit的UUID为00002A01-0000-1000-8000-00805F9B34FB; BLE中16bit的UUID分类如表\ref{tbl-ble-uuid}； 另外attribute type指
 的就是declaration共有：primary service/secondary service/include/characteristic。
 </p>
-<table id="org7cbaee6" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org0fc5c32" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 3:</span> BLE的UUID分类</caption>
 
 <colgroup>
@@ -964,7 +941,7 @@ attribute type：使用UUID来表示，用于识别不同的事务，比如温�
 <li><p>
 attribute数据库：一个最小的attribute数据库(6 attributes)必须包含最基本的项, 见表\ref{tbl-smallest-db}
 </p>
-<table id="org852c518" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="orga3f2b84" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 4:</span> 最小的attribute数据库</caption>
 
 <colgroup>
@@ -1047,8 +1024,8 @@ pin框的界面；</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org7f6a8a4" class="outline-4">
-<h4 id="org7f6a8a4"><span class="section-number-4">1.2.7</span> secure</h4>
+<div id="outline-container-org05bbbf1" class="outline-4">
+<h4 id="org05bbbf1"><span class="section-number-4">1.2.7.</span> secure</h4>
 <div class="outline-text-4" id="text-1-2-7">
 <p>
 secure mode大体上分为2个级别，security mode 1和security mode 2，其中security mode 1针对于链接的加密与否(encryption)，其
@@ -1070,14 +1047,14 @@ security mode 1的level 1开始，在以后的进程中可以升级到其他级�
 </ul>
 </div>
 </div>
-<div id="outline-container-org71184fa" class="outline-4">
-<h4 id="org71184fa"><span class="section-number-4">1.2.8</span> android</h4>
+<div id="outline-container-orga7ffcf2" class="outline-4">
+<h4 id="orga7ffcf2"><span class="section-number-4">1.2.8.</span> android</h4>
 <div class="outline-text-4" id="text-1-2-8">
 <p>
 当连接到Server的Gatt时(connectGatt())，将提供一个回调BluetoothGattCallback，里面的各个回调方法用于处理连接后的事务处理，
 具体操作方法对应如表\ref{tbl-gatt-oper}。
 </p>
-<table id="org51919a2" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="org9a75bd3" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 5:</span> Gatt操作对应表</caption>
 
 <colgroup>
@@ -1169,8 +1146,8 @@ security mode 1的level 1开始，在以后的进程中可以升级到其他级�
 response，其区别就是上位机做了这些操作后，协议栈是否会有回调；</li>
 </ul>
 </div>
-<div id="outline-container-org63353bd" class="outline-5">
-<h5 id="org63353bd"><span class="section-number-5">1.2.8.1</span> android-ble梳理</h5>
+<div id="outline-container-org954f888" class="outline-5">
+<h5 id="org954f888"><span class="section-number-5">1.2.8.1.</span> android-ble梳理</h5>
 <div class="outline-text-5" id="text-1-2-8-1">
 <ul class="org-ul">
 <li>btle概念 
@@ -1242,8 +1219,8 @@ AandroidManifest.xml
 <div class="org-src-container">
 <pre class="src src-java"><span style="color: #ffb6c1; font-size: 105%;">private</span> <span style="color: #7fffd4;">BluetoothAdapter</span>.<span style="color: #ffff00; font-size: 105%;">LeScanCallback</span> <span style="color: #ffd700;">leScanCallback</span> = <span style="color: #ffb6c1; font-size: 105%;">new</span> <span style="color: #7fffd4;">BluetoothAdapter</span>.<span style="color: #ffff00; font-size: 105%;">LeScanCallback</span>() {
     <span style="color: #7fffd4;">@Override</span>
-    <span style="color: #ffb6c1; font-size: 105%;">public</span> <span style="color: #ffff00; font-size: 105%;">void</span> onLeScan(<span style="color: #ffb6c1; font-size: 105%;">final</span> <span style="color: #ffff00; font-size: 105%;">BluetoothDevice</span> <span style="color: #ffd700;">device</span>, <span style="color: #ffb6c1; font-size: 105%;">final</span> <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">rssi</span>, <span style="color: #ffb6c1; font-size: 105%;">final</span> <span style="color: #ffff00; font-size: 105%;">byte</span>[] <span style="color: #ffd700;">scanRecord</span>) {
-    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">your implementation here</span>
+    <span style="color: #ffb6c1; font-size: 105%;">public</span> <span style="color: #ffff00; font-size: 105%;">void</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">onLeScan</span>(<span style="color: #ffb6c1; font-size: 105%;">final</span> <span style="color: #ffff00; font-size: 105%;">BluetoothDevice</span> <span style="color: #ffd700;">device</span>, <span style="color: #ffb6c1; font-size: 105%;">final</span> <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">rssi</span>, <span style="color: #ffb6c1; font-size: 105%;">final</span> <span style="color: #ffff00; font-size: 105%;">byte</span>[] <span style="color: #ffd700;">scanRecord</span>) {
+        <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">your implementation here</span>
     }
 }
 </pre>
@@ -1264,16 +1241,16 @@ btAdapter.stopLeScan(leScanCallback);
 <div class="org-src-container">
 <pre class="src src-java"><span style="color: #ffb6c1; font-size: 105%;">private</span> <span style="color: #ffb6c1; font-size: 105%;">final</span> <span style="color: #ffff00; font-size: 105%;">BluetoothGattCallback</span> <span style="color: #ffd700;">btleGattCallback</span> = <span style="color: #ffb6c1; font-size: 105%;">new</span> <span style="color: #ffff00; font-size: 105%;">BluetoothGattCallback</span>() {
     <span style="color: #7fffd4;">@Override</span>
-    <span style="color: #ffb6c1; font-size: 105%;">public</span> <span style="color: #ffff00; font-size: 105%;">void</span> onCharacteristicChanged(<span style="color: #ffff00; font-size: 105%;">BluetoothGatt</span> <span style="color: #ffd700;">gatt</span>, <span style="color: #ffb6c1; font-size: 105%;">final</span> <span style="color: #ffff00; font-size: 105%;">BluetoothGattCharacteristic</span> <span style="color: #ffd700;">characteristic</span>) {
-    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">this will get called anytime you perform a read or write characteristic operation</span>
+    <span style="color: #ffb6c1; font-size: 105%;">public</span> <span style="color: #ffff00; font-size: 105%;">void</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">onCharacteristicChanged</span>(<span style="color: #ffff00; font-size: 105%;">BluetoothGatt</span> <span style="color: #ffd700;">gatt</span>, <span style="color: #ffb6c1; font-size: 105%;">final</span> <span style="color: #ffff00; font-size: 105%;">BluetoothGattCharacteristic</span> <span style="color: #ffd700;">characteristic</span>) {
+        <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">this will get called anytime you perform a read or write characteristic operation</span>
     }
     <span style="color: #7fffd4;">@Override</span>
     <span style="color: #ffb6c1; font-size: 105%;">public</span> <span style="color: #ffff00; font-size: 105%;">void</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">onConnectionStateChange</span>(<span style="color: #ffb6c1; font-size: 105%;">final</span> <span style="color: #ffff00; font-size: 105%;">BluetoothGatt</span> <span style="color: #ffd700;">gatt</span>, <span style="color: #ffb6c1; font-size: 105%;">final</span> <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">status</span>, <span style="color: #ffb6c1; font-size: 105%;">final</span> <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">newState</span>) { 
-    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">this will get called when a device connects or disconnects</span>
+        <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">this will get called when a device connects or disconnects</span>
     }
     <span style="color: #7fffd4;">@Override</span>
     <span style="color: #ffb6c1; font-size: 105%;">public</span> <span style="color: #ffff00; font-size: 105%;">void</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">onServicesDiscovered</span>(<span style="color: #ffb6c1; font-size: 105%;">final</span> <span style="color: #ffff00; font-size: 105%;">BluetoothGatt</span> <span style="color: #ffd700;">gatt</span>, <span style="color: #ffb6c1; font-size: 105%;">final</span> <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">status</span>) { 
-    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">this will get called after the client initiates a            BluetoothGatt.discoverServices() call</span>
+        <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">this will get called after the client initiates a            BluetoothGatt.discoverServices() call</span>
     }
 }
 </pre>
@@ -1313,10 +1290,10 @@ BluetoothProfile.STATE\<sub>CONNECTED</sub>。这次事件后，发现服务可�
 Configuration Descriptor，它可以使能远端设备的通知功能。下面的代码描述了我们如何获得描述符，然后使能通知标签。 
 </p>
 <div class="org-src-container">
-<pre class="src src-java"><span style="color: #ffb6c1; font-size: 105%;">for</span> (<span style="color: #ffff00; font-size: 105%;">BluetoothGattDescriptor</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">descriptor</span> : characteristic.getDescriptors()) {
+<pre class="src src-java"><span style="color: #ffb6c1; font-size: 105%;">for</span> (<span style="color: #ffff00; font-size: 105%;">BluetoothGattDescriptor</span> <span style="color: #ffd700;">descriptor</span> : characteristic.getDescriptors()) {
     <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">find descriptor UUID that matches Client Characteristic Configuration (0x2902)</span>
     <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">and then call setValue on that descriptor</span>
-    descriptor.setValue( <span style="color: #7fffd4;">BluetoothGattDescriptor</span>.ENABLE_NOTIFICATION_VALUE);
+        descriptor.setValue( <span style="color: #7fffd4;">BluetoothGattDescriptor</span>.ENABLE_NOTIFICATION_VALUE);
     bluetoothGatt.writeDescriptor(descriptor);
 }
 </pre>
@@ -1363,18 +1340,18 @@ BluetoothDevice，参见BlueAdaptor.getRemoteDevice(),这样可以避开设备�
 </div>
 </div>
 </div>
-<div id="outline-container-org7e4b62d" class="outline-3">
-<h3 id="org7e4b62d"><span class="section-number-3">1.3</span> ant</h3>
+<div id="outline-container-org02124fd" class="outline-3">
+<h3 id="org02124fd"><span class="section-number-3">1.3.</span> ant</h3>
 </div>
-<div id="outline-container-org99dc980" class="outline-3">
-<h3 id="org99dc980"><span class="section-number-3">1.4</span> nfc</h3>
+<div id="outline-container-org5b2cdb7" class="outline-3">
+<h3 id="org5b2cdb7"><span class="section-number-3">1.4.</span> nfc</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 由reader发射一定频率的无线电波能量给rf tag，用于驱动rf tag电路内部的ID code送出，此时reader便会接收此ID code；
 </p>
 </div>
-<div id="outline-container-org6679ae0" class="outline-4">
-<h4 id="org6679ae0"><span class="section-number-4">1.4.1</span> 特点</h4>
+<div id="outline-container-org0b15261" class="outline-4">
+<h4 id="org0b15261"><span class="section-number-4">1.4.1.</span> 特点</h4>
 <div class="outline-text-4" id="text-1-4-1">
 <ul class="org-ul">
 <li>间隔7米可感应(某些超高频设备)；</li>
@@ -1385,8 +1362,8 @@ BluetoothDevice，参见BlueAdaptor.getRemoteDevice(),这样可以避开设备�
 </ul>
 </div>
 </div>
-<div id="outline-container-orgd002b9a" class="outline-4">
-<h4 id="orgd002b9a"><span class="section-number-4">1.4.2</span> 区别RFID</h4>
+<div id="outline-container-orgfd7887b" class="outline-4">
+<h4 id="orgfd7887b"><span class="section-number-4">1.4.2.</span> 区别RFID</h4>
 <div class="outline-text-4" id="text-1-4-2">
 <ul class="org-ul">
 <li>nfc将非接触读卡器、非接触卡、点对点功能整合进一块单芯片，rfid必须由reader和tag组成；</li>
@@ -1397,15 +1374,15 @@ BluetoothDevice，参见BlueAdaptor.getRemoteDevice(),这样可以避开设备�
 </ul>
 </div>
 </div>
-<div id="outline-container-orgd4970b1" class="outline-4">
-<h4 id="orgd4970b1"><span class="section-number-4">1.4.3</span> 读取器(reader)</h4>
+<div id="outline-container-orgb54e5ae" class="outline-4">
+<h4 id="orgb54e5ae"><span class="section-number-4">1.4.3.</span> 读取器(reader)</h4>
 </div>
-<div id="outline-container-org814e69f" class="outline-4">
-<h4 id="org814e69f"><span class="section-number-4">1.4.4</span> 感应器(rf tag)</h4>
+<div id="outline-container-orge2fdc00" class="outline-4">
+<h4 id="orge2fdc00"><span class="section-number-4">1.4.4.</span> 感应器(rf tag)</h4>
 <div class="outline-text-4" id="text-1-4-4">
 </div>
-<div id="outline-container-org862fc5e" class="outline-5">
-<h5 id="org862fc5e"><span class="section-number-5">1.4.4.1</span> 分类</h5>
+<div id="outline-container-orgf8e8c20" class="outline-5">
+<h5 id="orgf8e8c20"><span class="section-number-5">1.4.4.1.</span> 分类</h5>
 <div class="outline-text-5" id="text-1-4-4-1">
 <ul class="org-ul">
 <li>ROM型，在制造时，信息就写入，不可更改；</li>
@@ -1417,12 +1394,12 @@ BluetoothDevice，参见BlueAdaptor.getRemoteDevice(),这样可以避开设备�
 </div>
 </div>
 </div>
-<div id="outline-container-org5136e78" class="outline-4">
-<h4 id="org5136e78"><span class="section-number-4">1.4.5</span> 天线(antenna)</h4>
+<div id="outline-container-org1cfc4af" class="outline-4">
+<h4 id="org1cfc4af"><span class="section-number-4">1.4.5.</span> 天线(antenna)</h4>
 <div class="outline-text-4" id="text-1-4-5">
 </div>
-<div id="outline-container-org61efe79" class="outline-5">
-<h5 id="org61efe79"><span class="section-number-5">1.4.5.1</span> 分类</h5>
+<div id="outline-container-orgd3bbfb5" class="outline-5">
+<h5 id="orgd3bbfb5"><span class="section-number-5">1.4.5.1.</span> 分类</h5>
 <div class="outline-text-5" id="text-1-4-5-1">
 <ul class="org-ul">
 <li>线圈型；</li>
@@ -1432,8 +1409,8 @@ BluetoothDevice，参见BlueAdaptor.getRemoteDevice(),这样可以避开设备�
 </div>
 </div>
 </div>
-<div id="outline-container-org879d7e4" class="outline-4">
-<h4 id="org879d7e4"><span class="section-number-4">1.4.6</span> 通信模式</h4>
+<div id="outline-container-org16d353d" class="outline-4">
+<h4 id="org16d353d"><span class="section-number-4">1.4.6.</span> 通信模式</h4>
 <div class="outline-text-4" id="text-1-4-6">
 <ul class="org-ul">
 <li>主动模式：每台nfc设备需要向其他nfc设备发送数据信息时，都要产生自己的射频场；</li>
@@ -1441,8 +1418,8 @@ BluetoothDevice，参见BlueAdaptor.getRemoteDevice(),这样可以避开设备�
 </ul>
 </div>
 </div>
-<div id="outline-container-orgba00291" class="outline-4">
-<h4 id="orgba00291"><span class="section-number-4">1.4.7</span> 应用模式</h4>
+<div id="outline-container-orgf26f7c9" class="outline-4">
+<h4 id="orgf26f7c9"><span class="section-number-4">1.4.7.</span> 应用模式</h4>
 <div class="outline-text-4" id="text-1-4-7">
 <ul class="org-ul">
 <li>读写模式：nfc终端具有非接阅读器的功能，可以读写外部非接卡牌信息，比如读取海报和展览的电子标签信息，类似读二维码；</li>
@@ -1451,12 +1428,12 @@ BluetoothDevice，参见BlueAdaptor.getRemoteDevice(),这样可以避开设备�
 </ul>
 </div>
 </div>
-<div id="outline-container-orgc9a0e9d" class="outline-4">
-<h4 id="orgc9a0e9d"><span class="section-number-4">1.4.8</span> 协议</h4>
+<div id="outline-container-orgcf8324d" class="outline-4">
+<h4 id="orgcf8324d"><span class="section-number-4">1.4.8.</span> 协议</h4>
 <div class="outline-text-4" id="text-1-4-8">
 </div>
-<div id="outline-container-orgb5a5416" class="outline-5">
-<h5 id="orgb5a5416"><span class="section-number-5">1.4.8.1</span> 射频层(rf layer)</h5>
+<div id="outline-container-orgde16cf2" class="outline-5">
+<h5 id="orgde16cf2"><span class="section-number-5">1.4.8.1.</span> 射频层(rf layer)</h5>
 <div class="outline-text-5" id="text-1-4-8-1">
 <p>
 包含了iso 14443 AB，iso 18092，felica，mifare等标准，定义了两种卡类型type A和type B，主要区别在于调制方式、编码方案和协
@@ -1468,41 +1445,41 @@ BluetoothDevice，参见BlueAdaptor.getRemoteDevice(),这样可以避开设备�
 </ul>
 </div>
 </div>
-<div id="outline-container-org27a13b7" class="outline-5">
-<h5 id="org27a13b7"><span class="section-number-5">1.4.8.2</span> 模式切换层(mode switch)</h5>
+<div id="outline-container-orge89aaea" class="outline-5">
+<h5 id="orge89aaea"><span class="section-number-5">1.4.8.2.</span> 模式切换层(mode switch)</h5>
 <div class="outline-text-5" id="text-1-4-8-2">
 <p>
 一个可以将射频层数据切换到nfc type A、nfc type B，nfc type F；
 </p>
 </div>
 </div>
-<div id="outline-container-org96abb2d" class="outline-5">
-<h5 id="org96abb2d"><span class="section-number-5">1.4.8.3</span> nfc IP1</h5>
+<div id="outline-container-orgd6e7ff8" class="outline-5">
+<h5 id="orgd6e7ff8"><span class="section-number-5">1.4.8.3.</span> nfc IP1</h5>
 <div class="outline-text-5" id="text-1-4-8-3">
 <p>
 即ISO 18092，其协议栈基于iso 14443；
 </p>
 </div>
 </div>
-<div id="outline-container-orgcc2115c" class="outline-5">
-<h5 id="orgcc2115c"><span class="section-number-5">1.4.8.4</span> 逻辑链路控制协议(LLCP)</h5>
+<div id="outline-container-org8fd93bf" class="outline-5">
+<h5 id="org8fd93bf"><span class="section-number-5">1.4.8.4.</span> 逻辑链路控制协议(LLCP)</h5>
 <div class="outline-text-5" id="text-1-4-8-4">
 <p>
 logic link control protocol，主要用于点对点模式；
 </p>
 </div>
 </div>
-<div id="outline-container-org9f41f8a" class="outline-5">
-<h5 id="org9f41f8a"><span class="section-number-5">1.4.8.5</span> nfc forum protocol binding</h5>
+<div id="outline-container-orgc18aca5" class="outline-5">
+<h5 id="orgc18aca5"><span class="section-number-5">1.4.8.5.</span> nfc forum protocol binding</h5>
 </div>
-<div id="outline-container-orgc1dbd58" class="outline-5">
-<h5 id="orgc1dbd58"><span class="section-number-5">1.4.8.6</span> tag type</h5>
+<div id="outline-container-orgf38e549" class="outline-5">
+<h5 id="orgf38e549"><span class="section-number-5">1.4.8.6.</span> tag type</h5>
 <div class="outline-text-5" id="text-1-4-8-6">
 <p>
 标签类型，在读写模式下，nfc设备能够读取的标签类型，标签可以存储url、手机号码、其他文本等，nfc定义了4中tag, 另外厂商还可
 以自定义私有tag类型，具体见表\ref{tbl-nfc-tag};
 </p>
-<table id="orgd4f9808" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="orgc17fae3" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 6:</span> nfc tag对比表</caption>
 
 <colgroup>
@@ -1577,24 +1554,24 @@ logic link control protocol，主要用于点对点模式；
 </table>
 </div>
 </div>
-<div id="outline-container-orgdf301c1" class="outline-5">
-<h5 id="orgdf301c1"><span class="section-number-5">1.4.8.7</span> ndef</h5>
+<div id="outline-container-orgec0edbd" class="outline-5">
+<h5 id="orgec0edbd"><span class="section-number-5">1.4.8.7.</span> ndef</h5>
 <div class="outline-text-5" id="text-1-4-8-7">
 <p>
 nfc数据交换格式，nfc data extrange format，在android系统下ndef也可以用于p2p；
 </p>
 </div>
 </div>
-<div id="outline-container-org6a0c092" class="outline-5">
-<h5 id="org6a0c092"><span class="section-number-5">1.4.8.8</span> rtd</h5>
+<div id="outline-container-orgd92a1ce" class="outline-5">
+<h5 id="orgd92a1ce"><span class="section-number-5">1.4.8.8.</span> rtd</h5>
 <div class="outline-text-5" id="text-1-4-8-8">
 <p>
 记录类型定义，record type definition，ndef数据格式中定义的数据类型；
 </p>
 </div>
 </div>
-<div id="outline-container-orgf11559f" class="outline-5">
-<h5 id="orgf11559f"><span class="section-number-5">1.4.8.9</span> card emulation</h5>
+<div id="outline-container-org39eff59" class="outline-5">
+<h5 id="org39eff59"><span class="section-number-5">1.4.8.9.</span> card emulation</h5>
 <div class="outline-text-5" id="text-1-4-8-9">
 <p>
 卡模拟，nfc设备模拟成卡片的标准；
@@ -1603,12 +1580,12 @@ nfc数据交换格式，nfc data extrange format，在android系统下ndef也可
 </div>
 </div>
 </div>
-<div id="outline-container-org3070a27" class="outline-3">
-<h3 id="org3070a27"><span class="section-number-3">1.5</span> usb</h3>
+<div id="outline-container-orgd05d0bc" class="outline-3">
+<h3 id="orgd05d0bc"><span class="section-number-3">1.5.</span> usb</h3>
 <div class="outline-text-3" id="text-1-5">
 </div>
-<div id="outline-container-orgf7593f1" class="outline-4">
-<h4 id="orgf7593f1"><span class="section-number-4">1.5.1</span> usb枚举过程</h4>
+<div id="outline-container-org5237b4a" class="outline-4">
+<h4 id="org5237b4a"><span class="section-number-4">1.5.1.</span> usb枚举过程</h4>
 <div class="outline-text-4" id="text-1-5-1">
 <ol class="org-ol">
 <li>usb检测到usb设备插入后，就会先对设备复位，usb设备在总线复位后其地址为0；</li>
@@ -1636,22 +1613,22 @@ nfc数据交换格式，nfc data extrange format，在android系统下ndef也可
 </div>
 </div>
 </div>
-<div id="outline-container-org689d893" class="outline-2">
-<h2 id="org689d893"><span class="section-number-2">2</span> 小族协议</h2>
+<div id="outline-container-orgc619245" class="outline-2">
+<h2 id="orgc619245"><span class="section-number-2">2.</span> 小族协议</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org6b2bf16" class="outline-3">
-<h3 id="org6b2bf16"><span class="section-number-3">2.1</span> SPI</h3>
+<div id="outline-container-orgaff1da6" class="outline-3">
+<h3 id="orgaff1da6"><span class="section-number-3">2.1.</span> SPI</h3>
 </div>
-<div id="outline-container-orgba1ffc0" class="outline-3">
-<h3 id="orgba1ffc0"><span class="section-number-3">2.2</span> UART</h3>
+<div id="outline-container-orgf1d4b53" class="outline-3">
+<h3 id="orgf1d4b53"><span class="section-number-3">2.2.</span> UART</h3>
 </div>
-<div id="outline-container-org6418806" class="outline-3">
-<h3 id="org6418806"><span class="section-number-3">2.3</span> IIC</h3>
+<div id="outline-container-org08425f7" class="outline-3">
+<h3 id="org08425f7"><span class="section-number-3">2.3.</span> IIC</h3>
 <div class="outline-text-3" id="text-2-3">
 </div>
-<div id="outline-container-orgf3c7027" class="outline-4">
-<h4 id="orgf3c7027"><span class="section-number-4">2.3.1</span> 概念</h4>
+<div id="outline-container-org140948c" class="outline-4">
+<h4 id="org140948c"><span class="section-number-4">2.3.1.</span> 概念</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <ul class="org-ul">
 <li>发送器：发送数据到总线的器件；</li>
@@ -1665,8 +1642,8 @@ nfc数据交换格式，nfc data extrange format，在android系统下ndef也可
 </ul>
 </div>
 </div>
-<div id="outline-container-org03a3fc7" class="outline-4">
-<h4 id="org03a3fc7"><span class="section-number-4">2.3.2</span> 信号</h4>
+<div id="outline-container-org4f517df" class="outline-4">
+<h4 id="org4f517df"><span class="section-number-4">2.3.2.</span> 信号</h4>
 <div class="outline-text-4" id="text-2-3-2">
 <p>
 IIC信号线由时钟信号线SCL和数据信号线SDA构成，逻辑高低电平中只有‘0’电平由设备
@@ -1675,8 +1652,8 @@ IIC信号线由时钟信号线SCL和数据信号线SDA构成，逻辑高低电�
 设备总数由总负载电容决定。
 </p>
 </div>
-<div id="outline-container-org104e47a" class="outline-5">
-<h5 id="org104e47a"><span class="section-number-5">2.3.2.1</span> 信号类型</h5>
+<div id="outline-container-orgb15fd5e" class="outline-5">
+<h5 id="orgb15fd5e"><span class="section-number-5">2.3.2.1.</span> 信号类型</h5>
 <div class="outline-text-5" id="text-2-3-2-1">
 <ul class="org-ul">
 <li>起始信号：由master发起，通过在SCL的高电平期间来一个SDA的下降沿，在SDA下降
@@ -1699,8 +1676,8 @@ SCL转为高电平后SDA保持电平被对方采集。一般master发送数据sl
 </ul>
 </div>
 </div>
-<div id="outline-container-orgc69f10b" class="outline-5">
-<h5 id="orgc69f10b"><span class="section-number-5">2.3.2.2</span> 信号时间</h5>
+<div id="outline-container-org744edbf" class="outline-5">
+<h5 id="org744edbf"><span class="section-number-5">2.3.2.2.</span> 信号时间</h5>
 <div class="outline-text-5" id="text-2-3-2-2">
 <ul class="org-ul">
 <li>起始信号建立时间：\(t_{SU-STA}\),起始信号是在SCL的高电平期间，SDA来一个下
@@ -1725,12 +1702,12 @@ slave有足够的时间处理完事务来识别即将来临的下降沿；</li>
 </div>
 </div>
 </div>
-<div id="outline-container-org6a71419" class="outline-4">
-<h4 id="org6a71419"><span class="section-number-4">2.3.3</span> 机制</h4>
+<div id="outline-container-orga35fa67" class="outline-4">
+<h4 id="orga35fa67"><span class="section-number-4">2.3.3.</span> 机制</h4>
 <div class="outline-text-4" id="text-2-3-3">
 </div>
-<div id="outline-container-org0a70353" class="outline-5">
-<h5 id="org0a70353"><span class="section-number-5">2.3.3.1</span> 同步</h5>
+<div id="outline-container-orgbba1355" class="outline-5">
+<h5 id="orgbba1355"><span class="section-number-5">2.3.3.1.</span> 同步</h5>
 <div class="outline-text-5" id="text-2-3-3-1">
 <p>
 指多个器件试图控制SCL时，SCL线上最终表现出的时钟周期图。当多个器件试图发起
@@ -1743,8 +1720,8 @@ SCL将进入高电平状态，此时所有的器件又开始数高电平的时�
 </p>
 </div>
 </div>
-<div id="outline-container-orgf3f4fb3" class="outline-5">
-<h5 id="orgf3f4fb3"><span class="section-number-5">2.3.3.2</span> 仲裁</h5>
+<div id="outline-container-org3b58b4a" class="outline-5">
+<h5 id="org3b58b4a"><span class="section-number-5">2.3.3.2.</span> 仲裁</h5>
 <div class="outline-text-5" id="text-2-3-3-2">
 <p>
 指多个器件试图控制SCL，而IIC总线由哪个器件来控制的问题。master只有在总线空
@@ -1761,20 +1738,20 @@ master和slave功能，则在丢失仲裁后，有可能赢得仲裁的主机正
 </div>
 </div>
 </div>
-<div id="outline-container-org4e31ae5" class="outline-4">
-<h4 id="org4e31ae5"><span class="section-number-4">2.3.4</span> 流程</h4>
+<div id="outline-container-org588275f" class="outline-4">
+<h4 id="org588275f"><span class="section-number-4">2.3.4.</span> 流程</h4>
 </div>
 </div>
-<div id="outline-container-org51dbf99" class="outline-3">
-<h3 id="org51dbf99"><span class="section-number-3">2.4</span> 7816</h3>
+<div id="outline-container-org2926cde" class="outline-3">
+<h3 id="org2926cde"><span class="section-number-3">2.4.</span> 7816</h3>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: 比克曼</p>
 <p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
-<p class="date">Created: 2020-06-05 周五 00:05</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+<p class="date">Created: 2026-07-12 日 12:30</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>

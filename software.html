@@ -3,14 +3,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-05-18 周二 22:03 -->
+<!-- 2026-07-12 日 12:30 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>软件</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="比克曼" />
-<style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
   .subtitle { text-align: center;
@@ -31,8 +31,9 @@
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
   p.verse { margin-left: 3%; }
   pre {
-    border: 1px solid #ccc;
-    box-shadow: 3px 3px 3px #eee;
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
     padding: 8pt;
     font-family: monospace;
     overflow: auto;
@@ -40,22 +41,22 @@
   }
   pre.src {
     position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
+    overflow: auto;
   }
   pre.src:before {
     display: none;
     position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
+    top: -8px;
+    right: 12px;
     padding: 3px;
-    border: 1px solid black;
+    color: #555;
+    background-color: #f2f2f299;
   }
-  pre.src:hover:before { display: inline;}
+  pre.src:hover:before { display: inline; margin-top: 14px;}
   /* Languages per Org manual */
   pre.src-asymptote:before { content: 'Asymptote'; }
   pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
   pre.src-C:before { content: 'C'; }
   /* pre.src-C++ doesn't work in CSS */
   pre.src-clojure:before { content: 'Clojure'; }
@@ -161,6 +162,19 @@
   .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
   .inlinetask {
     padding: 10px;
     border: 2px solid gray;
@@ -177,192 +191,155 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  .org-svg { }
 </style>
 <link rel="stylesheet" type="text/css" href="css/org-manual.css"/>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2018 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
 </script>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        displayAlign: "center",
-        displayIndent: "0em",
 
-        "HTML-CSS": { scale: 100,
-                        linebreaks: { automatic: "false" },
-                        webFont: "TeX"
-                       },
-        SVG: {scale: 100,
-              linebreaks: { automatic: "false" },
-              font: "TeX"},
-        NativeMML: {scale: 100},
-        TeX: { equationNumbers: {autoNumber: "AMS"},
-               MultLineWidth: "85%",
-               TagSide: "right",
-               TagIndent: ".8em"
-             }
-});
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
-<div id="content">
+<div id="content" class="content">
 <h1 class="title">软件</h1>
-<div id="table-of-contents">
+<div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgdf6cde7">1. 软件测试</a>
+<li><a href="#org1692d56">1. 软件测试</a>
 <ul>
-<li><a href="#org94c3880">1.1. 根据项目流程阶段划分</a>
+<li><a href="#org1efe38d">1.1. 根据项目流程阶段划分</a>
 <ul>
-<li><a href="#org0f0c53d">1.1.1. 单元测试</a></li>
-<li><a href="#org47b35dc">1.1.2. 集成测试</a></li>
-<li><a href="#org97c2c5e">1.1.3. 系统测试</a></li>
-<li><a href="#org0271302">1.1.4. 验收测试</a></li>
+<li><a href="#org80502a9">1.1.1. 单元测试</a></li>
+<li><a href="#orgd67781f">1.1.2. 集成测试</a></li>
+<li><a href="#org5b1b7f8">1.1.3. 系统测试</a></li>
+<li><a href="#orgfd4baae">1.1.4. 验收测试</a></li>
 </ul>
 </li>
-<li><a href="#orgf305c1f">1.2. 根据模块细节可见程度划分</a>
+<li><a href="#orge9da6e3">1.2. 根据模块细节可见程度划分</a>
 <ul>
-<li><a href="#orgcaaeb4b">1.2.1. 白盒测试</a></li>
-<li><a href="#org9413b9c">1.2.2. 黑盒测试</a></li>
-<li><a href="#org9bfc875">1.2.3. 灰盒测试</a></li>
+<li><a href="#org31f981d">1.2.1. 白盒测试</a></li>
+<li><a href="#orgd50873d">1.2.2. 黑盒测试</a></li>
+<li><a href="#org9139f99">1.2.3. 灰盒测试</a></li>
 </ul>
 </li>
-<li><a href="#orgc6de717">1.3. 根据不同测试面划分</a>
+<li><a href="#orge14ca9d">1.3. 根据不同测试面划分</a>
 <ul>
-<li><a href="#org65b9e10">1.3.1. 逻辑功能测试</a></li>
-<li><a href="#orgcc24723">1.3.2. 界面测试</a></li>
-<li><a href="#org3968975">1.3.3. 易用性测试</a></li>
-<li><a href="#org35bf4e9">1.3.4. 安装测试</a></li>
-<li><a href="#org2c37bda">1.3.5. 兼容性测试</a></li>
-<li><a href="#orge8a3849">1.3.6. 安全测试</a></li>
-<li><a href="#org2185838">1.3.7. 时间性能测试</a></li>
-<li><a href="#org0ad98c7">1.3.8. 空间性能测试</a></li>
+<li><a href="#org1b461e7">1.3.1. 逻辑功能测试</a></li>
+<li><a href="#orga27fce0">1.3.2. 界面测试</a></li>
+<li><a href="#org4043fde">1.3.3. 易用性测试</a></li>
+<li><a href="#org26c1957">1.3.4. 安装测试</a></li>
+<li><a href="#orgd25f49b">1.3.5. 兼容性测试</a></li>
+<li><a href="#orge234c20">1.3.6. 安全测试</a></li>
+<li><a href="#orgc0f83a5">1.3.7. 时间性能测试</a></li>
+<li><a href="#org5d069e4">1.3.8. 空间性能测试</a></li>
 </ul>
 </li>
-<li><a href="#org9ce0df6">1.4. 根据测试手段划分</a>
+<li><a href="#orgf39f8b6">1.4. 根据测试手段划分</a>
 <ul>
-<li><a href="#org3e36f8e">1.4.1. 手工测试</a></li>
-<li><a href="#org43fbbb8">1.4.2. 自动化测试</a></li>
+<li><a href="#orgf85c4de">1.4.1. 手工测试</a></li>
+<li><a href="#org18c6d18">1.4.2. 自动化测试</a></li>
 </ul>
 </li>
-<li><a href="#org603eef0">1.5. 其他划分</a>
+<li><a href="#org2d91c14">1.5. 其他划分</a>
 <ul>
-<li><a href="#orgfbc9534">1.5.1. 冒烟测试</a></li>
-<li><a href="#orga105230">1.5.2. 回归测试</a></li>
-<li><a href="#org06cb85b">1.5.3. 随机测试</a></li>
-<li><a href="#orgaa0ec67">1.5.4. 探索性测试</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#org4884927">2. 编程语言</a>
-<ul>
-<li><a href="#org06dd366">2.1. c</a>
-<ul>
-<li><a href="#orgda76160">2.1.1. 宏操作</a></li>
-<li><a href="#orgd97aff1">2.1.2. 位操作</a></li>
-<li><a href="#orgd0eb2f0">2.1.3. 字符串操作</a></li>
-<li><a href="#orged979f1">2.1.4. 嵌入式</a></li>
-</ul>
-</li>
-<li><a href="#org7e8fa7c">2.2. java</a></li>
-<li><a href="#orgd544496">2.3. python</a>
-<ul>
-<li><a href="#orgdf7dcc4">2.3.1. base</a></li>
-<li><a href="#org4201735">2.3.2. ipython</a></li>
-<li><a href="#org325bf78">2.3.3. numpy</a></li>
-<li><a href="#org3cd2e9b">2.3.4. matplotlib</a>
-<ul>
-<li><a href="#org327b3c7">2.3.4.1. 画XY轴离散点图</a></li>
-</ul>
-</li>
-<li><a href="#org014b486">2.3.5. module</a></li>
+<li><a href="#org7e179e4">1.5.1. 冒烟测试</a></li>
+<li><a href="#org0838cb1">1.5.2. 回归测试</a></li>
+<li><a href="#org9d73d94">1.5.3. 随机测试</a></li>
+<li><a href="#org31c82d2">1.5.4. 探索性测试</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orge5fc477">3. 状态机和信号量</a>
+<li><a href="#orgc7b2ba3">2. 编程语言</a>
 <ul>
-<li><a href="#org309b9a2">3.1. 断言</a></li>
-<li><a href="#orge65478b">3.2. 信号量</a>
+<li><a href="#orgb098c8e">2.1. c</a>
 <ul>
-<li><a href="#org7320097">3.2.1. 信号值</a></li>
-<li><a href="#org7ce00aa">3.2.2. 信号名</a></li>
-<li><a href="#org06c982d">3.2.3. 信号ID</a></li>
-<li><a href="#orgf6b99ad">3.2.4. 信号对象</a></li>
-<li><a href="#org12f285d">3.2.5. 信号存储表</a></li>
-<li><a href="#orgc7c327a">3.2.6. 信号内部操作</a></li>
-<li><a href="#org499586f">3.2.7. 信号操作API</a></li>
+<li><a href="#org4d60298">2.1.1. 宏操作</a></li>
+<li><a href="#orgc1d6d02">2.1.2. 位操作</a></li>
+<li><a href="#org209b742">2.1.3. 字符串操作</a></li>
+<li><a href="#orgcc2d55b">2.1.4. 嵌入式</a></li>
 </ul>
 </li>
-<li><a href="#org7a7910a">3.3. 状态机</a>
+<li><a href="#org1e3dc36">2.2. java</a></li>
+<li><a href="#org55dda92">2.3. python</a>
 <ul>
-<li><a href="#org8df0e35">3.3.1. 状态机</a></li>
-<li><a href="#org91cc7e4">3.3.2. 状态名称</a></li>
-<li><a href="#orge5610f2">3.3.3. 状态处理函数</a></li>
-<li><a href="#org86fb6d6">3.3.4. 状态定义</a></li>
-<li><a href="#org2c95350">3.3.5. 状态转换函数</a></li>
+<li><a href="#org464ad22">2.3.1. base</a></li>
+<li><a href="#orga1e086c">2.3.2. ipython</a></li>
+<li><a href="#orgf54429e">2.3.3. numpy</a></li>
+<li><a href="#org97a9054">2.3.4. matplotlib</a>
+<ul>
+<li><a href="#orgb2aaf08">2.3.4.1. 画XY轴离散点图</a></li>
 </ul>
 </li>
-<li><a href="#orgd31ef7d">3.4. 应用</a>
-<ul>
-<li><a href="#org5d6c0a1">3.4.1. 状态机转换</a></li>
-<li><a href="#orgef0487e">3.4.2. 源码</a></li>
+<li><a href="#org456fd51">2.3.5. module</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org91df2ea">4. 机器码</a>
+<li><a href="#org4a6d3c2">3. 状态机和信号量</a>
 <ul>
-<li><a href="#orgeda1717">4.1. BIN</a></li>
-<li><a href="#org8159859">4.2. HEX</a></li>
+<li><a href="#org80c0440">3.1. 断言</a></li>
+<li><a href="#org072f062">3.2. 信号量</a>
+<ul>
+<li><a href="#orga6033bf">3.2.1. 信号值</a></li>
+<li><a href="#orge39d7e5">3.2.2. 信号名</a></li>
+<li><a href="#org09e1954">3.2.3. 信号ID</a></li>
+<li><a href="#orgb57faf7">3.2.4. 信号对象</a></li>
+<li><a href="#org719fbce">3.2.5. 信号存储表</a></li>
+<li><a href="#orge6f91a9">3.2.6. 信号内部操作</a></li>
+<li><a href="#org19b769c">3.2.7. 信号操作API</a></li>
+</ul>
+</li>
+<li><a href="#org31beb7a">3.3. 状态机</a>
+<ul>
+<li><a href="#org5c2b155">3.3.1. 状态机</a></li>
+<li><a href="#orgf5a9333">3.3.2. 状态名称</a></li>
+<li><a href="#org473af47">3.3.3. 状态处理函数</a></li>
+<li><a href="#orgaf53d35">3.3.4. 状态定义</a></li>
+<li><a href="#orge5f596a">3.3.5. 状态转换函数</a></li>
+</ul>
+</li>
+<li><a href="#orgad623eb">3.4. 应用</a>
+<ul>
+<li><a href="#org732c29d">3.4.1. 状态机转换</a></li>
+<li><a href="#org24e4554">3.4.2. 源码</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org9db3a77">4. 机器码</a>
+<ul>
+<li><a href="#org680bba7">4.1. BIN</a></li>
+<li><a href="#org30174cc">4.2. HEX</a></li>
 </ul>
 </li>
 </ul>
@@ -372,25 +349,25 @@ for the JavaScript code in this tag.
 <h2>List of Tables</h2>
 <div id="text-list-of-tables">
 <ul>
-<li><a href="#orgad87304"><span class="table-number">Table 1:</span> 设计和测试对应关系</a></li>
+<li><a href="#orgce47459"><span class="table-number">Table 1:</span> 设计和测试对应关系</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgdf6cde7" class="outline-2">
-<h2 id="orgdf6cde7"><span class="section-number-2">1</span> 软件测试</h2>
+<div id="outline-container-org1692d56" class="outline-2">
+<h2 id="org1692d56"><span class="section-number-2">1.</span> 软件测试</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 软件测试根据看问题角度不同，有多种分类。
 </p>
 </div>
-<div id="outline-container-org94c3880" class="outline-3">
-<h3 id="org94c3880"><span class="section-number-3">1.1</span> 根据项目流程阶段划分</h3>
+<div id="outline-container-org1efe38d" class="outline-3">
+<h3 id="org1efe38d"><span class="section-number-3">1.1.</span> 根据项目流程阶段划分</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
-几种测试和设计的对应关系见表<a href="#orgad87304">1</a>所示。
+几种测试和设计的对应关系见表<a href="#orgce47459">1</a>所示。
 </p>
-<table id="orgad87304" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="orgce47459" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 1:</span> 设计和测试对应关系</caption>
 
 <colgroup>
@@ -429,8 +406,8 @@ for the JavaScript code in this tag.
 </table>
 </div>
 
-<div id="outline-container-org0f0c53d" class="outline-4">
-<h4 id="org0f0c53d"><span class="section-number-4">1.1.1</span> 单元测试</h4>
+<div id="outline-container-org80502a9" class="outline-4">
+<h4 id="org80502a9"><span class="section-number-4">1.1.1.</span> 单元测试</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <p>
 单元测试，也叫模块测试，是对程序中的单个子程序或具有独立功能的代码段进
@@ -438,8 +415,8 @@ for the JavaScript code in this tag.
 </p>
 </div>
 </div>
-<div id="outline-container-org47b35dc" class="outline-4">
-<h4 id="org47b35dc"><span class="section-number-4">1.1.2</span> 集成测试</h4>
+<div id="outline-container-orgd67781f" class="outline-4">
+<h4 id="orgd67781f"><span class="section-number-4">1.1.2.</span> 集成测试</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <p>
 集成测试是在单元测试基础上，先通过单元模块组装成系统或子系统，再进行测
@@ -447,8 +424,8 @@ for the JavaScript code in this tag.
 </p>
 </div>
 </div>
-<div id="outline-container-org97c2c5e" class="outline-4">
-<h4 id="org97c2c5e"><span class="section-number-4">1.1.3</span> 系统测试</h4>
+<div id="outline-container-org5b1b7f8" class="outline-4">
+<h4 id="org5b1b7f8"><span class="section-number-4">1.1.3.</span> 系统测试</h4>
 <div class="outline-text-4" id="text-1-1-3">
 <p>
 系统测试是针对整个产品系统进行的测试，验证系统是否满足需求规格的定义，
@@ -456,8 +433,8 @@ for the JavaScript code in this tag.
 </p>
 </div>
 </div>
-<div id="outline-container-org0271302" class="outline-4">
-<h4 id="org0271302"><span class="section-number-4">1.1.4</span> 验收测试</h4>
+<div id="outline-container-orgfd4baae" class="outline-4">
+<h4 id="orgfd4baae"><span class="section-number-4">1.1.4.</span> 验收测试</h4>
 <div class="outline-text-4" id="text-1-1-4">
 <p>
 验收测试是部署软件之前的最后一个测试阶段。目的是确保软件准备就绪，向客
@@ -466,12 +443,12 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
-<div id="outline-container-orgf305c1f" class="outline-3">
-<h3 id="orgf305c1f"><span class="section-number-3">1.2</span> 根据模块细节可见程度划分</h3>
+<div id="outline-container-orge9da6e3" class="outline-3">
+<h3 id="orge9da6e3"><span class="section-number-3">1.2.</span> 根据模块细节可见程度划分</h3>
 <div class="outline-text-3" id="text-1-2">
 </div>
-<div id="outline-container-orgcaaeb4b" class="outline-4">
-<h4 id="orgcaaeb4b"><span class="section-number-4">1.2.1</span> 白盒测试</h4>
+<div id="outline-container-org31f981d" class="outline-4">
+<h4 id="org31f981d"><span class="section-number-4">1.2.1.</span> 白盒测试</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <p>
 白盒测试，按照程序内部的结构测试程序，通过测试来检测产品内部动作是否按
@@ -480,16 +457,16 @@ for the JavaScript code in this tag.
 </p>
 </div>
 </div>
-<div id="outline-container-org9413b9c" class="outline-4">
-<h4 id="org9413b9c"><span class="section-number-4">1.2.2</span> 黑盒测试</h4>
+<div id="outline-container-orgd50873d" class="outline-4">
+<h4 id="orgd50873d"><span class="section-number-4">1.2.2.</span> 黑盒测试</h4>
 <div class="outline-text-4" id="text-1-2-2">
 <p>
 黑盒测试不关心内部结构和流程。只关心软件的输入和输出关系。
 </p>
 </div>
 </div>
-<div id="outline-container-org9bfc875" class="outline-4">
-<h4 id="org9bfc875"><span class="section-number-4">1.2.3</span> 灰盒测试</h4>
+<div id="outline-container-org9139f99" class="outline-4">
+<h4 id="org9139f99"><span class="section-number-4">1.2.3.</span> 灰盒测试</h4>
 <div class="outline-text-4" id="text-1-2-3">
 <p>
 灰盒测试，既关注输入输出关系，也关注内部表现。但没有白盒测试关注的那么
@@ -498,38 +475,38 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
-<div id="outline-container-orgc6de717" class="outline-3">
-<h3 id="orgc6de717"><span class="section-number-3">1.3</span> 根据不同测试面划分</h3>
+<div id="outline-container-orge14ca9d" class="outline-3">
+<h3 id="orge14ca9d"><span class="section-number-3">1.3.</span> 根据不同测试面划分</h3>
 <div class="outline-text-3" id="text-1-3">
 </div>
-<div id="outline-container-org65b9e10" class="outline-4">
-<h4 id="org65b9e10"><span class="section-number-4">1.3.1</span> 逻辑功能测试</h4>
+<div id="outline-container-org1b461e7" class="outline-4">
+<h4 id="org1b461e7"><span class="section-number-4">1.3.1.</span> 逻辑功能测试</h4>
 </div>
-<div id="outline-container-orgcc24723" class="outline-4">
-<h4 id="orgcc24723"><span class="section-number-4">1.3.2</span> 界面测试</h4>
+<div id="outline-container-orga27fce0" class="outline-4">
+<h4 id="orga27fce0"><span class="section-number-4">1.3.2.</span> 界面测试</h4>
 </div>
-<div id="outline-container-org3968975" class="outline-4">
-<h4 id="org3968975"><span class="section-number-4">1.3.3</span> 易用性测试</h4>
+<div id="outline-container-org4043fde" class="outline-4">
+<h4 id="org4043fde"><span class="section-number-4">1.3.3.</span> 易用性测试</h4>
 </div>
-<div id="outline-container-org35bf4e9" class="outline-4">
-<h4 id="org35bf4e9"><span class="section-number-4">1.3.4</span> 安装测试</h4>
+<div id="outline-container-org26c1957" class="outline-4">
+<h4 id="org26c1957"><span class="section-number-4">1.3.4.</span> 安装测试</h4>
 </div>
-<div id="outline-container-org2c37bda" class="outline-4">
-<h4 id="org2c37bda"><span class="section-number-4">1.3.5</span> 兼容性测试</h4>
+<div id="outline-container-orgd25f49b" class="outline-4">
+<h4 id="orgd25f49b"><span class="section-number-4">1.3.5.</span> 兼容性测试</h4>
 </div>
-<div id="outline-container-orge8a3849" class="outline-4">
-<h4 id="orge8a3849"><span class="section-number-4">1.3.6</span> 安全测试</h4>
+<div id="outline-container-orge234c20" class="outline-4">
+<h4 id="orge234c20"><span class="section-number-4">1.3.6.</span> 安全测试</h4>
 </div>
-<div id="outline-container-org2185838" class="outline-4">
-<h4 id="org2185838"><span class="section-number-4">1.3.7</span> 时间性能测试</h4>
+<div id="outline-container-orgc0f83a5" class="outline-4">
+<h4 id="orgc0f83a5"><span class="section-number-4">1.3.7.</span> 时间性能测试</h4>
 <div class="outline-text-4" id="text-1-3-7">
 <p>
 注意考核软件的一个具体的响应时间
 </p>
 </div>
 </div>
-<div id="outline-container-org0ad98c7" class="outline-4">
-<h4 id="org0ad98c7"><span class="section-number-4">1.3.8</span> 空间性能测试</h4>
+<div id="outline-container-org5d069e4" class="outline-4">
+<h4 id="org5d069e4"><span class="section-number-4">1.3.8.</span> 空间性能测试</h4>
 <div class="outline-text-4" id="text-1-3-8">
 <p>
 主要指软件运行时消耗的系统资源，如CPU、内存、网络带宽等。
@@ -537,15 +514,15 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
-<div id="outline-container-org9ce0df6" class="outline-3">
-<h3 id="org9ce0df6"><span class="section-number-3">1.4</span> 根据测试手段划分</h3>
+<div id="outline-container-orgf39f8b6" class="outline-3">
+<h3 id="orgf39f8b6"><span class="section-number-3">1.4.</span> 根据测试手段划分</h3>
 <div class="outline-text-3" id="text-1-4">
 </div>
-<div id="outline-container-org3e36f8e" class="outline-4">
-<h4 id="org3e36f8e"><span class="section-number-4">1.4.1</span> 手工测试</h4>
+<div id="outline-container-orgf85c4de" class="outline-4">
+<h4 id="orgf85c4de"><span class="section-number-4">1.4.1.</span> 手工测试</h4>
 </div>
-<div id="outline-container-org43fbbb8" class="outline-4">
-<h4 id="org43fbbb8"><span class="section-number-4">1.4.2</span> 自动化测试</h4>
+<div id="outline-container-org18c6d18" class="outline-4">
+<h4 id="org18c6d18"><span class="section-number-4">1.4.2.</span> 自动化测试</h4>
 <div class="outline-text-4" id="text-1-4-2">
 <p>
 自动化测试需要有几大原则。
@@ -565,12 +542,12 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
-<div id="outline-container-org603eef0" class="outline-3">
-<h3 id="org603eef0"><span class="section-number-3">1.5</span> 其他划分</h3>
+<div id="outline-container-org2d91c14" class="outline-3">
+<h3 id="org2d91c14"><span class="section-number-3">1.5.</span> 其他划分</h3>
 <div class="outline-text-3" id="text-1-5">
 </div>
-<div id="outline-container-orgfbc9534" class="outline-4">
-<h4 id="orgfbc9534"><span class="section-number-4">1.5.1</span> 冒烟测试</h4>
+<div id="outline-container-org7e179e4" class="outline-4">
+<h4 id="org7e179e4"><span class="section-number-4">1.5.1.</span> 冒烟测试</h4>
 <div class="outline-text-4" id="text-1-5-1">
 <p>
 是指在对一个新版本进行大规模的系统测试前，先验证一下软件的基本功能是否
@@ -580,16 +557,16 @@ for the JavaScript code in this tag.
 </p>
 </div>
 </div>
-<div id="outline-container-orga105230" class="outline-4">
-<h4 id="orga105230"><span class="section-number-4">1.5.2</span> 回归测试</h4>
+<div id="outline-container-org0838cb1" class="outline-4">
+<h4 id="org0838cb1"><span class="section-number-4">1.5.2.</span> 回归测试</h4>
 <div class="outline-text-4" id="text-1-5-2">
 <p>
 是指确认问题是否得到修复，是否引入了新的问题。
 </p>
 </div>
 </div>
-<div id="outline-container-org06cb85b" class="outline-4">
-<h4 id="org06cb85b"><span class="section-number-4">1.5.3</span> 随机测试</h4>
+<div id="outline-container-org9d73d94" class="outline-4">
+<h4 id="org9d73d94"><span class="section-number-4">1.5.3.</span> 随机测试</h4>
 <div class="outline-text-4" id="text-1-5-3">
 <p>
 指测试中的输入数据都是随机生成，模拟用户的真实操作，发现一些边缘性的错
@@ -597,8 +574,8 @@ for the JavaScript code in this tag.
 </p>
 </div>
 </div>
-<div id="outline-container-orgaa0ec67" class="outline-4">
-<h4 id="orgaa0ec67"><span class="section-number-4">1.5.4</span> 探索性测试</h4>
+<div id="outline-container-org31c82d2" class="outline-4">
+<h4 id="org31c82d2"><span class="section-number-4">1.5.4.</span> 探索性测试</h4>
 <div class="outline-text-4" id="text-1-5-4">
 <p>
 探索性测试可以说是一种测试思维技术，它没有很多实际的测试方法，技术和工
@@ -610,16 +587,16 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org4884927" class="outline-2">
-<h2 id="org4884927"><span class="section-number-2">2</span> 编程语言</h2>
+<div id="outline-container-orgc7b2ba3" class="outline-2">
+<h2 id="orgc7b2ba3"><span class="section-number-2">2.</span> 编程语言</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org06dd366" class="outline-3">
-<h3 id="org06dd366"><span class="section-number-3">2.1</span> c</h3>
+<div id="outline-container-orgb098c8e" class="outline-3">
+<h3 id="orgb098c8e"><span class="section-number-3">2.1.</span> c</h3>
 <div class="outline-text-3" id="text-2-1">
 </div>
-<div id="outline-container-orgda76160" class="outline-4">
-<h4 id="orgda76160"><span class="section-number-4">2.1.1</span> 宏操作</h4>
+<div id="outline-container-org4d60298" class="outline-4">
+<h4 id="org4d60298"><span class="section-number-4">2.1.1.</span> 宏操作</h4>
 <div class="outline-text-4" id="text-2-1-1">
 <ul class="org-ul">
 <li><p>
@@ -629,7 +606,7 @@ for the JavaScript code in this tag.
 <pre class="src src-c"><span style="color: #90ee90; font-style: italic;">/*</span>
 <span style="color: #90ee90; font-style: italic;"> * Macros to transform values</span>
 <span style="color: #90ee90; font-style: italic;"> * into environment strings.</span>
-<span style="color: #90ee90; font-style: italic;"> </span><span style="color: #90ee90; font-style: italic;">*/</span>
+<span style="color: #90ee90; font-style: italic;"> */</span>
 <span style="color: #87cefa; text-decoration: underline;">#define</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">XMK_STR</span>(<span style="color: #ffd700;">x</span>)  #x
 <span style="color: #87cefa; text-decoration: underline;">#define</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">MK_STR</span>(<span style="color: #ffd700;">x</span>)   XMK_STR(x)
 </pre>
@@ -708,8 +685,8 @@ error C2015: too many characters in constant; 最后看看#x,估计你也明
 </ul>
 </div>
 </div>
-<div id="outline-container-orgd97aff1" class="outline-4">
-<h4 id="orgd97aff1"><span class="section-number-4">2.1.2</span> 位操作</h4>
+<div id="outline-container-orgc1d6d02" class="outline-4">
+<h4 id="orgc1d6d02"><span class="section-number-4">2.1.2.</span> 位操作</h4>
 <div class="outline-text-4" id="text-2-1-2">
 <ul class="org-ul">
 <li><p>
@@ -829,8 +806,8 @@ GRAY码到二进制码
 </ul>
 </div>
 </div>
-<div id="outline-container-orgd0eb2f0" class="outline-4">
-<h4 id="orgd0eb2f0"><span class="section-number-4">2.1.3</span> 字符串操作</h4>
+<div id="outline-container-org209b742" class="outline-4">
+<h4 id="org209b742"><span class="section-number-4">2.1.3.</span> 字符串操作</h4>
 <div class="outline-text-4" id="text-2-1-3">
 <ul class="org-ul">
 <li><p>
@@ -838,48 +815,48 @@ GRAY码到二进制码
 以B作为开头，结尾也可以有任意个B，中间也可以有任意个B。
 </p>
 <div class="org-src-container">
-<pre class="src src-c"><span class="linenr"> 1: </span><span style="color: #90ee90; font-style: italic;">/** </span>
-<span class="linenr"> 2: </span><span style="color: #90ee90; font-style: italic;"> * </span><span style="color: #ffb6c1; font-size: 105%; font-style: italic;">@brief</span><span style="color: #90ee90; font-style: italic;"> &#20197;demial&#20998;&#21106;string_org&#23383;&#31526;&#20018;&#65292;&#21487;&#20197;&#22810;&#27425;&#35843;&#29992;&#65292;&#20998;&#21106;&#23436;string_org</span>
-<span class="linenr"> 3: </span><span style="color: #90ee90; font-style: italic;"> * &#27604;&#36739;&#32463;&#20856;&#30340;&#26159;&#37324;&#38754;&#30340;map&#23545;demial&#30340;&#32534;&#30721;&#31639;&#27861;</span>
-<span class="linenr"> 4: </span><span style="color: #90ee90; font-style: italic;"> * </span><span style="color: #ffb6c1; font-size: 105%; font-style: italic;">@param</span><span style="color: #90ee90; font-style: italic;"> </span><span style="color: #ffd700; font-style: italic;">string_org</span><span style="color: #90ee90; font-style: italic;"> &#24453;&#20998;&#21106;&#23383;&#31526;&#20018;</span>
-<span class="linenr"> 5: </span><span style="color: #90ee90; font-style: italic;"> * </span><span style="color: #ffb6c1; font-size: 105%; font-style: italic;">@param</span><span style="color: #90ee90; font-style: italic;"> </span><span style="color: #ffd700; font-style: italic;">demial</span><span style="color: #90ee90; font-style: italic;"> &#20998;&#38548;&#31526;</span>
-<span class="linenr"> 6: </span><span style="color: #90ee90; font-style: italic;"> * </span><span style="color: #ffb6c1; font-size: 105%; font-style: italic;">@return</span><span style="color: #90ee90; font-style: italic;"> NULL&#65306;&#27809;&#25214;&#21040;&#38500;demial&#30340;&#23383;&#31526;&#20018;&#65292;&#20854;&#20182;&#65306;&#25214;&#21040;&#30340;&#31532;&#19968;&#20010;&#23383;&#31526;&#20018;</span>
-<span class="linenr"> 7: </span><span style="color: #90ee90; font-style: italic;"> </span><span style="color: #90ee90; font-style: italic;">*/</span>
+<pre class="src src-c"><span class="linenr"> 1: </span><span style="color: #ffa07a;">/** </span>
+<span class="linenr"> 2: </span><span style="color: #ffa07a;"> * </span><span style="color: #7fffd4;">@brief</span><span style="color: #ffa07a;"> &#20197;demial&#20998;&#21106;string_org&#23383;&#31526;&#20018;&#65292;&#21487;&#20197;&#22810;&#27425;&#35843;&#29992;&#65292;&#20998;&#21106;&#23436;string_org</span>
+<span class="linenr"> 3: </span><span style="color: #ffa07a;"> * &#27604;&#36739;&#32463;&#20856;&#30340;&#26159;&#37324;&#38754;&#30340;map&#23545;demial&#30340;&#32534;&#30721;&#31639;&#27861;</span>
+<span class="linenr"> 4: </span><span style="color: #ffa07a;"> * </span><span style="color: #7fffd4;">@param</span><span style="color: #ffa07a;"> string_org &#24453;&#20998;&#21106;&#23383;&#31526;&#20018;</span>
+<span class="linenr"> 5: </span><span style="color: #ffa07a;"> * </span><span style="color: #7fffd4;">@param</span><span style="color: #ffa07a;"> demial &#20998;&#38548;&#31526;</span>
+<span class="linenr"> 6: </span><span style="color: #ffa07a;"> * </span><span style="color: #7fffd4;">@return</span><span style="color: #ffa07a;"> NULL&#65306;&#27809;&#25214;&#21040;&#38500;demial&#30340;&#23383;&#31526;&#20018;&#65292;&#20854;&#20182;&#65306;&#25214;&#21040;&#30340;&#31532;&#19968;&#20010;&#23383;&#31526;&#20018;</span>
+<span class="linenr"> 7: </span><span style="color: #ffa07a;"> */</span>
 <span class="linenr"> 8: </span><span style="color: #ffff00; font-size: 105%;">char</span> *<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">strtok</span>(<span style="color: #ffff00; font-size: 105%;">char</span> *<span style="color: #ffd700;">string_org</span>, <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">char</span> * <span style="color: #ffd700;">demial</span>)
 <span class="linenr"> 9: </span>{
-<span class="linenr">10: </span>    <span style="color: #ffb6c1; font-size: 105%;">static</span> <span style="color: #ffff00; font-size: 105%;">unsigned</span> <span style="color: #ffff00; font-size: 105%;">char</span>* <span style="color: #ffd700;">last</span>;
-<span class="linenr">11: </span>    <span style="color: #ffff00; font-size: 105%;">unsigned</span> <span style="color: #ffff00; font-size: 105%;">char</span>*<span style="color: #ffd700;">str</span>;
-<span class="linenr">12: </span>    <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">unsigned</span> <span style="color: #ffff00; font-size: 105%;">char</span>*<span style="color: #ffd700;">ctrl</span> = (<span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">unsigned</span> <span style="color: #ffff00; font-size: 105%;">char</span>*)demial;
-<span class="linenr">13: </span>    <span style="color: #ffff00; font-size: 105%;">unsigned</span> <span style="color: #ffff00; font-size: 105%;">char</span> <span style="color: #ffd700;">map</span>[32];
-<span class="linenr">14: </span>    <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">count</span>;
-<span class="linenr">15: </span>    memset(map, 0, <span style="color: #ffb6c1; font-size: 105%;">sizeof</span>(map));
+<span class="linenr">10: </span>        <span style="color: #ffb6c1; font-size: 105%;">static</span> <span style="color: #ffff00; font-size: 105%;">unsigned</span> <span style="color: #ffff00; font-size: 105%;">char</span>* <span style="color: #ffd700;">last</span>;
+<span class="linenr">11: </span>        <span style="color: #ffff00; font-size: 105%;">unsigned</span> <span style="color: #ffff00; font-size: 105%;">char</span>*<span style="color: #ffd700;">str</span>;
+<span class="linenr">12: </span>        <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">unsigned</span> <span style="color: #ffff00; font-size: 105%;">char</span>*<span style="color: #ffd700;">ctrl</span> = (<span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">unsigned</span> <span style="color: #ffff00; font-size: 105%;">char</span>*)demial;
+<span class="linenr">13: </span>        <span style="color: #ffff00; font-size: 105%;">unsigned</span> <span style="color: #ffff00; font-size: 105%;">char</span> <span style="color: #ffd700;">map</span>[32];
+<span class="linenr">14: </span>        <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">count</span>;
+<span class="linenr">15: </span>        memset(map, 0, <span style="color: #ffb6c1; font-size: 105%;">sizeof</span>(map));
 <span class="linenr">16: </span>    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#25226;demial&#30340;&#39640;5bit&#32534;&#30721;&#21040;map&#30340;index&#19979;&#26631;&#20013;&#65292;&#25226;demial&#30340;&#20302;3bit&#32534;&#30721;&#21040;</span>
 <span class="linenr">17: </span>    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">map&#35813;&#19979;&#26631;&#30340;&#20540;&#20013;&#65292;&#19979;&#26631;&#21644;&#20540;&#20013;&#30340;&#27599;&#20010;1&#26631;&#35782;&#19968;&#20010;&#19981;&#21516;&#30340;demial;</span>
-<span class="linenr">18: </span>    <span style="color: #ffb6c1; font-size: 105%;">do</span>
-<span class="linenr">19: </span>    {
-<span class="linenr">20: </span>        map[*ctrl &gt;&gt; 3] |= (1 &lt;&lt; (*ctrl &amp; 7));
-<span class="linenr">21: </span>    } <span style="color: #ffb6c1; font-size: 105%;">while</span> (*ctrl++);
-<span class="linenr">22: </span>    str = (string_org)?(<span style="color: #ffff00; font-size: 105%;">unsigned</span> <span style="color: #ffff00; font-size: 105%;">char</span> * )string_org:
-<span class="linenr">23: </span>        last;
-<span class="linenr">24: </span>    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#23545;str&#20013;&#27599;&#20010;&#23383;&#31526;&#21462;&#20986;&#26469;&#20570;map&#32534;&#30721;&#20877;&#27604;&#36739;&#65292;&#30452;&#21040;'\0'&#32467;&#26463;&#31526;</span>
-<span class="linenr">25: </span>    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#30053;&#21435;string_org&#20197;demial&#24320;&#22836;&#30340;&#23383;&#31526;&#20018;</span>
-<span class="linenr">26: </span>    <span style="color: #ffb6c1; font-size: 105%;">while</span> ((map[*str &gt;&gt; 3] &amp; (1 &lt;&lt; (*str &amp; 7))) &amp;&amp; *str)
-<span class="linenr">27: </span>    {
-<span class="linenr">28: </span>        str++;
-<span class="linenr">29: </span>    }
-<span class="linenr">30: </span>    string_org = (<span style="color: #ffff00; font-size: 105%;">char</span> *)str;
-<span class="linenr">31: </span>    <span style="color: #ffb6c1; font-size: 105%;">for</span> (; * str; str++)
-<span class="linenr">32: </span>    {
-<span class="linenr">33: </span>        <span style="color: #ffb6c1; font-size: 105%;">if</span> (map[*str &gt;&gt; 3] &amp; (1 &lt;&lt; (*str &amp; 7)))
-<span class="linenr">34: </span>        {
-<span class="linenr">35: </span>            *str++ = <span style="color: #ffa07a;">'\0'</span>;<span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#25214;&#21040;1&#20010;demial&#23601;&#25130;&#21462;&#36864;&#20986;</span>
-<span class="linenr">36: </span>            <span style="color: #ffb6c1; font-size: 105%;">break</span>;
-<span class="linenr">37: </span>        }
-<span class="linenr">38: </span>    }
-<span class="linenr">39: </span>    last = str;<span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#20445;&#30041;&#21097;&#19979;&#30340;&#26410;&#25130;&#21462;&#30340;&#23383;&#31526;&#20018;</span>
+<span class="linenr">18: </span>        <span style="color: #ffb6c1; font-size: 105%;">do</span>
+<span class="linenr">19: </span>        {
+<span class="linenr">20: </span>                map[*ctrl &gt;&gt; 3] |= (1 &lt;&lt; (*ctrl &amp; 7));
+<span class="linenr">21: </span>        } <span style="color: #ffb6c1; font-size: 105%;">while</span> (*ctrl++);
+<span class="linenr">22: </span>        str = (string_org)?(<span style="color: #ffff00; font-size: 105%;">unsigned</span> <span style="color: #ffff00; font-size: 105%;">char</span> * )string_org:
+<span class="linenr">23: </span>            last;
+<span class="linenr">24: </span>        <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#23545;str&#20013;&#27599;&#20010;&#23383;&#31526;&#21462;&#20986;&#26469;&#20570;map&#32534;&#30721;&#20877;&#27604;&#36739;&#65292;&#30452;&#21040;'\0'&#32467;&#26463;&#31526;</span>
+<span class="linenr">25: </span>        <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#30053;&#21435;string_org&#20197;demial&#24320;&#22836;&#30340;&#23383;&#31526;&#20018;</span>
+<span class="linenr">26: </span>        <span style="color: #ffb6c1; font-size: 105%;">while</span> ((map[*str &gt;&gt; 3] &amp; (1 &lt;&lt; (*str &amp; 7))) &amp;&amp; *str)
+<span class="linenr">27: </span>        {
+<span class="linenr">28: </span>                str++;
+<span class="linenr">29: </span>        }
+<span class="linenr">30: </span>        string_org = (<span style="color: #ffff00; font-size: 105%;">char</span> *)str;
+<span class="linenr">31: </span>        <span style="color: #ffb6c1; font-size: 105%;">for</span> (; * str; str++)
+<span class="linenr">32: </span>        {
+<span class="linenr">33: </span>                <span style="color: #ffb6c1; font-size: 105%;">if</span> (map[*str &gt;&gt; 3] &amp; (1 &lt;&lt; (*str &amp; 7)))
+<span class="linenr">34: </span>                {
+<span class="linenr">35: </span>                        *str++ = <span style="color: #ffa07a;">'\0'</span>;<span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#25214;&#21040;1&#20010;demial&#23601;&#25130;&#21462;&#36864;&#20986;</span>
+<span class="linenr">36: </span>                        <span style="color: #ffb6c1; font-size: 105%;">break</span>;
+<span class="linenr">37: </span>                }
+<span class="linenr">38: </span>        }
+<span class="linenr">39: </span>        last = str;<span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#20445;&#30041;&#21097;&#19979;&#30340;&#26410;&#25130;&#21462;&#30340;&#23383;&#31526;&#20018;</span>
 <span class="linenr">40: </span>    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#31354;&#23383;&#31526;&#20018;, &#22914;&#26368;&#21518;1&#20010;&#21442;&#25968;&#21518;&#38754;&#28155;&#21152;&#19968;&#22534;&#30340;&#31354;&#26684;"  test 1 2  "</span>
 <span class="linenr">41: </span>    <span style="color: #ffb6c1; font-size: 105%;">return</span> (string_org == (<span style="color: #ffff00; font-size: 105%;">char</span> *)str) ? <span style="color: #7fffd4;">NULL</span>:
-<span class="linenr">42: </span>    string_org;<span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#25130;&#21462;&#20102;&#24320;&#22836;&#30340;demial&#21040;&#31532;2&#27425;demial&#20043;&#38388;&#30340;&#23383;&#31526;&#20018;</span>
+<span class="linenr">42: </span>        string_org;<span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#25130;&#21462;&#20102;&#24320;&#22836;&#30340;demial&#21040;&#31532;2&#27425;demial&#20043;&#38388;&#30340;&#23383;&#31526;&#20018;</span>
 <span class="linenr">43: </span>}
 </pre>
 </div></li>
@@ -887,8 +864,8 @@ GRAY码到二进制码
 </div>
 </div>
 
-<div id="outline-container-orged979f1" class="outline-4">
-<h4 id="orged979f1"><span class="section-number-4">2.1.4</span> 嵌入式</h4>
+<div id="outline-container-orgcc2d55b" class="outline-4">
+<h4 id="orgcc2d55b"><span class="section-number-4">2.1.4.</span> 嵌入式</h4>
 <div class="outline-text-4" id="text-2-1-4">
 <ul class="org-ul">
 <li><p>
@@ -915,15 +892,15 @@ printf调试：可以如下步骤
 </div>
 </div>
 </div>
-<div id="outline-container-org7e8fa7c" class="outline-3">
-<h3 id="org7e8fa7c"><span class="section-number-3">2.2</span> java</h3>
+<div id="outline-container-org1e3dc36" class="outline-3">
+<h3 id="org1e3dc36"><span class="section-number-3">2.2.</span> java</h3>
 </div>
-<div id="outline-container-orgd544496" class="outline-3">
-<h3 id="orgd544496"><span class="section-number-3">2.3</span> python</h3>
+<div id="outline-container-org55dda92" class="outline-3">
+<h3 id="org55dda92"><span class="section-number-3">2.3.</span> python</h3>
 <div class="outline-text-3" id="text-2-3">
 </div>
-<div id="outline-container-orgdf7dcc4" class="outline-4">
-<h4 id="orgdf7dcc4"><span class="section-number-4">2.3.1</span> base</h4>
+<div id="outline-container-org464ad22" class="outline-4">
+<h4 id="org464ad22"><span class="section-number-4">2.3.1.</span> base</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <ul class="org-ul">
 <li><p>
@@ -934,9 +911,9 @@ printf调试：可以如下步骤
 <span style="color: #ffd700;">varName</span> = <span style="color: #ffa07a;">'var'</span>
 <span style="color: #ffd700;">s</span>= <span style="color: #87cefa; text-decoration: underline;">locals</span>()[varName]
 <span style="color: #ffd700;">s2</span>=<span style="color: #87cefa; text-decoration: underline;">vars</span>()[varName]
-<span style="color: #ffb6c1; font-size: 105%;">print</span>(s)
-<span style="color: #ffb6c1; font-size: 105%;">print</span>(s2)
-<span style="color: #ffb6c1; font-size: 105%;">print</span>(<span style="color: #87cefa; text-decoration: underline;">eval</span>(varName))
+<span style="color: #87cefa; text-decoration: underline;">print</span>(s)
+<span style="color: #87cefa; text-decoration: underline;">print</span>(s2)
+<span style="color: #87cefa; text-decoration: underline;">print</span>(<span style="color: #87cefa; text-decoration: underline;">eval</span>(varName))
 </pre>
 </div></li>
 <li><p>
@@ -958,8 +935,8 @@ printf调试：可以如下步骤
 </ul>
 </div>
 </div>
-<div id="outline-container-org4201735" class="outline-4">
-<h4 id="org4201735"><span class="section-number-4">2.3.2</span> ipython</h4>
+<div id="outline-container-orga1e086c" class="outline-4">
+<h4 id="orga1e086c"><span class="section-number-4">2.3.2.</span> ipython</h4>
 <div class="outline-text-4" id="text-2-3-2">
 <ul class="org-ul">
 <li>修改自动加载：如果代码发生更新，要实现ipython中引用的模块也自动更新，
@@ -983,8 +960,8 @@ ipython提供了一个很好的扩展auto<sub>reload</sub>，命令参数如下�
 在文件末尾加入如下语句
 </p>
 <div class="org-src-container">
-<pre class="src src-python"><span style="color: #ffd700;">c.InteractiveShellApp.extensions</span> = [<span style="color: #ffa07a;">'autoreload'</span>]  
-<span style="color: #ffd700;">c.InteractiveShellApp.exec_lines</span> = [<span style="color: #ffa07a;">'%autoreload 2'</span>]
+<pre class="src src-python">c.InteractiveShellApp.<span style="color: #ffd700;">extensions</span> = [<span style="color: #ffa07a;">'autoreload'</span>]  
+c.InteractiveShellApp.<span style="color: #ffd700;">exec_lines</span> = [<span style="color: #ffa07a;">'%autoreload 2'</span>]
 </pre>
 </div></li>
 </ul></li>
@@ -992,8 +969,8 @@ ipython提供了一个很好的扩展auto<sub>reload</sub>，命令参数如下�
 </div>
 </div>
 
-<div id="outline-container-org325bf78" class="outline-4">
-<h4 id="org325bf78"><span class="section-number-4">2.3.3</span> numpy</h4>
+<div id="outline-container-orgf54429e" class="outline-4">
+<h4 id="orgf54429e"><span class="section-number-4">2.3.3.</span> numpy</h4>
 <div class="outline-text-4" id="text-2-3-3">
 <ul class="org-ul">
 <li>array矩阵的max和min静态属性：比如array矩阵data=array([[1, 5, 3],
@@ -1009,15 +986,15 @@ numpy.angle()计算</li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org3cd2e9b" class="outline-4">
-<h4 id="org3cd2e9b"><span class="section-number-4">2.3.4</span> matplotlib</h4>
+<div id="outline-container-org97a9054" class="outline-4">
+<h4 id="org97a9054"><span class="section-number-4">2.3.4.</span> matplotlib</h4>
 <div class="outline-text-4" id="text-2-3-4">
 <p>
 此包注意用于画图
 </p>
 </div>
-<div id="outline-container-org327b3c7" class="outline-5">
-<h5 id="org327b3c7"><span class="section-number-5">2.3.4.1</span> 画XY轴离散点图</h5>
+<div id="outline-container-orgb2aaf08" class="outline-5">
+<h5 id="orgb2aaf08"><span class="section-number-5">2.3.4.1.</span> 画XY轴离散点图</h5>
 <div class="outline-text-5" id="text-2-3-4-1">
 <ol class="org-ol">
 <li>先获得x,y的取值范围，比如x=numpy.arange(0, 10), y=numpy.arange(3,
@@ -1033,8 +1010,8 @@ numpy.angle()计算</li>
 </div>
 </div>
 
-<div id="outline-container-org014b486" class="outline-4">
-<h4 id="org014b486"><span class="section-number-4">2.3.5</span> module</h4>
+<div id="outline-container-org456fd51" class="outline-4">
+<h4 id="org456fd51"><span class="section-number-4">2.3.5.</span> module</h4>
 <div class="outline-text-4" id="text-2-3-5">
 <ul class="org-ul">
 <li><p>
@@ -1124,7 +1101,7 @@ watermark:
         clipboard.setImage(QImage(outFile))
         <span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">print(clipboard)</span>
     <span style="color: #ffb6c1; font-size: 105%;">else</span>:
-        <span style="color: #ffb6c1; font-size: 105%;">print</span>(<span style="color: #ffa07a;">"not image"</span>)
+        <span style="color: #87cefa; text-decoration: underline;">print</span>(<span style="color: #ffa07a;">"not image"</span>)
 </pre>
 </div></li>
 </ul>
@@ -1133,31 +1110,31 @@ watermark:
 </div>
 </div>
 
-<div id="outline-container-orge5fc477" class="outline-2">
-<h2 id="orge5fc477"><span class="section-number-2">3</span> 状态机和信号量</h2>
+<div id="outline-container-org4a6d3c2" class="outline-2">
+<h2 id="org4a6d3c2"><span class="section-number-2">3.</span> 状态机和信号量</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org309b9a2" class="outline-3">
-<h3 id="org309b9a2"><span class="section-number-3">3.1</span> 断言</h3>
+<div id="outline-container-org80c0440" class="outline-3">
+<h3 id="org80c0440"><span class="section-number-3">3.1.</span> 断言</h3>
 <div class="outline-text-3" id="text-3-1">
 <div class="org-src-container">
 <pre class="src src-c"><span class="linenr">1: </span><span style="color: #87cefa; text-decoration: underline;">#ifdef</span> NF_NDEBUG
 <span class="linenr">2: </span><span style="color: #87cefa; text-decoration: underline;">#define</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">NF_ASSERT</span>(<span style="color: #ffd700;">_exp</span>) ((<span style="color: #ffff00; font-size: 105%;">void</span>)0)
 <span class="linenr">3: </span><span style="color: #87cefa; text-decoration: underline;">#else</span>
 <span class="linenr">4: </span><span style="color: #87cefa; text-decoration: underline;">#define</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">NF_ASSERT</span>(<span style="color: #ffd700;">_exp</span>) ((_exp) ? (<span style="color: #ffff00; font-size: 105%;">void</span>)0 :
-<span class="linenr">5: </span>        NF_Assert_Failed((<span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">char</span> * )__FILE__, __LINE__))
+<span class="linenr">5: </span>            <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">NF_Assert_Failed</span>((<span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">char</span> * )__FILE__, __LINE__))
 <span class="linenr">6: </span><span style="color: #ffb6c1; font-size: 105%;">extern</span> <span style="color: #ffff00; font-size: 105%;">void</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">NF_Assert_Failed</span>(<span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">char</span> * <span style="color: #ffd700;">file</span>, <span style="color: #ffff00; font-size: 105%;">NF_Int32U</span> <span style="color: #ffd700;">line</span>);
 <span class="linenr">7: </span><span style="color: #87cefa; text-decoration: underline;">#endif</span>
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orge65478b" class="outline-3">
-<h3 id="orge65478b"><span class="section-number-3">3.2</span> 信号量</h3>
+<div id="outline-container-org072f062" class="outline-3">
+<h3 id="org072f062"><span class="section-number-3">3.2.</span> 信号量</h3>
 <div class="outline-text-3" id="text-3-2">
 </div>
-<div id="outline-container-org7320097" class="outline-4">
-<h4 id="org7320097"><span class="section-number-4">3.2.1</span> 信号值</h4>
+<div id="outline-container-orga6033bf" class="outline-4">
+<h4 id="orga6033bf"><span class="section-number-4">3.2.1.</span> 信号值</h4>
 <div class="outline-text-4" id="text-3-2-1">
 <div class="org-src-container">
 <pre class="src src-c"><span class="linenr">1: </span><span style="color: #ffb6c1; font-size: 105%;">typedef</span> <span style="color: #ffff00; font-size: 105%;">uint32_t</span> <span style="color: #ffff00; font-size: 105%;">SignalValue_T</span>;
@@ -1165,8 +1142,8 @@ watermark:
 </div>
 </div>
 </div>
-<div id="outline-container-org7ce00aa" class="outline-4">
-<h4 id="org7ce00aa"><span class="section-number-4">3.2.2</span> 信号名</h4>
+<div id="outline-container-orge39d7e5" class="outline-4">
+<h4 id="orge39d7e5"><span class="section-number-4">3.2.2.</span> 信号名</h4>
 <div class="outline-text-4" id="text-3-2-2">
 <div class="org-src-container">
 <pre class="src src-c"><span class="linenr">1: </span><span style="color: #ffb6c1; font-size: 105%;">typedef</span> <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">char</span>* <span style="color: #ffff00; font-size: 105%;">SignalName_T</span>;
@@ -1174,8 +1151,8 @@ watermark:
 </div>
 </div>
 </div>
-<div id="outline-container-org06c982d" class="outline-4">
-<h4 id="org06c982d"><span class="section-number-4">3.2.3</span> 信号ID</h4>
+<div id="outline-container-org09e1954" class="outline-4">
+<h4 id="org09e1954"><span class="section-number-4">3.2.3.</span> 信号ID</h4>
 <div class="outline-text-4" id="text-3-2-3">
 <div class="org-src-container">
 <pre class="src src-c"><span class="linenr">1: </span><span style="color: #ffb6c1; font-size: 105%;">typedef</span> <span style="color: #ffff00; font-size: 105%;">uint32_t</span> <span style="color: #ffff00; font-size: 105%;">SignalID_T</span>;
@@ -1183,8 +1160,8 @@ watermark:
 </div>
 </div>
 </div>
-<div id="outline-container-orgf6b99ad" class="outline-4">
-<h4 id="orgf6b99ad"><span class="section-number-4">3.2.4</span> 信号对象</h4>
+<div id="outline-container-orgb57faf7" class="outline-4">
+<h4 id="orgb57faf7"><span class="section-number-4">3.2.4.</span> 信号对象</h4>
 <div class="outline-text-4" id="text-3-2-4">
 <div class="org-src-container">
 <pre class="src src-c"><span class="linenr">1: </span><span style="color: #ffb6c1; font-size: 105%;">typedef</span> <span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">_sig</span>
@@ -1196,8 +1173,8 @@ watermark:
 </div>
 </div>
 </div>
-<div id="outline-container-org12f285d" class="outline-4">
-<h4 id="org12f285d"><span class="section-number-4">3.2.5</span> 信号存储表</h4>
+<div id="outline-container-org719fbce" class="outline-4">
+<h4 id="org719fbce"><span class="section-number-4">3.2.5.</span> 信号存储表</h4>
 <div class="outline-text-4" id="text-3-2-5">
 <div class="org-src-container">
 <pre class="src src-c"><span class="linenr">1: </span><span style="color: #87cefa; text-decoration: underline;">#define</span> <span style="color: #ffd700;">MAX_SIGNAL_NUM</span>    50  
@@ -1207,8 +1184,8 @@ watermark:
 </div>
 </div>
 </div>
-<div id="outline-container-orgc7c327a" class="outline-4">
-<h4 id="orgc7c327a"><span class="section-number-4">3.2.6</span> 信号内部操作</h4>
+<div id="outline-container-orge6f91a9" class="outline-4">
+<h4 id="orge6f91a9"><span class="section-number-4">3.2.6.</span> 信号内部操作</h4>
 <div class="outline-text-4" id="text-3-2-6">
 <ul class="org-ul">
 <li><p>
@@ -1225,16 +1202,16 @@ watermark:
 <span class="linenr"> 8: </span>
 <span class="linenr"> 9: </span>    <span style="color: #ffb6c1; font-size: 105%;">for</span> (i = 0; i &lt; Signal_SigListCnt; i ++)
 <span class="linenr">10: </span>    {
-<span class="linenr">11: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> ( strcmp(Signal_SigList[i].Name, name) == 0 )
-<span class="linenr">12: </span>    {
-<span class="linenr">13: </span>        <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#36890;&#36807;&#22238;&#35843;&#21442;&#25968;&#36820;&#22238;ID&#21495;</span>
-<span class="linenr">14: </span>        <span style="color: #ffb6c1; font-size: 105%;">if</span> (id_ret != NULL_PTR)
-<span class="linenr">15: </span>        {
-<span class="linenr">16: </span>        *id_ret = i;
-<span class="linenr">17: </span>        }
+<span class="linenr">11: </span>        <span style="color: #ffb6c1; font-size: 105%;">if</span> ( strcmp(Signal_SigList[i].Name, name) == 0 )
+<span class="linenr">12: </span>        {
+<span class="linenr">13: </span>            <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#36890;&#36807;&#22238;&#35843;&#21442;&#25968;&#36820;&#22238;ID&#21495;</span>
+<span class="linenr">14: </span>            <span style="color: #ffb6c1; font-size: 105%;">if</span> (id_ret != NULL_PTR)
+<span class="linenr">15: </span>            {
+<span class="linenr">16: </span>                *id_ret = i;
+<span class="linenr">17: </span>            }
 <span class="linenr">18: </span>
-<span class="linenr">19: </span>        <span style="color: #ffb6c1; font-size: 105%;">return</span> &amp;(Signal_SigList[i]);
-<span class="linenr">20: </span>    }
+<span class="linenr">19: </span>            <span style="color: #ffb6c1; font-size: 105%;">return</span> &amp;(Signal_SigList[i]);
+<span class="linenr">20: </span>        }
 <span class="linenr">21: </span>    }
 <span class="linenr">22: </span>    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#27809;&#26377;&#25214;&#21040;&#65292;&#36820;&#22238;&#31354;&#25351;&#38024;</span>
 <span class="linenr">23: </span>    <span style="color: #ffb6c1; font-size: 105%;">return</span> NULL_PTR;
@@ -1251,21 +1228,21 @@ watermark:
 <span class="linenr"> 4: </span>    NF_ASSERT( name != NULL_PTR );
 <span class="linenr"> 5: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> (Signal_SigListCnt &lt; MAX_SIGNAL_NUM)
 <span class="linenr"> 6: </span>    {
-<span class="linenr"> 7: </span>    Signal_SigList[Signal_SigListCnt].Name  = name;
-<span class="linenr"> 8: </span>    Signal_SigList[Signal_SigListCnt].Value = val;
-<span class="linenr"> 9: </span>    Signal_SigListCnt ++;
-<span class="linenr">10: </span>    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#36890;&#36807;&#22238;&#35843;&#21442;&#25968;&#36820;&#22238;ID&#21495;</span>
-<span class="linenr">11: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> (id_ret != NULL_PTR)
-<span class="linenr">12: </span>    {
-<span class="linenr">13: </span>        *id_ret = Signal_SigListCnt - 1;
-<span class="linenr">14: </span>    }
-<span class="linenr">15: </span>    <span style="color: #ffb6c1; font-size: 105%;">return</span> &amp;(Signal_SigList[Signal_SigListCnt - 1]);
+<span class="linenr"> 7: </span>        Signal_SigList[Signal_SigListCnt].Name  = name;
+<span class="linenr"> 8: </span>        Signal_SigList[Signal_SigListCnt].Value = val;
+<span class="linenr"> 9: </span>        Signal_SigListCnt ++;
+<span class="linenr">10: </span>        <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#36890;&#36807;&#22238;&#35843;&#21442;&#25968;&#36820;&#22238;ID&#21495;</span>
+<span class="linenr">11: </span>        <span style="color: #ffb6c1; font-size: 105%;">if</span> (id_ret != NULL_PTR)
+<span class="linenr">12: </span>        {
+<span class="linenr">13: </span>            *id_ret = Signal_SigListCnt - 1;
+<span class="linenr">14: </span>        }
+<span class="linenr">15: </span>        <span style="color: #ffb6c1; font-size: 105%;">return</span> &amp;(Signal_SigList[Signal_SigListCnt - 1]);
 <span class="linenr">16: </span>    }
 <span class="linenr">17: </span>    <span style="color: #ffb6c1; font-size: 105%;">else</span>
 <span class="linenr">18: </span>    {
-<span class="linenr">19: </span>    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#20449;&#21495;&#21015;&#34920;&#28385;&#65292;&#21019;&#24314;&#22833;&#36133;</span>
-<span class="linenr">20: </span>    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#27492;&#26102;&#24212;&#21152;&#22823;&#22836;&#25991;&#20214;&#20013;&#26368;&#22823;&#20449;&#21495;&#25968;&#37327;&#23439;MAX_SIGNAL_NUM</span>
-<span class="linenr">21: </span>    <span style="color: #ffb6c1; font-size: 105%;">return</span> NULL_PTR;
+<span class="linenr">19: </span>        <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#20449;&#21495;&#21015;&#34920;&#28385;&#65292;&#21019;&#24314;&#22833;&#36133;</span>
+<span class="linenr">20: </span>        <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#27492;&#26102;&#24212;&#21152;&#22823;&#22836;&#25991;&#20214;&#20013;&#26368;&#22823;&#20449;&#21495;&#25968;&#37327;&#23439;MAX_SIGNAL_NUM</span>
+<span class="linenr">21: </span>        <span style="color: #ffb6c1; font-size: 105%;">return</span> NULL_PTR;
 <span class="linenr">22: </span>    }
 <span class="linenr">23: </span>}
 </pre>
@@ -1273,8 +1250,8 @@ watermark:
 </ul>
 </div>
 </div>
-<div id="outline-container-org499586f" class="outline-4">
-<h4 id="org499586f"><span class="section-number-4">3.2.7</span> 信号操作API</h4>
+<div id="outline-container-org19b769c" class="outline-4">
+<h4 id="org19b769c"><span class="section-number-4">3.2.7.</span> 信号操作API</h4>
 <div class="outline-text-4" id="text-3-2-7">
 <ul class="org-ul">
 <li><p>
@@ -1290,15 +1267,15 @@ watermark:
 <span class="linenr"> 7: </span>    sig = Signal_Search(name, &amp;id);
 <span class="linenr"> 8: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> (sig != NULL_PTR)
 <span class="linenr"> 9: </span>    {
-<span class="linenr">10: </span>    sig-&gt;Value = val;
-<span class="linenr">11: </span>    <span style="color: #ffb6c1; font-size: 105%;">return</span> id;
+<span class="linenr">10: </span>        sig-&gt;Value = val;
+<span class="linenr">11: </span>        <span style="color: #ffb6c1; font-size: 105%;">return</span> id;
 <span class="linenr">12: </span>    }
 <span class="linenr">13: </span>    <span style="color: #ffb6c1; font-size: 105%;">else</span>
 <span class="linenr">14: </span>    {
-<span class="linenr">15: </span>    sig = Signal_Create(name, val, &amp;id);
-<span class="linenr">16: </span>    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#26029;&#35328;&#22833;&#36133;&#21017;&#20449;&#21495;&#21015;&#34920;&#28385;&#65292;&#38656;&#22686;&#22823;NF_MAX_SIGNAL_NUM</span>
-<span class="linenr">17: </span>    ASSERT( sig != NULL_PTR );
-<span class="linenr">18: </span>    <span style="color: #ffb6c1; font-size: 105%;">return</span> id;
+<span class="linenr">15: </span>        sig = Signal_Create(name, val, &amp;id);
+<span class="linenr">16: </span>        <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#26029;&#35328;&#22833;&#36133;&#21017;&#20449;&#21495;&#21015;&#34920;&#28385;&#65292;&#38656;&#22686;&#22823;NF_MAX_SIGNAL_NUM</span>
+<span class="linenr">17: </span>        ASSERT( sig != NULL_PTR );
+<span class="linenr">18: </span>        <span style="color: #ffb6c1; font-size: 105%;">return</span> id;
 <span class="linenr">19: </span>    }
 <span class="linenr">20: </span>}
 </pre>
@@ -1313,7 +1290,7 @@ watermark:
 <span class="linenr">4: </span>    ASSERT( id &lt; Signal_SigListCnt );
 <span class="linenr">5: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> (id &lt; Signal_SigListCnt)
 <span class="linenr">6: </span>    {
-<span class="linenr">7: </span>    Signal_SigList[id].Value = val;
+<span class="linenr">7: </span>        Signal_SigList[id].Value = val;
 <span class="linenr">8: </span>    }
 <span class="linenr">9: </span>}
 </pre>
@@ -1331,13 +1308,13 @@ watermark:
 <span class="linenr"> 7: </span>
 <span class="linenr"> 8: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> (sig != NULL_PTR)
 <span class="linenr"> 9: </span>    {
-<span class="linenr">10: </span>    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#25628;&#32034;&#25104;&#21151;&#36820;&#22238;&#20449;&#21495;&#20540;</span>
-<span class="linenr">11: </span>    <span style="color: #ffb6c1; font-size: 105%;">return</span> sig-&gt;Value;
+<span class="linenr">10: </span>        <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#25628;&#32034;&#25104;&#21151;&#36820;&#22238;&#20449;&#21495;&#20540;</span>
+<span class="linenr">11: </span>        <span style="color: #ffb6c1; font-size: 105%;">return</span> sig-&gt;Value;
 <span class="linenr">12: </span>    }
 <span class="linenr">13: </span>    <span style="color: #ffb6c1; font-size: 105%;">else</span>
 <span class="linenr">14: </span>    {
-<span class="linenr">15: </span>    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#25628;&#32034;&#22833;&#36133;&#36820;&#22238;0</span>
-<span class="linenr">16: </span>    <span style="color: #ffb6c1; font-size: 105%;">return</span> 0;
+<span class="linenr">15: </span>        <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#25628;&#32034;&#22833;&#36133;&#36820;&#22238;0</span>
+<span class="linenr">16: </span>        <span style="color: #ffb6c1; font-size: 105%;">return</span> 0;
 <span class="linenr">17: </span>    }
 <span class="linenr">18: </span>}
 </pre>
@@ -1353,7 +1330,7 @@ watermark:
 <span class="linenr"> 5: </span>
 <span class="linenr"> 6: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> (id &lt; Signal_SigListCnt)
 <span class="linenr"> 7: </span>    {
-<span class="linenr"> 8: </span>    <span style="color: #ffb6c1; font-size: 105%;">return</span> Signal_SigList[id].Value;
+<span class="linenr"> 8: </span>        <span style="color: #ffb6c1; font-size: 105%;">return</span> Signal_SigList[id].Value;
 <span class="linenr"> 9: </span>    }
 <span class="linenr">10: </span>}
 </pre>
@@ -1362,12 +1339,12 @@ watermark:
 </div>
 </div>
 </div>
-<div id="outline-container-org7a7910a" class="outline-3">
-<h3 id="org7a7910a"><span class="section-number-3">3.3</span> 状态机</h3>
+<div id="outline-container-org31beb7a" class="outline-3">
+<h3 id="org31beb7a"><span class="section-number-3">3.3.</span> 状态机</h3>
 <div class="outline-text-3" id="text-3-3">
 </div>
-<div id="outline-container-org8df0e35" class="outline-4">
-<h4 id="org8df0e35"><span class="section-number-4">3.3.1</span> 状态机</h4>
+<div id="outline-container-org5c2b155" class="outline-4">
+<h4 id="org5c2b155"><span class="section-number-4">3.3.1.</span> 状态机</h4>
 <div class="outline-text-4" id="text-3-3-1">
 <div class="org-src-container">
 <pre class="src src-c"><span class="linenr">1: </span><span style="color: #ffb6c1; font-size: 105%;">typedef</span> <span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">_sta_machine</span>
@@ -1380,8 +1357,8 @@ watermark:
 </div>
 </div>
 </div>
-<div id="outline-container-org91cc7e4" class="outline-4">
-<h4 id="org91cc7e4"><span class="section-number-4">3.3.2</span> 状态名称</h4>
+<div id="outline-container-orgf5a9333" class="outline-4">
+<h4 id="orgf5a9333"><span class="section-number-4">3.3.2.</span> 状态名称</h4>
 <div class="outline-text-4" id="text-3-3-2">
 <div class="org-src-container">
 <pre class="src src-c"><span class="linenr">1: </span><span style="color: #ffb6c1; font-size: 105%;">typedef</span> <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">char</span>* <span style="color: #ffff00; font-size: 105%;">FSM_Name_T</span>;
@@ -1389,8 +1366,8 @@ watermark:
 </div>
 </div>
 </div>
-<div id="outline-container-orge5610f2" class="outline-4">
-<h4 id="orge5610f2"><span class="section-number-4">3.3.3</span> 状态处理函数</h4>
+<div id="outline-container-org473af47" class="outline-4">
+<h4 id="org473af47"><span class="section-number-4">3.3.3.</span> 状态处理函数</h4>
 <div class="outline-text-4" id="text-3-3-3">
 <div class="org-src-container">
 <pre class="src src-c"><span class="linenr">1: </span><span style="color: #ffb6c1; font-size: 105%;">typedef</span> <span style="color: #ffff00; font-size: 105%;">void</span> (*<span style="color: #ffff00; font-size: 105%;">FSM_Handler_T</span>)(<span style="color: #ffff00; font-size: 105%;">FSM_T</span>* <span style="color: #ffd700;">me</span>, <span style="color: #ffff00; font-size: 105%;">SignalName_T</span> <span style="color: #ffd700;">name</span>, <span style="color: #ffff00; font-size: 105%;">SignalValue_T</span> <span style="color: #ffd700;">val</span>);
@@ -1398,8 +1375,8 @@ watermark:
 </div>
 </div>
 </div>
-<div id="outline-container-org86fb6d6" class="outline-4">
-<h4 id="org86fb6d6"><span class="section-number-4">3.3.4</span> 状态定义</h4>
+<div id="outline-container-orgaf53d35" class="outline-4">
+<h4 id="orgaf53d35"><span class="section-number-4">3.3.4.</span> 状态定义</h4>
 <div class="outline-text-4" id="text-3-3-4">
 <div class="org-src-container">
 <pre class="src src-c"><span class="linenr">1: </span><span style="color: #ffb6c1; font-size: 105%;">typedef</span> <span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">_sta</span>
@@ -1411,8 +1388,8 @@ watermark:
 </div>
 </div>
 </div>
-<div id="outline-container-org2c95350" class="outline-4">
-<h4 id="org2c95350"><span class="section-number-4">3.3.5</span> 状态转换函数</h4>
+<div id="outline-container-orge5f596a" class="outline-4">
+<h4 id="orge5f596a"><span class="section-number-4">3.3.5.</span> 状态转换函数</h4>
 <div class="outline-text-4" id="text-3-3-5">
 <ul class="org-ul">
 <li><p>
@@ -1441,15 +1418,15 @@ watermark:
 </div>
 </div>
 </div>
-<div id="outline-container-orgd31ef7d" class="outline-3">
-<h3 id="orgd31ef7d"><span class="section-number-3">3.4</span> 应用</h3>
+<div id="outline-container-orgad623eb" class="outline-3">
+<h3 id="orgad623eb"><span class="section-number-3">3.4.</span> 应用</h3>
 <div class="outline-text-3" id="text-3-4">
 </div>
-<div id="outline-container-org5d6c0a1" class="outline-4">
-<h4 id="org5d6c0a1"><span class="section-number-4">3.4.1</span> 状态机转换</h4>
+<div id="outline-container-org732c29d" class="outline-4">
+<h4 id="org732c29d"><span class="section-number-4">3.4.1.</span> 状态机转换</h4>
 <div class="outline-text-4" id="text-3-4-1">
 
-<div id="org2353aee" class="figure">
+<div id="org92e20f8" class="figure">
 <p><img src="./img/stmch_app.png" alt="stmch_app.png" />
 </p>
 <p><span class="figure-number">Figure 1: </span>状态机应用</p>
@@ -1457,8 +1434,8 @@ watermark:
 </div>
 </div>
 
-<div id="outline-container-orgef0487e" class="outline-4">
-<h4 id="orgef0487e"><span class="section-number-4">3.4.2</span> 源码</h4>
+<div id="outline-container-org24e4554" class="outline-4">
+<h4 id="org24e4554"><span class="section-number-4">3.4.2.</span> 源码</h4>
 <div class="outline-text-4" id="text-3-4-2">
 <div class="org-src-container">
 <pre class="src src-c"><span class="linenr"> 1: </span><span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">GetKeyState:windows api&#30417;&#27979;&#38190;&#30424;&#25353;&#38190;</span>
@@ -1468,17 +1445,17 @@ watermark:
 <span class="linenr"> 5: </span><span style="color: #ffff00; font-size: 105%;">void</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">Test_Key_Process</span>(<span style="color: #ffff00; font-size: 105%;">void</span>)
 <span class="linenr"> 6: </span>{
 <span class="linenr"> 7: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> ( IS_KEY_PRESS(<span style="color: #ffa07a;">'Q'</span>) ){
-<span class="linenr"> 8: </span>    Signal_Set(<span style="color: #ffa07a;">"key_q_press"</span>, 1);
+<span class="linenr"> 8: </span>        Signal_Set(<span style="color: #ffa07a;">"key_q_press"</span>, 1);
 <span class="linenr"> 9: </span>    }
 <span class="linenr">10: </span>    <span style="color: #ffb6c1; font-size: 105%;">else</span>{
-<span class="linenr">11: </span>    Signal_Set(<span style="color: #ffa07a;">"key_q_press"</span>, 0);
+<span class="linenr">11: </span>        Signal_Set(<span style="color: #ffa07a;">"key_q_press"</span>, 0);
 <span class="linenr">12: </span>    }
 <span class="linenr">13: </span>
 <span class="linenr">14: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> ( IS_KEY_PRESS(<span style="color: #ffa07a;">'E'</span>) ){
-<span class="linenr">15: </span>    Signal_Set(<span style="color: #ffa07a;">"key_e_press"</span>, 1);
+<span class="linenr">15: </span>        Signal_Set(<span style="color: #ffa07a;">"key_e_press"</span>, 1);
 <span class="linenr">16: </span>    }
 <span class="linenr">17: </span>    <span style="color: #ffb6c1; font-size: 105%;">else</span>{
-<span class="linenr">18: </span>    Signal_Set(<span style="color: #ffa07a;">"key_e_press"</span>, 0);
+<span class="linenr">18: </span>        Signal_Set(<span style="color: #ffa07a;">"key_e_press"</span>, 0);
 <span class="linenr">19: </span>    }
 <span class="linenr">20: </span>}
 <span class="linenr">21: </span>
@@ -1491,11 +1468,11 @@ watermark:
 <span class="linenr">28: </span>{
 <span class="linenr">29: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> ( FSM_NameIs(name, <span style="color: #ffa07a;">"key_q_press"</span>) )
 <span class="linenr">30: </span>    {
-<span class="linenr">31: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> ( val == 1 )
-<span class="linenr">32: </span>    {
-<span class="linenr">33: </span>        FSM_TRAN(Test_FSM_QandE_QDOWN);
-<span class="linenr">34: </span>        printf(<span style="color: #ffa07a;">"Test_FSM_QandE State Translate : IDLE --&gt; QDOWN\n"</span>);
-<span class="linenr">35: </span>    }
+<span class="linenr">31: </span>        <span style="color: #ffb6c1; font-size: 105%;">if</span> ( val == 1 )
+<span class="linenr">32: </span>        {
+<span class="linenr">33: </span>            FSM_TRAN(Test_FSM_QandE_QDOWN);
+<span class="linenr">34: </span>            printf(<span style="color: #ffa07a;">"Test_FSM_QandE State Translate : IDLE --&gt; QDOWN\n"</span>);
+<span class="linenr">35: </span>        }
 <span class="linenr">36: </span>    }
 <span class="linenr">37: </span>}
 <span class="linenr">38: </span>
@@ -1504,19 +1481,19 @@ watermark:
 <span class="linenr">41: </span>{
 <span class="linenr">42: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> ( FSM_NameIs(name, <span style="color: #ffa07a;">"key_e_press"</span>) )
 <span class="linenr">43: </span>    {
-<span class="linenr">44: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> ( val == 1 )
-<span class="linenr">45: </span>    {
-<span class="linenr">46: </span>        FSM_TRAN(Test_FSM_QandE_QEDOWN);
-<span class="linenr">47: </span>        printf(<span style="color: #ffa07a;">"Test_FSM_QandE State Translate : QDOWN --&gt; QEDOWN\n"</span>);
-<span class="linenr">48: </span>    }
+<span class="linenr">44: </span>        <span style="color: #ffb6c1; font-size: 105%;">if</span> ( val == 1 )
+<span class="linenr">45: </span>        {
+<span class="linenr">46: </span>            FSM_TRAN(Test_FSM_QandE_QEDOWN);
+<span class="linenr">47: </span>            printf(<span style="color: #ffa07a;">"Test_FSM_QandE State Translate : QDOWN --&gt; QEDOWN\n"</span>);
+<span class="linenr">48: </span>        }
 <span class="linenr">49: </span>    }
 <span class="linenr">50: </span>    <span style="color: #ffb6c1; font-size: 105%;">else</span> <span style="color: #ffb6c1; font-size: 105%;">if</span>( FSM_NameIs(name, <span style="color: #ffa07a;">"key_q_press"</span>) )
 <span class="linenr">51: </span>    {
-<span class="linenr">52: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> ( val == 0 )
-<span class="linenr">53: </span>    {
-<span class="linenr">54: </span>        FSM_TRAN(Test_FSM_QandE_IDLE);
-<span class="linenr">55: </span>        printf(<span style="color: #ffa07a;">"Test_FSM_QandE State Translate : QDOWN --&gt; IDLE\n"</span>);
-<span class="linenr">56: </span>    }
+<span class="linenr">52: </span>        <span style="color: #ffb6c1; font-size: 105%;">if</span> ( val == 0 )
+<span class="linenr">53: </span>        {
+<span class="linenr">54: </span>            FSM_TRAN(Test_FSM_QandE_IDLE);
+<span class="linenr">55: </span>            printf(<span style="color: #ffa07a;">"Test_FSM_QandE State Translate : QDOWN --&gt; IDLE\n"</span>);
+<span class="linenr">56: </span>        }
 <span class="linenr">57: </span>    }
 <span class="linenr">58: </span>}
 <span class="linenr">59: </span>
@@ -1525,19 +1502,19 @@ watermark:
 <span class="linenr">62: </span>{
 <span class="linenr">63: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> ( FSM_NameIs(name, <span style="color: #ffa07a;">"key_e_press"</span>) )
 <span class="linenr">64: </span>    {
-<span class="linenr">65: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> ( val == 0 )
-<span class="linenr">66: </span>    {
-<span class="linenr">67: </span>        FSM_TRAN(Test_FSM_QandE_QDOWN);
-<span class="linenr">68: </span>        printf(<span style="color: #ffa07a;">"Test_FSM_QandE State Translate : QEDOWN --&gt; QDOWN\n"</span>);
-<span class="linenr">69: </span>    }
+<span class="linenr">65: </span>        <span style="color: #ffb6c1; font-size: 105%;">if</span> ( val == 0 )
+<span class="linenr">66: </span>        {
+<span class="linenr">67: </span>            FSM_TRAN(Test_FSM_QandE_QDOWN);
+<span class="linenr">68: </span>            printf(<span style="color: #ffa07a;">"Test_FSM_QandE State Translate : QEDOWN --&gt; QDOWN\n"</span>);
+<span class="linenr">69: </span>        }
 <span class="linenr">70: </span>    }
 <span class="linenr">71: </span>    <span style="color: #ffb6c1; font-size: 105%;">else</span> <span style="color: #ffb6c1; font-size: 105%;">if</span>( FSM_NameIs(name, <span style="color: #ffa07a;">"key_q_press"</span>) )
 <span class="linenr">72: </span>    {
-<span class="linenr">73: </span>    <span style="color: #ffb6c1; font-size: 105%;">if</span> ( val == 0 )
-<span class="linenr">74: </span>    {
-<span class="linenr">75: </span>        FSM_TRAN(Test_FSM_QandE_IDLE);
-<span class="linenr">76: </span>        printf(<span style="color: #ffa07a;">"Test_FSM_QandE State Translate : QEDOWN --&gt; IDLE\n"</span>);
-<span class="linenr">77: </span>    }
+<span class="linenr">73: </span>        <span style="color: #ffb6c1; font-size: 105%;">if</span> ( val == 0 )
+<span class="linenr">74: </span>        {
+<span class="linenr">75: </span>            FSM_TRAN(Test_FSM_QandE_IDLE);
+<span class="linenr">76: </span>            printf(<span style="color: #ffa07a;">"Test_FSM_QandE State Translate : QEDOWN --&gt; IDLE\n"</span>);
+<span class="linenr">77: </span>        }
 <span class="linenr">78: </span>    }
 <span class="linenr">79: </span>}
 <span class="linenr">80: </span>
@@ -1548,9 +1525,9 @@ watermark:
 <span class="linenr">85: </span>
 <span class="linenr">86: </span>    <span style="color: #ffb6c1; font-size: 105%;">for</span> (;;)
 <span class="linenr">87: </span>    {
-<span class="linenr">88: </span>    Test_Key_Process();
-<span class="linenr">89: </span>    FSM_CheckSignal(&amp;Test_FSM_QandE, <span style="color: #ffa07a;">"key_q_press"</span>);
-<span class="linenr">90: </span>    FSM_CheckSignal(&amp;Test_FSM_QandE, <span style="color: #ffa07a;">"key_e_press"</span>);
+<span class="linenr">88: </span>        Test_Key_Process();
+<span class="linenr">89: </span>        FSM_CheckSignal(&amp;Test_FSM_QandE, <span style="color: #ffa07a;">"key_q_press"</span>);
+<span class="linenr">90: </span>        FSM_CheckSignal(&amp;Test_FSM_QandE, <span style="color: #ffa07a;">"key_e_press"</span>);
 <span class="linenr">91: </span>    }
 <span class="linenr">92: </span>}
 </pre>
@@ -1559,20 +1536,20 @@ watermark:
 </div>
 </div>
 </div>
-<div id="outline-container-org91df2ea" class="outline-2">
-<h2 id="org91df2ea"><span class="section-number-2">4</span> 机器码</h2>
+<div id="outline-container-org9db3a77" class="outline-2">
+<h2 id="org9db3a77"><span class="section-number-2">4.</span> 机器码</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-orgeda1717" class="outline-3">
-<h3 id="orgeda1717"><span class="section-number-3">4.1</span> BIN</h3>
+<div id="outline-container-org680bba7" class="outline-3">
+<h3 id="org680bba7"><span class="section-number-3">4.1.</span> BIN</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 BIN格式实际上就是机器码顺序排列的镜像文件，没有文件格式信息。
 </p>
 </div>
 </div>
-<div id="outline-container-org8159859" class="outline-3">
-<h3 id="org8159859"><span class="section-number-3">4.2</span> HEX</h3>
+<div id="outline-container-org30174cc" class="outline-3">
+<h3 id="org30174cc"><span class="section-number-3">4.2.</span> HEX</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 HEX格式常用Intel定义格式。两个字符表示一个字节的字面含义。
@@ -1667,8 +1644,8 @@ the image，Image Entry point : 0x08020189。则会有一条HEX记录为，
 <div id="postamble" class="status">
 <p class="author">Author: 比克曼</p>
 <p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
-<p class="date">Created: 2021-05-18 周二 22:03</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+<p class="date">Created: 2026-07-12 日 12:30</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
 </html>
