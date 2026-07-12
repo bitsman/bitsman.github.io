@@ -14,3 +14,9 @@
 - [[file:algorithm.org][算法]]
 - [[file:communication.org][通信]]
 - [[file:security.org][°²È«]]
+- kernel
+  - [[file:kernel/remoteproc.org][Kernel Remoteproc框架详解]]
+  - [[file:kernel/kernel.org][Linux Kernel]]
+- dts
+  - [[file:dts/dts.org][DTS详解]]
+  - [[file:dts/pinctrl.org][PINCTRL子系统]]

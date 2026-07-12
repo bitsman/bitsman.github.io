@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2026-07-12 日 12:54 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kernel Remoteproc框架详解</title>
+<meta name="author" content="Joe" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="css/org-manual.css"/>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Kernel Remoteproc框架详解</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgbc77b22">1. 简介</a></li>
+<li><a href="#orgfc7b46f">2. 核心作用</a></li>
+<li><a href="#org659f45e">3. 整体架构分层</a>
+<ul>
+<li><a href="#orgb80c571">3.1. 用户层接口</a></li>
+<li><a href="#org243533a">3.2. 核心层</a></li>
+<li><a href="#org197e23c">3.3. 平台底层层</a></li>
+<li><a href="#org3f74a62">3.4. 固件解析层（ELF 加载）</a></li>
+<li><a href="#orgef4292d">3.5. 配套通信</a></li>
+</ul>
+</li>
+<li><a href="#orge22bbbe">4. 远程核完整启动流程</a></li>
+<li><a href="#orgd4ee052">5. 关键资源管理</a></li>
+<li><a href="#org1dd9f09">6. 常用调试手段</a></li>
+<li><a href="#orgbcca28d">7. 关键内核配置选项</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbc77b22" class="outline-2">
+<h2 id="orgbc77b22"><span class="section-number-2">1.</span> 简介</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+remoteproc（Remote Processor，远程处理器）是 Linux 内核提供的异构多核
+处理器管理框架，用于统一管理 SoC 上的协处理器、MCU、DSP、RTOS 小核、蓝
+牙基带、ISP、VPU 等非 Linux 运行的远程处理器。典型场景：
+</p>
+<ul class="org-ul">
+<li>主核：ARM Cortex-A/A55/A72 跑 Linux</li>
+<li>远程核：Cortex-R/M、DSP、RISC-V 跑 RTOS / 裸机固件</li>
+<li>remoteproc 负责：固件加载、上电复位、启动停止、异常捕获、内存资源分
+配、远程日志、故障恢复。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfc7b46f" class="outline-2">
+<h2 id="orgfc7b46f"><span class="section-number-2">2.</span> 核心作用</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>把远程处理器抽象成统一设备，屏蔽各厂商上电、复位、内存映射差异;</li>
+<li>从文件系统加载固件（.elf/.bin）到远程核共享内存</li>
+<li>管理远程核生命周期：上电-&gt;加载固件-&gt;复位-&gt;启动-&gt;停止-&gt;下电</li>
+<li>预留、保护主核与远程核之间的共享内存、DMA 区域、中断资源</li>
+<li>配合 rpmsg 框架实现主核 Linux &lt;&#x2013;&gt; 远程核的进程间通信</li>
+<li>远程核崩溃时捕获异常、收集 crash 日志、支持自动重启</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org659f45e" class="outline-2">
+<h2 id="org659f45e"><span class="section-number-2">3.</span> 整体架构分层</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgb80c571" class="outline-3">
+<h3 id="orgb80c571"><span class="section-number-3">3.1.</span> 用户层接口</h3>
+<div class="outline-text-3" id="text-3-1">
+<ul class="org-ul">
+<li>/dev/remoteprocX 字符设备：用户空间可通过 rprocctl、fw_loader 控制远
+程核启停、加载固件</li>
+<li><p>
+sysfs 节点：/sys/class/remoteproc/remoteprocX/
+</p>
+<pre class="example" id="org93ff8a0">
+state        # offlined/stopped/running
+firmware     # 指定固件名，如 imx_rproc_m4.elf
+recover      # 崩溃是否自动恢复
+crash         # 崩溃信息
+</pre></li>
+<li><p>
+常用操作
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #87cefa; text-decoration: underline;">echo</span> imx_m4_fw.elf &gt; /sys/class/remoteproc/remoteproc0/firmware
+<span style="color: #87cefa; text-decoration: underline;">echo</span> start &gt; /sys/class/remoteproc/remoteproc0/state
+<span style="color: #87cefa; text-decoration: underline;">echo</span> stop &gt; /sys/class/remoteproc/remoteproc0/state
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org243533a" class="outline-3">
+<h3 id="org243533a"><span class="section-number-3">3.2.</span> 核心层</h3>
+<div class="outline-text-3" id="text-3-2">
+<ul class="org-ul">
+<li>生命周期：remoteproc 核心（drivers/remoteproc/remoteproc_core.c），
+定义 struct rproc 作为远程处理器抽象对象，统一生命周期管理：
+<ul class="org-ul">
+<li>rproc_add()：注册到内核，创建 sysfs、字符设备</li>
+<li>rproc_boot()：启动流程：加载固件-&gt;解析ELF段-&gt;分配/映射内存-&gt;复位启动
+远程核</li>
+<li>rproc_shutdown()：停止远程核、释放资源</li>
+<li>崩溃处理：远程核异常触发看门狗 / 异常中断 → 进入 rproc 崩溃处理，可
+选自动重启</li>
+</ul></li>
+</ul>
+
+
+<ul class="org-ul">
+<li><p>
+关键数据结构
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">rproc</span> {
+    <span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">list_head</span> <span style="color: #ffd700;">link</span>;
+    <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">char</span> *<span style="color: #ffd700;">name</span>;
+    <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">char</span> *<span style="color: #ffd700;">firmware</span>;    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#35201;&#21152;&#36733;&#30340;&#22266;&#20214;&#25991;&#20214;&#21517;</span>
+    <span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">device</span> <span style="color: #ffd700;">dev</span>;
+    <span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">rproc_ops</span> *<span style="color: #ffd700;">ops</span>;   <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#24179;&#21488;&#24213;&#23618;&#25805;&#20316;&#22238;&#35843;</span>
+    <span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">fw_priv</span> *<span style="color: #ffd700;">fw</span>;      <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#22266;&#20214;&#35299;&#26512;&#21518;&#30340;&#27573;&#20449;&#24687;</span>
+    <span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">list_head</span> <span style="color: #ffd700;">segments</span>; <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">ELF &#20195;&#30721;&#27573;&#12289;&#25968;&#25454;&#27573;&#21015;&#34920;</span>
+    <span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">list_head</span> <span style="color: #ffd700;">mappings</span>; <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#20849;&#20139;&#20869;&#23384;&#26144;&#23556;</span>
+    <span style="color: #ffff00; font-size: 105%;">void</span> *<span style="color: #ffd700;">priv</span>;              <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#24179;&#21488;&#31169;&#26377;&#25968;&#25454;</span>
+    <span style="color: #ffff00; font-size: 105%;">bool</span> <span style="color: #ffd700;">auto_recover</span>;       <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#23849;&#28291;&#33258;&#21160;&#37325;&#21551;</span>
+    <span style="color: #ffb6c1; font-size: 105%;">enum</span> <span style="color: #ffff00; font-size: 105%;">rproc_state</span> <span style="color: #ffd700;">state</span>;  <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#29366;&#24577;&#26426;</span>
+    ...
+};
+</pre>
+</div></li>
+
+<li>状态机：
+<ul class="org-ul">
+<li>RPROC_OFFLINE</li>
+<li>RPROC_SUSPENDED</li>
+<li>RPROC_RUNNING</li>
+<li>RPROC_CRASHED</li>
+<li>RPROC_STOPPED</li>
+<li>RPROC_DELETED</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org197e23c" class="outline-3">
+<h3 id="org197e23c"><span class="section-number-3">3.3.</span> 平台底层层</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+struct rproc_ops（厂商适配层）,remoteproc 核心不直接操作寄存器，由各
+SOC 厂商实现硬件操作回调：
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">rproc_ops</span> {
+    <span style="color: #ffff00; font-size: 105%;">int</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">start</span>)(<span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">rproc</span> *<span style="color: #ffd700;">rproc</span>);       <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#19978;&#30005;&#12289;&#21435;&#22797;&#20301;&#12289;&#21551;&#21160;&#23567;&#26680;</span>
+    <span style="color: #ffff00; font-size: 105%;">int</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">stop</span>)(<span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">rproc</span> *<span style="color: #ffd700;">rproc</span>);        <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#20572;&#26680;&#12289;&#22797;&#20301;&#12289;&#19979;&#30005;</span>
+    <span style="color: #ffff00; font-size: 105%;">int</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">prepare</span>)(<span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">rproc</span> *<span style="color: #ffd700;">rproc</span>);     <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#21551;&#21160;&#21069;&#36164;&#28304;&#20934;&#22791;&#65288;&#26102;&#38047;&#12289;&#30005;&#28304;&#12289;&#20013;&#26029;&#65289;</span>
+    <span style="color: #ffff00; font-size: 105%;">int</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">unprepare</span>)(<span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">rproc</span> *<span style="color: #ffd700;">rproc</span>);
+    <span style="color: #ffff00; font-size: 105%;">void</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">kick</span>)(<span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">rproc</span> *<span style="color: #ffd700;">rproc</span>);       <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#21796;&#37266;&#36828;&#31243;&#26680;&#65288;rpmsg &#21457;&#36865;&#21518;&#35302;&#21457;&#65289;</span>
+    <span style="color: #ffff00; font-size: 105%;">int</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">da_to_va</span>)(<span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">rproc</span> *<span style="color: #ffd700;">rproc</span>, <span style="color: #ffff00; font-size: 105%;">dma_addr_t</span> <span style="color: #ffd700;">da</span>, <span style="color: #ffff00; font-size: 105%;">void</span> **<span style="color: #ffd700;">va</span>);
+    <span style="color: #ffff00; font-size: 105%;">int</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">va_to_da</span>)(<span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">rproc</span> *<span style="color: #ffd700;">rproc</span>, <span style="color: #ffff00; font-size: 105%;">void</span> *<span style="color: #ffd700;">va</span>, <span style="color: #ffff00; font-size: 105%;">dma_addr_t</span> *<span style="color: #ffd700;">da</span>);
+    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">&#23849;&#28291;&#12289;&#24322;&#24120;&#22238;&#35843;</span>
+    <span style="color: #ffff00; font-size: 105%;">void</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">crashed</span>)(<span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">rproc</span> *<span style="color: #ffd700;">rproc</span>);
+};
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org3f74a62" class="outline-3">
+<h3 id="org3f74a62"><span class="section-number-3">3.4.</span> 固件解析层（ELF 加载）</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+固件解析层采用remoteproc，默认支持 ELF 固件：
+</p>
+<ul class="org-ul">
+<li>内核请求 firmware_class 从 <i>lib/firmware</i> 加载固件文件</li>
+<li>解析 ELF 程序段（.text、.data、.bss、.resource 段）</li>
+<li>对每一段：
+<ol class="org-ol">
+<li>从 rproc_ops 申请远程核物理地址空间</li>
+<li>将段内容拷贝到共享内存</li>
+<li>建立主核虚拟地址 ↔ 远程核设备地址映射</li>
+</ol></li>
+</ul>
+
+
+<p>
+特殊 .resource 段
+远程核固件中自定义的 .resource ELF 段，用于向 Linux 声明需要的资源：
+</p>
+<ul class="org-ul">
+<li>共享内存区域（rpmsg 环形缓冲区）</li>
+<li>设备中断、DMA 预留区</li>
+<li>trace、日志缓冲区</li>
+<li>rproc 解析该段后自动预留内存，避免主核内存管理覆盖远程核固件区域。</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgef4292d" class="outline-3">
+<h3 id="orgef4292d"><span class="section-number-3">3.5.</span> 配套通信</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+通信采用rpmsg 子系统， remoteproc 负责把远程核跑起来，rpmsg 负责双核数
+据通信，二者强绑定：
+</p>
+<ul class="org-ul">
+<li>remoteproc 解析 .resource 段，创建 rpmsg 共享环形缓冲区</li>
+<li>注册 virtio 设备，主核 virtio 驱动与远程核 virtio 后端通信</li>
+<li>用户态可通过 /dev/rpmsgX、socket 方式收发双核数据</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orge22bbbe" class="outline-2">
+<h2 id="orge22bbbe"><span class="section-number-2">4.</span> 远程核完整启动流程</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li>DTS 中定义 remoteproc 节点：指定时钟、复位、共享内存区域、固件名</li>
+<li>平台驱动 probe：调用 rproc_alloc + 填充 rproc_ops + rproc_add</li>
+<li>用户态写固件名到 sysfs firmware 属性</li>
+<li>用户执行 echo start：
+<ul class="org-ul">
+<li>request_firmware 加载 ELF 固件</li>
+<li>解析 ELF 各个段，申请、映射共享内存</li>
+<li>执行 rproc_ops-&gt;prepare：开时钟、电源、配置内存保护</li>
+<li>把固件段拷贝到远程核运行地址</li>
+<li>调用 rproc_ops-&gt;start：释放复位，远程核从指定入口地址开始运行</li>
+</ul></li>
+<li>远程核启动后，初始化 virtio/rpmsg 驱动，双核建立通信通道</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd4ee052" class="outline-2">
+<h2 id="orgd4ee052"><span class="section-number-2">5.</span> 关键资源管理</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+内存保护
+</p>
+<ul class="org-ul">
+<li>DTS 中用 reserved-memory 预留一块物理内存，不进入 Linux 系统内存管理</li>
+<li>remoteproc 将这块内存作为远程核固件运行区、rpmsg 共享缓冲区</li>
+<li>通过 iommu 或物理地址偏移映射，实现主核虚拟地址 ↔ 远程核设备地址转换</li>
+<li>禁止 Linux 内存碎片化、OOM 回收占用该区域</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org1dd9f09" class="outline-2">
+<h2 id="org1dd9f09"><span class="section-number-2">6.</span> 常用调试手段</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li><p>
+状态和日志
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">&#26597;&#30475;&#36828;&#31243;&#26680;&#29366;&#24577;</span>
+cat /sys/class/remoteproc/remoteproc0/state
+<span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">&#26597;&#30475;&#23849;&#28291;&#26085;&#24535;</span>
+cat /sys/class/remoteproc/remoteproc0/crash
+<span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">&#21160;&#24577;&#24320;&#20851;&#33258;&#21160;&#24674;&#22797;</span>
+<span style="color: #87cefa; text-decoration: underline;">echo</span> 1 &gt; /sys/class/remoteproc/remoteproc0/recover
+</pre>
+</div></li>
+<li>内核日志：dmesg | grep remoteproc</li>
+<li>固件加载失败常见原因：
+<ul class="org-ul">
+<li>固件路径错误（必须放在 /lib/firmware）</li>
+<li>ELF 段地址超出预留共享内存范围</li>
+<li>DTS 未正确配置 reserved-memory、时钟复位</li>
+<li>内存地址映射、IOMMU 配置错误</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbcca28d" class="outline-2">
+<h2 id="orgbcca28d"><span class="section-number-2">7.</span> 关键内核配置选项</h2>
+<div class="outline-text-2" id="text-7">
+<div class="org-src-container">
+<pre class="src src-makefile"><span style="color: #ffd700;">CONFIG_REMOTEPROC</span>=y/m          <span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">&#24320;&#21551; remoteproc &#26680;&#24515;&#26694;&#26550;</span>
+<span style="color: #ffd700;">CONFIG_REMOTEPROC_CDEV</span>=y       <span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">&#24320;&#21551; /dev/remoteproc &#23383;&#31526;&#35774;&#22791;</span>
+<span style="color: #ffd700;">CONFIG_RPMSG</span>=y                 <span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">&#21452;&#26680;&#36890;&#20449;</span>
+<span style="color: #ffd700;">CONFIG_RPMSG_VIRTIO</span>=y
+<span style="color: #ffd700;">CONFIG_FW_LOADER</span>=y             <span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">&#22266;&#20214;&#21152;&#36733;&#20381;&#36182;</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Joe</p>
+<p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
+<p class="date">Created: 2026-07-12 日 12:54</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

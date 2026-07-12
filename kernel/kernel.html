@@ -1,0 +1,3477 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2026-07-12 日 12:54 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Linux Kernel</title>
+<meta name="author" content="Joe" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="css/org-manual.css"/>
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Linux Kernel</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org1bd7da9">1. kernel引导</a>
+<ul>
+<li><a href="#org3f50af2">1.1. kernel构建</a></li>
+<li><a href="#org7c4bbd2">1.2. kernel加载</a>
+<ul>
+<li><a href="#orgd5262a4">1.2.1. jtag加载</a></li>
+</ul>
+</li>
+<li><a href="#orgde60959">1.3. kernel引导</a>
+<ul>
+<li><a href="#org6ed42d4">1.3.1. booti方式</a></li>
+<li><a href="#org1ba8454">1.3.2. bootz方式</a></li>
+<li><a href="#orgba6be56">1.3.3. ram文件系统</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org59ccb40">2. kernel调试</a>
+<ul>
+<li><a href="#org69337ef">2.1. gdb</a>
+<ul>
+<li><a href="#orgbdc1a81">2.1.1. vmlinux-gdb.py</a></li>
+<li><a href="#orge8f29af">2.1.2. lx-symbols</a></li>
+<li><a href="#org42a9c5d">2.1.3. lx-dmesg</a></li>
+<li><a href="#org0e40348">2.1.4. lx-lsmod</a></li>
+<li><a href="#org9140738">2.1.5. lx-ps</a></li>
+</ul>
+</li>
+<li><a href="#org5b601d1">2.2. printk</a></li>
+<li><a href="#orgf7ea887">2.3. strace</a></li>
+<li><a href="#org837d6bc">2.4. kgdb</a></li>
+<li><a href="#orgf6cbc27">2.5. 性能工具</a>
+<ul>
+<li><a href="#orgbffba11">2.5.1. top</a></li>
+<li><a href="#org84b0b47">2.5.2. vmstat</a></li>
+<li><a href="#orgd83bddf">2.5.3. iostat</a></li>
+<li><a href="#orgee15401">2.5.4. sysctl</a></li>
+<li><a href="#org954d855">2.5.5. netstat</a></li>
+<li><a href="#org811c455">2.5.6. sar</a></li>
+<li><a href="#orgdce1f81">2.5.7. OProfile</a></li>
+<li><a href="#orgaf8cb92">2.5.8. gprof</a></li>
+<li><a href="#orgfddc04f">2.5.9. LTTng</a></li>
+</ul>
+</li>
+<li><a href="#orge547dc8">2.6. benchmark</a></li>
+</ul>
+</li>
+<li><a href="#org29d377d">3. kernel编译</a></li>
+<li><a href="#org610784c">4. 代码分析</a>
+<ul>
+<li><a href="#org0e0733f">4.1. 内核引导过程</a></li>
+<li><a href="#orgbf5fcc3">4.2. zImage入口函数</a></li>
+</ul>
+</li>
+<li><a href="#org2f7735d">5. 文件系统</a>
+<ul>
+<li><a href="#org33a6bde">5.1. ramfs</a></li>
+<li><a href="#org724fc4f">5.2. ramdisk</a>
+<ul>
+<li><a href="#org24e1402">5.2.1. genext2fs</a></li>
+<li><a href="#orgb2128b1">5.2.2. mke2fs</a></li>
+</ul>
+</li>
+<li><a href="#org7b88a40">5.3. 引导配置</a>
+<ul>
+<li><a href="#org2ef57dc">5.3.1. u-boot配置</a></li>
+<li><a href="#org1950a41">5.3.2. kernel配置</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org6c3d6fc">6. 驱动</a>
+<ul>
+<li><a href="#orgfe486de">6.1. 框架基础</a>
+<ul>
+<li><a href="#orgb6aeeff">6.1.1. 模块声明</a></li>
+<li><a href="#org3b78517">6.1.2. 模块修饰</a></li>
+<li><a href="#org1abddaa">6.1.3. 模块函数</a></li>
+<li><a href="#orgf7b4e49">6.1.4. 模块命令</a></li>
+<li><a href="#orgbe05823">6.1.5. 模块文件</a></li>
+<li><a href="#org78aa98c">6.1.6. vfs</a></li>
+<li><a href="#orgdb2c01d">6.1.7. devfs</a></li>
+<li><a href="#orgc643f03">6.1.8. udev</a></li>
+<li><a href="#org6fd8a64">6.1.9. sysfs</a></li>
+</ul>
+</li>
+<li><a href="#org07b6ef8">6.2. 驱动并发</a></li>
+<li><a href="#orgfe6812a">6.3. 驱动架构</a></li>
+<li><a href="#org8b90e34">6.4. 内存管理</a>
+<ul>
+<li><a href="#orgbc05171">6.4.1. slab缓存</a></li>
+<li><a href="#org05e506b">6.4.2. 内存池</a></li>
+<li><a href="#org77aa879">6.4.3. 操作函数</a></li>
+</ul>
+</li>
+<li><a href="#org38ffa40">6.5. 设备IO</a>
+<ul>
+<li><a href="#orge504810">6.5.1. 地址</a></li>
+<li><a href="#org0726ec2">6.5.2. 内核空间IO端口</a></li>
+<li><a href="#org5c1c400">6.5.3. 内核空间IO内存</a></li>
+<li><a href="#org177d77d">6.5.4. 用户空间IO</a></li>
+<li><a href="#org734a864">6.5.5. 静态映射IO内存</a></li>
+</ul>
+</li>
+<li><a href="#orgb6f98f2">6.6. 字符驱动</a>
+<ul>
+<li><a href="#orgb44ffe6">6.6.1. 结构体</a></li>
+<li><a href="#orge62aece">6.6.2. 函数</a></li>
+<li><a href="#orge086de7">6.6.3. 实例模板</a></li>
+</ul>
+</li>
+<li><a href="#org5c9b642">6.7. 块驱动</a></li>
+<li><a href="#org650e063">6.8. 网络驱动</a></li>
+</ul>
+</li>
+<li><a href="#org4fb783e">7. tools</a></li>
+<li><a href="#org285784c">8. SOC 架构</a>
+<ul>
+<li><a href="#org49d0362">8.1. MMU</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="list-of-tables">
+<h2>List of Tables</h2>
+<div id="text-list-of-tables">
+<ul>
+<li><a href="#orgd9ee09a"><span class="table-number">Table 1:</span> vmlinux主要部件</a></li>
+<li><a href="#org29f9004"><span class="table-number">Table 2:</span> Config前端</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1bd7da9" class="outline-2">
+<h2 id="org1bd7da9"><span class="section-number-2">1.</span> kernel引导</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org3f50af2" class="outline-3">
+<h3 id="org3f50af2"><span class="section-number-3">1.1.</span> kernel构建</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+kernel构建,一般3大步.构建完成后,Linux内核会在arch/arm(或arm64)/boot目
+录下生成Image(zImage/uImage)镜像文件，如果使用设备树的话还会在
+arch/arm(或arm64)/boot/dts 目录下生成开发板对应的.dtb(设备树)文件.
+</p>
+<ul class="org-ul">
+<li>清理环境:make clean</li>
+<li>配置参数:make xxx_defconfig</li>
+<li>构建: make -j4</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7c4bbd2" class="outline-3">
+<h3 id="org7c4bbd2"><span class="section-number-3">1.2.</span> kernel加载</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-orgd5262a4" class="outline-4">
+<h4 id="orgd5262a4"><span class="section-number-4">1.2.1.</span> jtag加载</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+在gdb中用jtag方式将构建出来的二进制Image加载到ddr.
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">in gdb</span>
+restore ~/hwd/hwd10909_a53/linux/build/arch/arm64/boot/Image                   binary 0x08400000
+restore ~/hwd/hwd10909_a53/linux/build/arch/arm64/boot/dts/hwd/hwd-a53.dtb     binary 0x0b400000
+restore ~/hwd/hwd10909_a53/linux/binge/ramdisk.img                             binary 0x15000000
+</pre>
+</div>
+
+
+<p>
+相关最小需求3个模块
+</p>
+<ul class="org-ul">
+<li>kernel二进制文件本身Image(vmlinux去掉符号表和调试信息后的二进制文
+件),这个地址可以restore时任意定;</li>
+<li>kernel设备树二进制文件, 这个也可以加载时任意定,但是受到"fdt_high"的
+环境变量影响;</li>
+<li>initrd模块,一般为ramdisk二进制文件, 这个地址加载时任意定,但是需要和
+bootargs一致;</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgde60959" class="outline-3">
+<h3 id="orgde60959"><span class="section-number-3">1.3.</span> kernel引导</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+kernel和相关配套模块加载到ddr后,就可以在u-boot中引导其运行,几种引导方
+式都大同小异.
+</p>
+</div>
+<div id="outline-container-org6ed42d4" class="outline-4">
+<h4 id="org6ed42d4"><span class="section-number-4">1.3.1.</span> booti方式</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+booti引导Image,引导需要3个模块地址(booti [kernel_addr] [initrd_addr]
+[dtb_addr]);
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">in u-boot</span>
+booti 0x8400000 0x10400000 0xb400000
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org1ba8454" class="outline-4">
+<h4 id="org1ba8454"><span class="section-number-4">1.3.2.</span> bootz方式</h4>
+</div>
+<div id="outline-container-orgba6be56" class="outline-4">
+<h4 id="orgba6be56"><span class="section-number-4">1.3.3.</span> ram文件系统</h4>
+<div class="outline-text-4" id="text-1-3-3">
+<p>
+ram文件系统是引导必不可少的组成部分.有initramfs和initrd方式, 注意,使⽤
+initramfs，命令⾏参数将不需要”initrd=”和”root=”命令.
+</p>
+<ul class="org-ul">
+<li>initramfs概述:initramfs与initrd类似，也是初始化好了且存在于ram中的，
+可以压缩也可以不压缩。但是⽬前initramfs只⽀持cpio包格式，它会被
+populate_rootfs-&gt;unpack_to_rootfs(&amp;__initramfs_start,
+&amp;__initramfs_end - &amp;__initramfs_start, 0)函数(解压缩、)解析、安装。</li>
+<li>initramfs与initrd区别
+<ul class="org-ul">
+<li>Linux内核只认cpio格式的initramfs⽂件包(因为unpack_to_rootfs只能解
+析cpio格式⽂件)，⾮cpio格式的 initramfs⽂件包将被系统抛弃，⽽
+initrd可以是cpio包也可以是传统的镜像(image )⽂件，实际使⽤中initrd
+都是传统镜像⽂件。</li>
+<li>initramfs在编译内核的同时被编译并与内核连接成⼀个⽂件，它被链接到
+地址__initramfs_start处，与内核同时被 bootloader加载到ram中，⽽
+initrd是另外单独编译⽣成的，是⼀个独⽴的⽂件，它由bootloader单独加
+载到ram中内核空间外的地址，⽐如加载的地址为addr(是物理地址⽽⾮虚拟
+地址)，⼤⼩为8MB，那么只要在命令⾏加⼊”initrd=addr,8M”命令，系统就
+可以找到 initrd(当然通过适当修改Linux的⽬录结构，makefile⽂件和相
+关代码，以上两种情况都是可以相通的)。</li>
+<li>initramfs被解析处理后原始的cpio包(压缩或⾮压缩)所占的空间
+(&amp;__initramfs_start - &amp;__initramfs_end)是作为系统的⼀部分直接保留
+在系统中，不会被释放掉，⽽对于initrd镜像⽂件，如果没有在命令⾏中设
+置”keepinitd”命令，那么initrd镜像⽂件被处理后其原始⽂件所占的空间
+(initrd_end - initrd_start)将被释放掉。</li>
+<li>initramfs可以独⽴ram disk单独存在，⽽要⽀持initrd必须要先⽀持ram
+disk，即要配置CONFIG_BLK_DEV_INITRD选项 – ⽀持initrd，必须先要配置
+CONFIG_BLK_DEV_RAM – ⽀持ram disk ，因为initrd image实际就是初始化
+好了的ramdisk镜像⽂件，最后都要解析、写⼊到ram disk设备/dev/ram或
+/dev/ram0中。</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org59ccb40" class="outline-2">
+<h2 id="org59ccb40"><span class="section-number-2">2.</span> kernel调试</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org69337ef" class="outline-3">
+<h3 id="org69337ef"><span class="section-number-3">2.1.</span> gdb</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+kernel调试可以使用gdb进行源码级调试,如图<a href="#org2e52d0b">1</a>所示.
+</p>
+
+<div id="org2e52d0b" class="figure">
+<p><img src="./pic/img-kernel-dbg.png" alt="img-kernel-dbg.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>Kernel GDB调试方案</p>
+</div>
+<ul class="org-ul">
+<li>使用主机的gdb作为kernel调试前端;</li>
+<li>使用KGDB作为kernel调试的后端,即gdbserver端.</li>
+</ul>
+
+
+<p>
+为了构建能够调试的内核,即具有符号信息，我们需要几个配置。
+</p>
+<ul class="org-ul">
+<li>CONFIG_DEBUG_KERNEL</li>
+<li><p>
+CONFIG_DEBUG_INFO:在内核和内核模块中包含调试信息，这个选项在幕后为
+gcc使用的编译器参数增加了-g选项。这个选项的菜单路径如下;
+</p>
+<pre class="example" id="orgff15010">
+Kernel hacking  ---&gt;
+Compile-time checks and compiler options  ---&gt; 
+ [*] Compile the kernel with debug info
+</pre></li>
+<li>CONFIG_FRAME_POINTER: 这个选项会将调用帧信息保存在寄存器或堆栈上的不
+同位置，使gdb在调试内核时可以更准确地构造堆栈回溯跟踪(stack back
+traces);</li>
+<li>启用CONFIG_GDB_SCRIPTS，但要关闭CONFIG_DEBUG_INFO_REDUCED;</li>
+<li>CONFIG_KGDB: 启用内置的内核调试器，该调试器允许进行远程调试;</li>
+<li>关闭CONFIG_RANDOMIZE_BASE设置: KASLR会更改引导时放置内核代码的基地址。
+如果你在内核配置中启用了KASLR(CONFIG_RANDOMIZE_BASE=y)，则无法从
+gdb设置断点。</li>
+</ul>
+
+
+<p>
+为了能让gdb在启动时能够加载Linux helper脚本，需要在~/.gdbinit文件中添
+加如下内容, "/path/to/linux-build"就是Linux源码目录。
+</p>
+<pre class="example" id="orgcf68c1b">
+add-auto-load-safe-path /path/to/linux-build
+</pre>
+
+
+<p>
+在主机的linux-source目录下执行如下命令.
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">gdb vmlinux
+</pre>
+</div>
+
+
+<p>
+然后在gdb的交互环境下使用如下命令attach到linux内核。
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">target remote :1234
+</pre>
+</div>
+
+
+<p>
+在串口没有启动前,可以使用如下gdb命令导出串口缓存的日志.
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">&#30452;&#25509;&#36755;&#20986;</span>
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">p</span> (char*) &amp;__log_buf[log_start]
+<span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">&#23450;&#20041;gdb&#20989;&#25968;dmesg&#36755;&#20986;</span>
+define dmesg
+    <span style="color: #87cefa; text-decoration: underline;">set</span> $<span style="color: #ffd700;">__log_buf</span> = $<span style="color: #ffd700;">arg0</span>
+    <span style="color: #87cefa; text-decoration: underline;">set</span> $<span style="color: #ffd700;">log_start</span> = $<span style="color: #ffd700;">arg1</span>
+    <span style="color: #87cefa; text-decoration: underline;">set</span> $<span style="color: #ffd700;">log_end</span> = $<span style="color: #ffd700;">arg2</span>
+    <span style="color: #87cefa; text-decoration: underline;">set</span> $<span style="color: #ffd700;">x</span> = $<span style="color: #ffd700;">log_start</span>
+    <span style="color: #87cefa; text-decoration: underline;">echo</span> <span style="color: #ffa07a;">"</span>
+<span style="color: #ffa07a;">       while ($x &lt; $log_end)</span>
+<span style="color: #ffa07a;">              set $c = (char)(($__log_buf)[$x++])</span>
+<span style="color: #ffa07a;">              printf "</span>%c<span style="color: #ffa07a;">" , $c</span>
+<span style="color: #ffa07a;">       end</span>
+<span style="color: #ffa07a;">         echo "</span>\n
+end
+
+document dmesg
+dmesg __log_buf log_start log_end
+Print the content of the kernel message buffer
+end
+</pre>
+</div>
+
+
+<p>
+而动态模块在被kernel运行前是不知道自己的运行地址的,可以通过如下gdb函数
+得到ko模块的地址,然后使用add-symbol-file加载符号表到对应地址,进行源码
+级调试,注意加载符号表用的是o文件,不是ko文件,关于调试方法,这里有详细<a href="https://gracker.gitbooks.io/elinux/content/en/dbg_portal/kernel_dbg/Debugging_The_Linux_Kernel_Using_Gdb/Debugging_The_Linux_Kernel_Using_Gdb.html">网页</a>.
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">lsmod
+
+cat /sys/module/mydriver/sections/.text
+
+<span style="color: #90ee90; font-style: italic;">#</span><span style="color: #90ee90; font-style: italic;">gdb implementation of the linux lsmod</span>
+define lsmod
+    <span style="color: #87cefa; text-decoration: underline;">set</span> $<span style="color: #ffd700;">current</span> = modules.next
+    <span style="color: #87cefa; text-decoration: underline;">set</span> $<span style="color: #ffd700;">offset</span> =  ((int)&amp;((struct module *)0).list)
+    <span style="color: #87cefa; text-decoration: underline;">printf</span> <span style="color: #ffa07a;">"Module\tAddress\n"</span>
+
+    <span style="color: #ffb6c1; font-size: 105%;">while</span>($<span style="color: #ffd700;">current</span>.next != modules.next)
+         <span style="color: #87cefa; text-decoration: underline;">printf</span> <span style="color: #ffa07a;">"%s\t%p\n"</span>,  <span style="color: #ffa07a;">\</span>
+                ((struct module *) (((void *) ($<span style="color: #ffd700;">current</span>)) - $<span style="color: #ffd700;">offset</span> ) )-&gt;name ,<span style="color: #ffa07a;">\</span>
+                ((struct module *) (((void *) ($<span style="color: #ffd700;">current</span>)) - $<span style="color: #ffd700;">offset</span> ) )-&gt;module_core
+         <span style="color: #87cefa; text-decoration: underline;">set</span> $<span style="color: #ffd700;">current</span> = $<span style="color: #ffd700;">current</span>.next
+    end
+end
+<span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">Loading Symbols of a loaded module</span>
+add-symbol-file drivers/mydrivers/mydriver.o 0xbf098000
+</pre>
+</div>
+</div>
+<div id="outline-container-orgbdc1a81" class="outline-4">
+<h4 id="orgbdc1a81"><span class="section-number-4">2.1.1.</span> vmlinux-gdb.py</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+这个脚本出现在编译后的编译目录下,要生成这个脚本,需要做几个配置.
+</p>
+<ul class="org-ul">
+<li>CONFIG_GDB_SCRIPTS: 打开, 生成vmlinux-gdb.py的开关;</li>
+<li>CONFIG_DEBUG_INFO_REDUCED: 关闭;</li>
+<li>CONFIG_FRAME_POINTER: 打开, 它会产生更清晰的回溯信息.</li>
+</ul>
+
+
+<p>
+这个脚本可以提供很多更便利的kernel调试接口, 要使用这个脚本,调试器需要
+使用xxx-gdb-py的gdb工具,如"aarch64-none-linux-gnu-gdb-py", 加载脚本,可
+以在gdb环境下,用source命令,然后就可以使用里面的命令接口.
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #87cefa; text-decoration: underline;">source</span> xxx/build/vmlimux-gdb.py
+</pre>
+</div>
+
+
+<p>
+可以使用如下命令获得这些辅助命令接口
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">(gdb) apropos lx 
+<span style="color: #ffb6c1; font-size: 105%;">function</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">lx_clk_core_lookup</span> -- Find struct clk_core by name
+<span style="color: #ffb6c1; font-size: 105%;">function</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">lx_current</span> -- Return current task.
+<span style="color: #ffb6c1; font-size: 105%;">function</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">lx_device_find_by_bus_name</span> -- Find struct device by bus and name (both strings)
+<span style="color: #ffb6c1; font-size: 105%;">function</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">lx_device_find_by_class_name</span> -- Find struct device by class and name (both strings)
+<span style="color: #ffb6c1; font-size: 105%;">function</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">lx_module</span> -- Find module by name and return the module variable.
+<span style="color: #ffb6c1; font-size: 105%;">function</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">lx_per_cpu</span> -- Return per-cpu variable.
+<span style="color: #ffb6c1; font-size: 105%;">function</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">lx_rb_first</span> -- Lookup and return a node from an RBTree
+<span style="color: #ffb6c1; font-size: 105%;">function</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">lx_rb_last</span> -- Lookup and return a node from an RBTree.
+<span style="color: #ffb6c1; font-size: 105%;">function</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">lx_rb_next</span> -- Lookup and return a node from an RBTree.
+<span style="color: #ffb6c1; font-size: 105%;">function</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">lx_rb_prev</span> -- Lookup and return a node from an RBTree.
+<span style="color: #ffb6c1; font-size: 105%;">function</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">lx_task_by_pid</span> -- Find Linux task by PID and return the task_struct variable.
+<span style="color: #ffb6c1; font-size: 105%;">function</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">lx_thread_info</span> -- Calculate Linux thread_info from task variable.
+<span style="color: #ffb6c1; font-size: 105%;">function</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">lx_thread_info_by_pid</span> -- Calculate Linux thread_info from task variable found by pid
+lx-clk-summary -- Print clk tree summary
+lx-cmdline -- Report the Linux Commandline used<span style="color: #ffb6c1; font-size: 105%;"> in</span> the current kernel.
+lx-configdump -- Output kernel config to the filename specified as the command
+lx-cpus -- List CPU status arrays
+lx-device-list-bus -- Print devices on a bus (or all buses if not specified)
+lx-device-list-class -- Print devices<span style="color: #ffb6c1; font-size: 105%;"> in</span> a class (or all classes if not specified)
+lx-device-list-tree -- Print a device and its children recursively
+lx-dmesg -- Print Linux kernel log buffer.
+lx-fdtdump -- Output Flattened Device Tree header and dump FDT blob to the filename
+lx-genpd-summary -- Print genpd summary
+lx-iomem -- Identify the IO memory resource locations defined by the kernel
+lx-ioports -- Identify the IO port resource locations defined by the kernel
+lx-list-check -- Verify a list consistency
+lx-lsmod -- List currently loaded modules.
+lx-mounts -- Report the VFS mounts of the current process namespace.
+lx-ps -- Dump Linux tasks.
+lx-symbols -- (Re-)load symbols of Linux kernel and currently loaded modules.
+lx-timerlist -- Print /proc/timer_list
+lx-version -- Report the Linux Version of the current kernel.
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orge8f29af" class="outline-4">
+<h4 id="orge8f29af"><span class="section-number-4">2.1.2.</span> lx-symbols</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+可以加载符号表.
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">(gdb) <span style="color: #87cefa; text-decoration: underline;">cd</span> &lt;kernel_build_directory_path&gt;
+(gdb) lx-symbols [specific_module_symbol_path1] 
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org42a9c5d" class="outline-4">
+<h4 id="org42a9c5d"><span class="section-number-4">2.1.3.</span> lx-dmesg</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<p>
+可以显示调试messages;
+</p>
+<pre class="example" id="org6dbd6c4">
+(gdb) lx-dmesg
+[    0.000000] Booting Linux on physical CPU 0x0
+[    0.000000] Linux version 4.14.48 (oe-user@oe-host) 
+[    0.000000] CPU: ARMv7 Processor [410fc075] 
+[    0.000000] CPU: div instructions available: patching division code
+[    0.000000] CPU: PIPT / VIPT nonaliasing data cache
+[    0.000000] OF: fdt: Machine model: STMicroelectronics
+[    0.000000] bootconsole [earlycon0] enabled
+</pre>
+</div>
+</div>
+<div id="outline-container-org0e40348" class="outline-4">
+<h4 id="org0e40348"><span class="section-number-4">2.1.4.</span> lx-lsmod</h4>
+<div class="outline-text-4" id="text-2-1-4">
+<p>
+可以显示加载的模块
+</p>
+<pre class="example" id="org59bed4d">
+(gdb) lx-lsmod 
+ Address    Module                  Size  Used by
+ 0xbf0ba000 galcore               294912  0
+ 0xbf0ad000 stm32_dcmi             28672  0
+ 0xbf0a4000 videobuf2_dma_contig    20480  1 stm32_dcmi
+ 0xbf09d000 videobuf2_memops       16384  1 videobuf2_dma_contig
+ 0xbf094000 videobuf2_v4l2         20480  1 stm32_dcmi
+ 0xbf086000 videobuf2_core         36864  2 stm32_dcmi,videobuf2_v4l2
+</pre>
+</div>
+</div>
+<div id="outline-container-org9140738" class="outline-4">
+<h4 id="org9140738"><span class="section-number-4">2.1.5.</span> lx-ps</h4>
+<div class="outline-text-4" id="text-2-1-5">
+<p>
+可以显示当前内核进程
+</p>
+<pre class="example" id="orgd748826">
+(gdb) lx-ps
+ 0xc1007580 &lt;init_task&gt; 0 swapper/0
+ 0xee8b8000 1 systemd
+ 0xee8b8680 2 kthreadd
+ 0xee8b9380 4 kworker/0:0H
+ 0xee8b9a00 5 kworker/u4:0
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5b601d1" class="outline-3">
+<h3 id="org5b601d1"><span class="section-number-3">2.2.</span> printk</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+printk定义了8个消息级别，分为级别0~7，级别越低（数值越大），消息越不重要，第0级是紧急
+事件级，第7级是调试级
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #87cefa; text-decoration: underline;">#define</span> <span style="color: #ffd700;">KERN_EMERG</span> <span style="color: #ffa07a;">"&lt;0&gt;"</span> <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#32039;&#24613;&#20107;&#20214;&#65292;&#19968;&#33324;&#26159;&#31995;&#32479;&#23849;&#28291;&#20043;&#21069;&#25552;&#31034;&#30340;&#28040;&#24687;</span><span style="color: #90ee90; font-style: italic;">*/</span>
+<span style="color: #87cefa; text-decoration: underline;">#define</span> <span style="color: #ffd700;">KERN_ALERT</span> <span style="color: #ffa07a;">"&lt;1&gt;"</span> <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#24517;&#39035;&#31435;&#21363;&#37319;&#21462;&#34892;&#21160;</span><span style="color: #90ee90; font-style: italic;">*/</span>
+<span style="color: #87cefa; text-decoration: underline;">#define</span> <span style="color: #ffd700;">KERN_CRIT</span> <span style="color: #ffa07a;">"&lt;2&gt;"</span> <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#20020;&#30028;&#29366;&#24577;&#65292;&#36890;&#24120;&#28041;&#21450;&#20005;&#37325;&#30340;&#30828;&#20214;&#25110;&#36719;&#20214;&#25805;&#20316;&#22833;&#36133;</span><span style="color: #90ee90; font-style: italic;">*/</span>
+<span style="color: #87cefa; text-decoration: underline;">#define</span> <span style="color: #ffd700;">KERN_ERR</span> <span style="color: #ffa07a;">"&lt;3&gt;"</span> <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#29992;&#20110;&#25253;&#21578;&#38169;&#35823;&#29366;&#24577;&#65292;&#35774;&#22791;&#39537;&#21160;&#31243;&#24207;&#20250;&#32463;&#24120;&#20351;&#29992;KERN_ERR&#26469;&#25253;&#21578;&#26469;&#33258;&#30828;&#20214;&#30340;&#38382;&#39064;</span><span style="color: #90ee90; font-style: italic;">*/</span>
+<span style="color: #87cefa; text-decoration: underline;">#define</span> <span style="color: #ffd700;">KERN_WARNING</span> <span style="color: #ffa07a;">"&lt;4&gt;"</span> <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#23545;&#21487;&#33021;&#20986;&#29616;&#38382;&#39064;&#30340;&#24773;&#20917;&#36827;&#34892;&#35686;&#21578;&#65292;&#36825;&#31867;&#24773;&#20917;&#36890;&#24120;&#19981;&#20250;&#23545;&#31995;&#32479;&#36896;&#25104;&#20005;&#37325;&#30340;&#38382;&#39064;</span><span style="color: #90ee90; font-style: italic;">*/</span>
+<span style="color: #87cefa; text-decoration: underline;">#define</span> <span style="color: #ffd700;">KERN_NOTICE</span> <span style="color: #ffa07a;">"&lt;5&gt;"</span> <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#26377;&#24517;&#35201;&#36827;&#34892;&#25552;&#31034;&#30340;&#27491;&#24120;&#24773;&#24418;&#65292;&#35768;&#22810;&#19982;&#23433;&#20840;&#30456;&#20851;&#30340;&#29366;&#20917;&#29992;&#36825;&#20010;&#32423;&#21035;&#36827;&#34892;&#27719;&#25253;</span><span style="color: #90ee90; font-style: italic;">*/</span>
+<span style="color: #87cefa; text-decoration: underline;">#define</span> <span style="color: #ffd700;">KERN_INFO</span> <span style="color: #ffa07a;">"&lt;6&gt;"</span> <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#20869;&#26680;&#25552;&#31034;&#24615;&#20449;&#24687;&#65292;&#24456;&#22810;&#39537;&#21160;&#31243;&#24207;&#22312;&#21551;&#21160;&#30340;&#26102;&#20505;&#65292;&#29992;&#36825;&#20010;&#32423;&#21035;&#25171;&#21360;&#20986;&#23427;&#20204;&#25214;&#21040;&#30340;&#30828;&#20214;&#20449;&#24687;</span><span style="color: #90ee90; font-style: italic;">*/</span>
+<span style="color: #87cefa; text-decoration: underline;">#define</span> <span style="color: #ffd700;">KERN_DEBUG</span> <span style="color: #ffa07a;">"&lt;7&gt;"</span> <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#29992;&#20110;&#35843;&#35797;&#20449;&#24687;</span><span style="color: #90ee90; font-style: italic;">*/</span>
+</pre>
+</div>
+
+
+<p>
+要注意的是，/proc/sys/kernel/printk并不控制内核消息进入__log_buf的门槛，
+因此无论消息级别是多少，都会进入__log_buf中，但是最终只有高于当前打印
+级别的内核消息才会从控制台打印，__log_buf可以通过dmesg输出，也可以使用
+cat /proc/kmsg命令来显示内核信息；printk有很多预定义的宏.
+</p>
+<ul class="org-ul">
+<li>pr_xxx族:可以预设一些标志；
+<ul class="org-ul">
+<li>pr_debug</li>
+<li>pr_info</li>
+<li>pr_err</li>
+</ul></li>
+<li>dev_xxx族：设备名称会被自动加到打印消息的前头；
+<ul class="org-ul">
+<li>dev_err</li>
+<li>dev_info</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgf7ea887" class="outline-3">
+<h3 id="orgf7ea887"><span class="section-number-3">2.3.</span> strace</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+strace可以监视系统调用.它会给出每次系统调用的“左边=右边”信息，等号左边
+是系统调用的函数名及其参数，右边是该调用的返回值。
+</p>
+</div>
+</div>
+<div id="outline-container-org837d6bc" class="outline-3">
+<h3 id="org837d6bc"><span class="section-number-3">2.4.</span> kgdb</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+为了支持KGDB，串口驱动应该实现纯粹的轮询收发单一字符的成员函数。以供
+drivers/tty/serial/kgdboc.c调用。
+</p>
+
+
+<p>
+对于目标板而言，需要在bootargs中设置与KGDB对应的串口等信息，如
+kgdboc=ttyS0，115200kgdbcon。如果想一开机内核就直接进入等待GDB连接的调
+试状态，可以在bootargs中设置kgdbwait，kgdbwait的含义是启动时就等待主机
+的GDB连接。而若想在内核启动后进入GDB调试模式，可运行echo g &gt;
+/proc/sysrq_trigger命令给内核传入一个键值是g的magic_sysrq。在调试PC上，
+依次运行如下命令就可以启动调试并连接至目标机（假设串口在PC上对应的设备
+节点是/dev/ttyS0）
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">arm-eabi-gdb ./vmlinux</span>
+(gdb) <span style="color: #87cefa; text-decoration: underline;">set</span> remotebaud 115200
+(gdb) target remote /dev/ttyS0
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf6cbc27" class="outline-3">
+<h3 id="orgf6cbc27"><span class="section-number-3">2.5.</span> 性能工具</h3>
+<div class="outline-text-3" id="text-2-5">
+</div>
+<div id="outline-container-orgbffba11" class="outline-4">
+<h4 id="orgbffba11"><span class="section-number-4">2.5.1.</span> top</h4>
+<div class="outline-text-4" id="text-2-5-1">
+<p>
+top命令用于显示处理器的活动状况，每隔5s做一次刷新.
+</p>
+</div>
+</div>
+<div id="outline-container-org84b0b47" class="outline-4">
+<h4 id="org84b0b47"><span class="section-number-4">2.5.2.</span> vmstat</h4>
+<div class="outline-text-4" id="text-2-5-2">
+<p>
+用于报告关于内核线程、虚拟内存、磁盘、陷阱和CPU活动的统计信息。
+</p>
+</div>
+</div>
+<div id="outline-container-orgd83bddf" class="outline-4">
+<h4 id="orgd83bddf"><span class="section-number-4">2.5.3.</span> iostat</h4>
+<div class="outline-text-4" id="text-2-5-3">
+<p>
+用于分析各个磁盘的传输闲忙状况。
+</p>
+</div>
+</div>
+<div id="outline-container-orgee15401" class="outline-4">
+<h4 id="orgee15401"><span class="section-number-4">2.5.4.</span> sysctl</h4>
+<div class="outline-text-4" id="text-2-5-4">
+<p>
+用于改变正在运行中的Linux系统的接口，用sysctl可以读取几百个以上的系统
+变量。
+</p>
+</div>
+</div>
+<div id="outline-container-org954d855" class="outline-4">
+<h4 id="org954d855"><span class="section-number-4">2.5.5.</span> netstat</h4>
+<div class="outline-text-4" id="text-2-5-5">
+<p>
+用来检测网络信息的工具。
+</p>
+</div>
+</div>
+<div id="outline-container-org811c455" class="outline-4">
+<h4 id="org811c455"><span class="section-number-4">2.5.6.</span> sar</h4>
+<div class="outline-text-4" id="text-2-5-6">
+<p>
+用于收集、报告或者保存系统活动信息，其中，sar用于显示数据，sar1和sar2
+用于收集和保存数据。
+</p>
+</div>
+</div>
+<div id="outline-container-orgdce1f81" class="outline-4">
+<h4 id="orgdce1f81"><span class="section-number-4">2.5.7.</span> OProfile</h4>
+<div class="outline-text-4" id="text-2-5-7">
+<p>
+可以帮助用户识别诸如模块的占用时间、循环的展开、高速缓存的使用率低、低
+效的类型转换和冗余操作、错误预测转移等问题。它收集有关处理器事件的信息，
+其中包括TLB的故障、停机、存储器访问及缓存命中和未命中的指令的攫取数量。
+</p>
+</div>
+</div>
+<div id="outline-container-orgaf8cb92" class="outline-4">
+<h4 id="orgaf8cb92"><span class="section-number-4">2.5.8.</span> gprof</h4>
+<div class="outline-text-4" id="text-2-5-8">
+<p>
+gprof可以打印出程序运行中各个函数消耗的时间，以帮助程序员找出众多函数
+中耗时最多的函数；还可产生程序运行时的函数调用关系，包括调用次数，以帮
+助程序员分析程序的运行流程。gprof的基本用法如下。
+</p>
+<ul class="org-ul">
+<li>使用-pg编译和链接应用程序。</li>
+<li>执行应用程序并使它生成供gprof分析的数据。</li>
+<li>使用gprof程序分析应用程序生成的数据。</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgfddc04f" class="outline-4">
+<h4 id="orgfddc04f"><span class="section-number-4">2.5.9.</span> LTTng</h4>
+<div class="outline-text-4" id="text-2-5-9">
+<p>
+用于跟踪系统详细运行状态和流程的工具，它可以跟踪记录系统中的特定事件。
+这些事件包括，而对于这些记录，我们可以通过图形的方式经由lttv-gui查看，。
+</p>
+<ul class="org-ul">
+<li>系统调用的进入和退出；</li>
+<li>陷阱/中断（Trap/Irq）的进入和退出；</li>
+<li>进程调度事件；</li>
+<li>内核定时器；</li>
+<li>进程管理相关事件——创建、唤醒、信号处理等；</li>
+<li>文件系统相关事件——open/read/write/seek/ioctl等；</li>
+<li>内存管理相关事件——内存分配/释放等；</li>
+<li>其他IPC/套接字/网络等事件。</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orge547dc8" class="outline-3">
+<h3 id="orge547dc8"><span class="section-number-3">2.6.</span> benchmark</h3>
+<div class="outline-text-3" id="text-2-6">
+<ul class="org-ul">
+<li>lmbench</li>
+<li>UnixBench</li>
+<li>AIM9</li>
+<li>Netperf</li>
+<li>SSLperf</li>
+<li>dbench</li>
+<li>Bonnie</li>
+<li>Bonnie++</li>
+<li>Iozone</li>
+<li>BYTEmark</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org29d377d" class="outline-2">
+<h2 id="org29d377d"><span class="section-number-2">3.</span> kernel编译</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li><p>
+vmlinux: 依据arch/arm/kernel/vmlinux.lds 生成linux内核源码根目录下的
+vmlinux，这个vmlinux属于未压缩，带调试信息、符号表的最初的内核，大小
+约从几十到几百兆；  
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">xxx-ld -o vmlinux -T arch/arm/kernel/vmlinux.lds  <span style="color: #ffa07a;">\</span>
+                 arch/arm/kernel/head.o  <span style="color: #ffa07a;">\</span>
+                 init/built-in.o  <span style="color: #ffa07a;">\</span>
+                 --start-group   <span style="color: #ffa07a;">\</span>
+                 arch/arm/mach-s3c2410/built-in.o  <span style="color: #ffa07a;">\</span>
+                 kernel/built-in.o          <span style="color: #ffa07a;">\</span>
+                 mm/built-in.o   <span style="color: #ffa07a;">\</span>
+                 fs/built-in.o   <span style="color: #ffa07a;">\</span>
+                 ipc/built-in.o   <span style="color: #ffa07a;">\</span>
+                 drivers/built-in.o   <span style="color: #ffa07a;">\</span>
+                 net/built-in.o  <span style="color: #ffa07a;">\</span>
+                 --end-group<span style="color: #ffa07a;">\</span>
+                 .tmp_kallsyms2.o 
+</pre>
+</div></li>
+<li><p>
+Image: 将上面的vmlinux去除调试信息、注释、符号表等内容，生成
+arch/arm/boot/Image，这是不带多余信息的linux内核，Image的大小约3.2MB；
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">xxx-objcopy -O binary -S  vmlinux arch/arm/boot/Image 
+</pre>
+</div></li>
+<li><p>
+piggy.gz将arch/arm/boot/Image 用gzip -9 压缩生成
+arch/arm/boot/compressed/piggy.gz大小约1.5MB；
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">gzip -f -9 &lt; arch/arm/boot/Image &gt; arch/arm/boot/compressed/piggy.gz 
+</pre>
+</div></li>
+<li><p>
+编译arch/arm/boot/compressed/piggy.S 生成
+arch/arm/boot/compressed/piggy.o大小约1.5MB，这里实际上是将piggy.gz
+通过piggy.S编译进piggy.o文件中。而piggy.S文件仅有6行，只是包含了文件
+piggy.gz;
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">xxx-gcc -o arch/arm/boot/compressed/piggy.o <span style="color: #ffa07a;">\</span>
+        arch/arm/boot/compressed/piggy.S 
+</pre>
+</div></li>
+<li><p>
+依据arch/arm/boot/compressed/vmlinux.lds 将arch/arm/boot/compressed/
+目录下的文件head.o 、piggy.o 、misc.o链接生成
+arch/arm/boot/compressed/vmlinux，这个vmlinux是经过压缩且含有自解压
+代码的内核,大小约1.5MB;
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">xxx-ld <span style="color: #ffd700;">zreladdr</span>=0x30008000 <span style="color: #ffd700;">params_phys</span>=0x30000100 <span style="color: #ffa07a;">\</span>
+       -T arch/arm/boot/compressed/vmlinux.lds <span style="color: #ffa07a;">\</span>
+       arch/arm/boot/compressed/head.o<span style="color: #ffa07a;">\</span>
+       arch/arm/boot/compressed/piggy.o <span style="color: #ffa07a;">\</span>
+       arch/arm/boot/compressed/misc.o <span style="color: #ffa07a;">\</span>
+       -o arch/arm/boot/compressed/vmlinux 
+</pre>
+</div></li>
+<li><p>
+将arch/arm/boot/compressed/vmlinux去除调试信息、注释、符号表等内容，
+生成arch/arm/boot/zImage大小约1.5MB;这已经是一个可以使用的linux内核
+映像文件了；
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">xxx-objcopy -O binary -S arch/arm/boot/compressed/vmlinux<span style="color: #ffa07a;">\</span>
+            arch/arm/boot/zImage 
+</pre>
+</div></li>
+<li><p>
+将arch/arm/boot/zImage添加64Bytes的相关信息打包为
+arch/arm/boot/uImage大小约1.5MB;
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">./mkimage -A arm -O linux -T kernel -C none<span style="color: #ffa07a;">\</span>
+          -a 0x30008000 -e 0x30008000 <span style="color: #ffa07a;">\</span>
+          -n <span style="color: #ffa07a;">'Linux-2.6.35.7'</span> <span style="color: #ffa07a;">\</span>
+          -d arch/arm/boot/zImage arch/arm/boot/uImage
+</pre>
+</div></li>
+</ul>
+
+
+<p>
+借用biscuitos的一张图直观的描述下压缩内核生成过程：
+</p>
+
+<div id="orgbbf3a63" class="figure">
+<p><img src="./pic/kernel-build.png" alt="kernel-build.png" />
+</p>
+<p><span class="figure-number">Figure 2: </span>内核编译过程</p>
+</div>
+
+
+
+<ul class="org-ul">
+<li>uImage格式: 压缩的vmlinux+u-boot header；</li>
+<li><p>
+vmlinux：Linux kernel的核心资产，elf格式，包含信息如下，包含的主要部
+件见表<a href="#orgd9ee09a">1</a>所示。
+</p>
+<ul class="org-ul">
+<li>symbols；</li>
+<li>comments</li>
+<li>debug info</li>
+<li>architecture-generic components</li>
+</ul>
+
+<table id="orgd9ee09a" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 1:</span> vmlinux主要部件</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Component</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">arch/arm/kernel/head.o</td>
+<td class="org-left">Kernel arch-specific startup code.</td>
+</tr>
+
+<tr>
+<td class="org-left">init_task.o</td>
+<td class="org-left">Initial thread &amp; task structs.</td>
+</tr>
+
+<tr>
+<td class="org-left">init/built-in.o</td>
+<td class="org-left">Main kernel-initialization code.</td>
+</tr>
+
+<tr>
+<td class="org-left">usr/built-in.o</td>
+<td class="org-left">Built-in initramfs image.</td>
+</tr>
+
+<tr>
+<td class="org-left">arch/arm/kernel/built-in.o</td>
+<td class="org-left">Arch-specific kernel code.</td>
+</tr>
+
+<tr>
+<td class="org-left">arch/arm/mm/built-in.o</td>
+<td class="org-left">Arch-specific memory-management code.</td>
+</tr>
+
+<tr>
+<td class="org-left">arch/arm/common/built-in.o</td>
+<td class="org-left">Arch-specific generic code. Varies by arch.</td>
+</tr>
+
+<tr>
+<td class="org-left">arch/arm/mach-ixp4xx/built-in.o</td>
+<td class="org-left">Machine-specific code, usually initialization.</td>
+</tr>
+
+<tr>
+<td class="org-left">arch/arm/nwfpe/built-in.o</td>
+<td class="org-left">Arch-specific floating point-emulation code.</td>
+</tr>
+
+<tr>
+<td class="org-left">kernel/built-in.o</td>
+<td class="org-left">Common components of the kernel itself.</td>
+</tr>
+
+<tr>
+<td class="org-left">mm/built-in.o</td>
+<td class="org-left">Common components of memory-management code.</td>
+</tr>
+
+<tr>
+<td class="org-left">ipc/built-in.o</td>
+<td class="org-left">Interprocess communications, such as SysV IPC.</td>
+</tr>
+
+<tr>
+<td class="org-left">security/built-in.o</td>
+<td class="org-left">Linux security components.</td>
+</tr>
+
+<tr>
+<td class="org-left">lib/lib.a</td>
+<td class="org-left">Archive of miscellaneous helper functions.</td>
+</tr>
+
+<tr>
+<td class="org-left">arch/arm/lib/lib.a</td>
+<td class="org-left">Arch-specific common facilities.</td>
+</tr>
+
+<tr>
+<td class="org-left">lib/built-in.o</td>
+<td class="org-left">Common kernel helper functions.</td>
+</tr>
+
+<tr>
+<td class="org-left">drivers/built-in.o</td>
+<td class="org-left">All the built-in driversnot loadable modules.</td>
+</tr>
+
+<tr>
+<td class="org-left">sound/built-in.o</td>
+<td class="org-left">Sound drivers.</td>
+</tr>
+
+<tr>
+<td class="org-left">net/built-in.o</td>
+<td class="org-left">Linux networking.</td>
+</tr>
+
+<tr>
+<td class="org-left">.tmp_kallsyms2.o</td>
+<td class="org-left">Symbol table.</td>
+</tr>
+</tbody>
+</table></li>
+
+<li>System.map： 基于文本的内核vmlinux模块符号表；</li>
+<li>Image：二进制的内核，剥离了symbols，notes，comments</li>
+<li>piggy.gz: 将二进制的Image进行gzip压缩后的结果。</li>
+<li><p>
+piggy.s: 包含对piggy.gz的引用指令。
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #ffb6c1; font-size: 105%;">.section</span> .piggydata,#alloc
+<span style="color: #ffb6c1; font-size: 105%;">.globl</span> input_data
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">input_data</span>:
+<span style="color: #ffb6c1; font-size: 105%;">.incbin</span> <span style="color: #ffa07a;">"arch/arm/boot/compressed/piggy.gz"</span>
+<span style="color: #ffb6c1; font-size: 105%;">.globl</span> input_data_end
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">input_data_end</span>:
+</pre>
+</div></li>
+
+<li>zImage：最终的内核镜像，被bootloader引导；</li>
+<li>.version: 该文件用于记录编译序号，每编译一次，scripts/mkversion脚本
+会将里面的数字增加1次；</li>
+<li><p>
+内核镜像构造过程见图<a href="#orga5ee96e">3</a>。
+</p>
+
+<div id="orga5ee96e" class="figure">
+<p><img src="./pic/drw-kernelconstruct.png" alt="drw-kernelconstruct.png" />
+</p>
+<p><span class="figure-number">Figure 3: </span>Composite Kernel Image Construction</p>
+</div></li>
+</ul>
+
+
+<p>
+对于64位的内核则和32位的有所不同.具体参见图<a href="#org5ba925e">4</a>所示.
+</p>
+
+<div id="org5ba925e" class="figure">
+<p><img src="./pic/img-kernel-armxx.png" alt="img-kernel-armxx.png" />
+</p>
+<p><span class="figure-number">Figure 4: </span>64位内核编译</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org610784c" class="outline-2">
+<h2 id="org610784c"><span class="section-number-2">4.</span> 代码分析</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org0e0733f" class="outline-3">
+<h3 id="org0e0733f"><span class="section-number-3">4.1.</span> 内核引导过程</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+Linux 内核启动是 “BootROM-&gt;U-Boot-&gt;内核-&gt;用户空间” 的控制权移交过程，
+核心链路为“上电-&gt;固件自检-&gt;U-Boot加载内核/initramfs-&gt;内核早期初始
+化-&gt;start_kernel-&gt;挂载根文件系统-&gt;启动1号进程-&gt;进入用户态”, 如图
+<a href="#org7951397">5</a>。
+</p>
+<p>
+<img src="./pic/drw-kernelboot.png" alt="drw-kernelboot.png" />
+<img src="./pic/drw-kernelboot.png" alt="drw-kernelboot.png" />]]
+</p>
+</div>
+</div>
+<div id="outline-container-orgbf5fcc3" class="outline-3">
+<h3 id="orgbf5fcc3"><span class="section-number-3">4.2.</span> zImage入口函数</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+zImage初始化阶段源码位于 arch/arm/boot/compressed/ 目录下。根据之前分
+析的原理可知， 压缩之后的内核会添加 bootstrap 功能之后生成 vmlinux，再
+经过 OBJCOPY 工具处理生成 zImage。所以可以通过查看 vmlinux 的链接脚本
+确定zImage的入口地址。zImage 使用的链接脚本位于
+arch/arm/boot/compressed/vmlinux.lds.S, 具体内容如下
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">OUTPUT_ARCH</span>(arm)
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">ENTRY</span>(_start)
+SECTIONS
+{
+  /DISCARD/ : {
+    *(.ARM.exidx*)
+    *(.ARM.extab*)
+    /*
+     * Discard any r/w data - this produces a link error if we have any,
+     * which is required for PIC decompression.  Local data generates
+     * GOTOFF relocations, which prevents it being relocated independently
+     * of the text/got segments.
+     */
+    *(.data)
+  }
+
+  <span style="color: #87cefa; text-decoration: underline;">.</span> = TEXT_START;
+  _text = .;
+
+  .text : {
+    _start = .;
+    *(.start)
+    *(.text)
+    *(.text.*)
+    *(.fixup)
+    *(.gnu.warning)
+    *(.glue_7t)
+    *(.glue_7)
+  }
+</pre>
+</div>
+
+<p>
+从链接脚本可以知道vmlinux链接过程，使用ENTRY关键字指定了vmlinux的入口
+地址， 也就是第一行运行的代码，这里设置为 _start, 从上面可以看出
+_start 位于 .text section 的首地址，所以这里链接脚本告诉开发者，
+vmlinux 运行的第一行代码就是 vmlinux .text section 的第一行代码。继续
+查看链接脚本， .text section 的布局是所有目标文件的 .start section 位
+于 vmlinux .text section 的最前部，所以开发者只需找到目标文件 中函数
+.start section 的文件即可。由arch/arm/boot/compressed/Makefile可知，
+head.o第一个被链接进vmlinx， start段为heads中的start section
+</p>
+<div class="org-src-container">
+<pre class="src src-makefile"><span style="color: #ffd700;">HEAD</span>    = head.o
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">$(</span><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">obj</span><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">)/vmlinux</span>: $(<span style="color: #ffd700;">obj</span>)/vmlinux.lds $(<span style="color: #ffd700;">obj</span>)/$(<span style="color: #ffd700;">HEAD</span>) $(<span style="color: #ffd700;">obj</span>)/piggy.o \
+        $(<span style="color: #ffd700;">addprefix</span> $(<span style="color: #ffd700;">obj</span>)/, $(<span style="color: #ffd700;">OBJS</span>)) $(<span style="color: #ffd700;">lib1funcs</span>) $(<span style="color: #ffd700;">ashldi3</span>) \
+        $(<span style="color: #ffd700;">bswapsdi2</span>) $(<span style="color: #ffd700;">efi-obj-y</span>) FORCE
+    @$(<span style="color: #ffd700;">check_for_multiple_zreladdr</span>)
+    $(<span style="color: #ffd700;">call</span> if_changed,ld)
+    @$(<span style="color: #ffd700;">check_for_bad_syms</span>)
+</pre>
+</div>
+
+
+<p>
+找到start开始的代码如下
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #ffb6c1; font-size: 105%;">.section</span> <span style="color: #ffa07a;">".start"</span>, #alloc, #execinstr     <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#23646;&#24615;&#26159;&#21487;&#20998;&#37197;&#21644;&#21487;&#25191;&#34892;&#30340;</span>
+<span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;"> * sort out different calling conventions</span>
+<span style="color: #90ee90; font-style: italic;"> */</span>
+   <span style="color: #ffb6c1; font-size: 105%;">.align</span>
+   <span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;">    * Always enter in ARM state for CPUs that support the ARM ISA.</span>
+<span style="color: #90ee90; font-style: italic;">    * As of today (2014) that's exactly the members of the A and R</span>
+<span style="color: #90ee90; font-style: italic;">    * classes.</span>
+<span style="color: #90ee90; font-style: italic;">    */</span>
+ <span style="color: #ffb6c1; font-size: 105%;">AR_CLASS</span>(.arm) <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">.align &#20266;&#25351;&#20196;&#21644; .arm &#20266;&#25351;&#20196;&#21578;&#35785;&#27719;&#32534;&#22120;&#65292;&#36825;&#26159;&#19968;&#20010;&#20351;&#29992; arm32 &#25351;&#20196;&#38598;&#24182; &#35201;&#27714;&#23545;&#40784;&#30340; section</span>
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">start</span>:
+        <span style="color: #ffb6c1; font-size: 105%;">.type</span>    start,#function
+        <span style="color: #ffb6c1; font-size: 105%;">.rept</span>    7 @&#37325;&#22797;&#31354;&#25805;&#20316;7&#27425;
+        <span style="color: #ffb6c1; font-size: 105%;">__nop</span>
+        <span style="color: #ffb6c1; font-size: 105%;">.endr</span>
+   <span style="color: #ffb6c1; font-size: 105%;">ARM</span>(mov  r0, r0)
+   <span style="color: #ffb6c1; font-size: 105%;">ARM</span>(b    1f)  @&#36339;&#36716;&#21040;1&#22788;
+ <span style="color: #ffb6c1; font-size: 105%;">THUMB</span>(badr r12, 1f)
+ <span style="color: #ffb6c1; font-size: 105%;">THUMB</span>(bx    r12)
+
+        <span style="color: #ffb6c1; font-size: 105%;">.word</span>    _magic_sig    @ Magic numbers to help the loader  
+                               @ &#39764;&#25968;0x016f2818&#26159;&#22312;uboot&#20013;&#29992;&#20110;&#21028;&#26029;zImage&#30340;&#23384;&#22312;
+                               @ &#36825;&#20010;&#26159;&#20869;&#26680;&#21644;uboot&#32422;&#23450;&#22909;&#30340;&#12290;
+        <span style="color: #ffb6c1; font-size: 105%;">.word</span>    _magic_start  @ absolute load/run zImage address &#29992;&#20110;&#25351;&#23450;zImage&#30340;&#21152;&#36733;&#21644;&#36816;&#34892;&#30340;&#32477;&#23545;&#22320;&#22336;
+        <span style="color: #ffb6c1; font-size: 105%;">.word</span>    _magic_end    @ zImage end address
+        <span style="color: #ffb6c1; font-size: 105%;">.word</span>    0x04030201    @ endianness flag &#34920;&#31034;&#23383;&#33410;&#24207;&#26631;&#24535;
+
+ <span style="color: #ffb6c1; font-size: 105%;">THUMB</span>(.thumb)
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">1</span>:        __EFI_HEADER  <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#25351;&#21521; EFI &#22836;</span>
+
+ <span style="color: #ffb6c1; font-size: 105%;">ARM_BE8</span>(setend    be)         @ go BE8 if compiled for BE8
+ <span style="color: #ffb6c1; font-size: 105%;">AR_CLASS</span>(mrs    r9, cpsr)
+<span style="color: #87cefa; text-decoration: underline;">#ifdef</span> <span style="color: #ffd700;">CONFIG_ARM_VIRT_EXT</span>
+        <span style="color: #ffb6c1; font-size: 105%;">bl</span> __hyp_stub_install  @ get into SVC mode, reversibly
+<span style="color: #87cefa; text-decoration: underline;">#endif</span>
+        @ r1&#21644;r2&#20013;&#20998;&#21035;&#23384;&#25918;&#30528;&#30001;uboot&#20256;&#36882;&#36807;&#26469;&#30340;
+        @ architecture ID&#21644;&#25351;&#21521;&#26631;&#35760;&#21015;&#34920;&#30340;&#25351;&#38024;&#12290;
+        <span style="color: #ffb6c1; font-size: 105%;">mov</span> r7, r1 @ save architecture ID
+        <span style="color: #ffb6c1; font-size: 105%;">mov</span> r8, r2 @ save atags pointer
+
+<span style="color: #87cefa; text-decoration: underline;">#ifndef</span> <span style="color: #ffd700;">CONFIG_CPU_V7M</span>
+        <span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;">         * Booting from Angel - need to enter SVC mode and disable</span>
+<span style="color: #90ee90; font-style: italic;">         * FIQs/IRQs (numeric definitions from angel arm.h source).</span>
+<span style="color: #90ee90; font-style: italic;">         * We only do this if we were in user mode on entry.</span>
+<span style="color: #90ee90; font-style: italic;">         */</span>
+        <span style="color: #ffb6c1; font-size: 105%;">mrs</span>    r2, cpsr   @get current mode
+        <span style="color: #ffb6c1; font-size: 105%;">tst</span>    r2, #3     @not user?
+        <span style="color: #ffb6c1; font-size: 105%;">bne</span>    not_angel
+        <span style="color: #ffb6c1; font-size: 105%;">mov</span>    r0, #0x17  @angel_SWIreason_EnterSVC
+ <span style="color: #ffb6c1; font-size: 105%;">ARM</span>(swi 0x123456) @ angel_SWI_ARM  angel_SWI_ARM 0x123456&#26159;arm&#25351;&#20196;&#38598;&#30340;&#21322;&#20027;&#26426;&#25805;&#20316;&#32534;&#21495;
+ <span style="color: #ffb6c1; font-size: 105%;">THUMB</span>(svc 0xab)   @ angel_SWI_THUMB
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">not_angel</span>:
+        <span style="color: #ffb6c1; font-size: 105%;">safe_svcmode_maskall</span> r0  @&#36827;&#20837;svc&#27169;&#24335;
+        <span style="color: #ffb6c1; font-size: 105%;">msr</span>  spsr_cxsf, r9       @ Save the CPU boot mode in
+                                 @ SPSR
+<span style="color: #87cefa; text-decoration: underline;">#endif</span>
+</pre>
+</div>
+
+<p>
+接下来，head.S将找到物理地址的起始地址，这个时候MMU是没有打开的，这个
+时候是忽略任何地址对齐和偏移。head.S选择最开始的128MB处作为对齐地址，
+然后将zImage放在这物理地址起始处，这128MB就是用来专门存放zImage镜像的。
+具体 代码如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #87cefa; text-decoration: underline;">#ifdef</span> <span style="color: #ffd700;">CONFIG_AUTO_ZRELADDR</span>
+    <span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;">     * Find the start of physical memory.  As we are executing</span>
+<span style="color: #90ee90; font-style: italic;">     * without the MMU on, we are in the physical address space.</span>
+<span style="color: #90ee90; font-style: italic;">     * We just need to get rid of any offset by aligning the</span>
+<span style="color: #90ee90; font-style: italic;">     * address.</span>
+<span style="color: #90ee90; font-style: italic;">     *</span>
+<span style="color: #90ee90; font-style: italic;">     * This alignment is a balance between the requirements of</span>
+<span style="color: #90ee90; font-style: italic;">     * different platforms - we have chosen 128MB to allow</span>
+<span style="color: #90ee90; font-style: italic;">     * platforms which align the start of their physical memory</span>
+<span style="color: #90ee90; font-style: italic;">     * to 128MB to use this feature, while allowing the zImage</span>
+<span style="color: #90ee90; font-style: italic;">     * to be placed within the first 128MB of memory on other</span>
+<span style="color: #90ee90; font-style: italic;">     * platforms.  Increasing the alignment means we place</span>
+<span style="color: #90ee90; font-style: italic;">     * stricter alignment requirements on the start of physical</span>
+<span style="color: #90ee90; font-style: italic;">     * memory, but relaxing it means that we break people who</span>
+<span style="color: #90ee90; font-style: italic;">     * are already placing their zImage in (eg) the top 64MB</span>
+<span style="color: #90ee90; font-style: italic;">     * of this range.</span>
+<span style="color: #90ee90; font-style: italic;">     */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>    r4, pc
+    <span style="color: #ffb6c1; font-size: 105%;">and</span>    r4, r4, #0xf8000000
+    <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">Determine final kernel image address.</span><span style="color: #90ee90; font-style: italic;"> */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">add</span>    r4, r4, #TEXT_OFFSET
+<span style="color: #87cefa; text-decoration: underline;">#else</span>
+    <span style="color: #ffb6c1; font-size: 105%;">ldr</span>    r4, =zreladdr
+<span style="color: #87cefa; text-decoration: underline;">#endif</span>
+</pre>
+</div>
+
+
+<p>
+这段代码主要用于计算内核的解压地址，并将解压地址存储到r4寄存器中。首先
+调用代码“mov, r4, pc”，将当前CPU执行的地址存储到r4，然后在将
+0xf8000000的值与r4相与达到对齐的作用，确保之后的内核解压地址按128M对齐，
+然后将r4寄存器的值加上TEXT_OFFSET，TEXT_OFFSET代表内核的解压地址，这样
+r4寄存器就存储了内核的解压 地址。EXT_OFFSET 定义在 arch/arm/Makefile
+中，如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-makefile"><span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">Text offset. This list is sorted numerically by address in order to</span>
+<span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">provide a means to avoid/resolve conflicts in multi-arch kernels.</span>
+<span style="color: #ffd700;">textofs-y</span>    := 0x00008000
+<span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">We don't want the htc bootloader to corrupt kernel during resume</span>
+<span style="color: #ffd700;">textofs-$(</span><span style="color: #ffd700;">CONFIG_PM_H1940</span><span style="color: #ffd700;">)</span>      := 0x00108000
+<span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">SA1111 DMA bug: we don't want the kernel to live in precious DMA-able memory</span>
+ifeq ($(<span style="color: #ffd700;">CONFIG_ARCH_SA1100</span>),y)
+        <span style="color: #ffd700;">textofs-$(</span><span style="color: #ffd700;">CONFIG_SA1111</span><span style="color: #ffd700;">)</span> := 0x00208000
+endif
+        <span style="color: #ffd700;">textofs-$(</span><span style="color: #ffd700;">CONFIG_ARCH_MSM8X60</span><span style="color: #ffd700;">)</span> := 0x00208000
+        <span style="color: #ffd700;">textofs-$(</span><span style="color: #ffd700;">CONFIG_ARCH_MSM8960</span><span style="color: #ffd700;">)</span> := 0x00208000
+        <span style="color: #ffd700;">textofs-$(</span><span style="color: #ffd700;">CONFIG_ARCH_AXXIA</span><span style="color: #ffd700;">)</span> := 0x00308000
+<span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">The byte offset of the kernel image in RAM from the start of RAM.TEXT_OFFSET := $(</span><span style="color: #ffd700; font-style: italic;">textofs-y</span><span style="color: #90ee90; font-style: italic;">)</span>
+</pre>
+</div>
+
+<p>
+这里根据自己环境的芯片类型选择offset(：=表示覆盖之前的赋值)。这里分析
+按照0x00008000进行计算。接着执行如下代码
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;"> * Set up a page table only if it won't overwrite ourself.</span>
+<span style="color: #90ee90; font-style: italic;"> * That means r4 &lt; pc || r4 - 16k page directory &gt; &amp;_end.</span>
+<span style="color: #90ee90; font-style: italic;"> * Given that r4 &gt; &amp;_end is most unfrequent, we add a rough</span>
+<span style="color: #90ee90; font-style: italic;"> * additional 1MB of room for a possible appended DTB.</span>
+<span style="color: #90ee90; font-style: italic;"> */</span>
+ <span style="color: #ffb6c1; font-size: 105%;">mov</span>    r0, pc
+ <span style="color: #ffb6c1; font-size: 105%;">cmp</span>    r0, r4 <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#27492;&#25805;&#20316;&#24433;&#21709;&#29366;&#24577;&#23492;&#23384;&#22120;&#20013;&#30340;C&#29366;&#24577;&#20301;.</span>
+ <span style="color: #ffb6c1; font-size: 105%;">ldrcc</span>    r0, LC0+32
+ <span style="color: #ffb6c1; font-size: 105%;">addcc</span>    r0, r0, pc
+ <span style="color: #ffb6c1; font-size: 105%;">cmpcc</span>    r4, r0
+ <span style="color: #ffb6c1; font-size: 105%;">orrcc</span>    r4, r4, #1        @ remember we skipped cache_on
+ <span style="color: #ffb6c1; font-size: 105%;">blcs</span>    cache_on <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">&#22914;&#26524;pc&gt;r4&#21017;&#30452;&#25509;&#25191;&#34892;&#36825;&#37324;</span>
+</pre>
+</div>
+
+
+<p>
+其中LC0定义如下
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #ffb6c1; font-size: 105%;">.align</span>    2
+    <span style="color: #ffb6c1; font-size: 105%;">.type</span>    LC0, #object
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">LC0</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>  LC0            @r1
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>  __bss_start    @r2
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>  _end           @r3
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>  _edata         @r6
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>  input_data_end - 4    @ r10 (inflated size location)
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>  _got_start     @r11
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>  _got_end       @ip
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>  .L_user_stack_end    @ sp
+    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">LC0+32&#20301;&#32622;&#65292;zImage &#38656;&#35201;&#37325;&#23450;&#20301;&#30340;&#38271;&#24230;&#20877;&#21152;&#19978; &#8220;16K + 1M&#8221; &#30340;&#38271;&#24230;</span>
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>  _end - restart + 16384 + 1024*1024   
+    <span style="color: #ffb6c1; font-size: 105%;">.size</span>  LC0, . - LC0
+</pre>
+</div>
+
+<p>
+这段代码的主要任务就是确认 zImage 自己建立的页表会不会被 zImage 镜像的
+重定位给覆盖掉。从原理可以知道，zImage被加载到内存运行之后，会将自己
+重定位到新的物理地址运行，这就会出现要创建的页表可能被 zImage重定位之
+后覆盖。zImage镜像如果不被自己给覆盖，需要满足两个条件中的任意一个：
+<img src="./pic/zimage-tbl.png" alt="zimage-tbl.png" />
+</p>
+
+<p>
+这种情况下，内核的解压地址小于当前 PC 运行物理地址。
+\[r4 - 16k page directory > &_end\]
+</p>
+
+
+<p>
+这种情况下，内核的解压地址大于zImage结束地址之后的16KB。一般情况下解压
+内核的地址大于zImage的结束地址是不太寻常的。这种情况下需要添加1MB的空
+间与链接在zImage中的DTB隔开。
+</p>
+
+
+<p>
+运行到这里，首先获得PC寄存器的值，然后调用“cmp r0, r4”, 从之前的代码可
+知，r4寄存器存储着解压内核的地址，这里执行这条命令的含义是，如果r0&gt;r4，
+那么代表当前 PC 执行地址大于内核解压地址，这种情况符合之前的讨论，
+所以那么就执行 cache_on 宏； 如果 r0 &lt; r4, 那么 zImage 的运行范围包含
+了要解压内核的地址，因此需要继续进行检测。 这里执行命令 “ldrcc r0,
+LC0+32”, 通过这个命令，将 LC0 偏移 32 个字节地址对应的内容 拷贝到 r0
+寄存器。这里再加上 PC 的值，确保当前运行的代码也不会被覆盖。 接着执行
+命令 “cmpcc r4, r0”, 重新确定解压内核的物理地址与 zImage 重定位的物理
+地址 是否存在重叠。如果存在，那么将 r4 寄存器的值加 1，以此标记
+cache_on 被跳过；否则 执行 “blcs cache_on” 打开缓存。cache_on代码如下
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;"> * Turn on the cache.  We need to setup some page tables so that we</span>
+<span style="color: #90ee90; font-style: italic;"> * can have both the I and D caches on.</span>
+<span style="color: #90ee90; font-style: italic;"> *</span>
+<span style="color: #90ee90; font-style: italic;"> * We place the page tables 16k down from the kernel execution address,</span>
+<span style="color: #90ee90; font-style: italic;"> * and we hope that nothing else is using it.  If we're using it, we</span>
+<span style="color: #90ee90; font-style: italic;"> * will go pop!</span>
+<span style="color: #90ee90; font-style: italic;"> *</span>
+<span style="color: #90ee90; font-style: italic;"> * On entry,</span>
+<span style="color: #90ee90; font-style: italic;"> *  r4 = kernel execution address</span>
+<span style="color: #90ee90; font-style: italic;"> *  r7 = architecture number</span>
+<span style="color: #90ee90; font-style: italic;"> *  r8 = atags pointer</span>
+<span style="color: #90ee90; font-style: italic;"> * On exit,</span>
+<span style="color: #90ee90; font-style: italic;"> *  r0, r1, r2, r3, r9, r10, r12 corrupted</span>
+<span style="color: #90ee90; font-style: italic;"> * This routine must preserve:</span>
+<span style="color: #90ee90; font-style: italic;"> *  r4, r7, r8</span>
+<span style="color: #90ee90; font-style: italic;"> */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">.align</span>    5
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">cache_on</span>:    <span style="color: #ffb6c1; font-size: 105%;">mov</span>    r3, #8 @ cache_on function
+    <span style="color: #ffb6c1; font-size: 105%;">b</span>    call_cache_fn
+</pre>
+</div>
+
+<p>
+cache_on 用于打开 ARM 的 cache 功能，cache 包括 I-Cache (指令 cache)
+和 D-cache (数据 cache)。为了正常使用 cache，需要建立一个页表供 MMU 使
+用。zImage 会将这个页表 放在真正内核开始执行地址之前的 16K 位置，希望
+这个地址不要被非法使用。在执行 cache_on 之前， r4 寄存器里存储值内核解
+压地址，这个地址也被成为正真内核开始执行的地址。r7 寄存器存储这体系 相
+关的数据；r8 寄存器存储着 uboot 传递给内核 ATAG 参数的地址。cache_on
+使用伪指令 .align 指定了对齐方式为 5 字节对齐。由于 ARM 将所有家族芯片
+关于 cache 的操作都放在一个表里维护， 因此 armv7 的 cache 操作也在这个
+表内，并且 cache_on 操作在表中的偏移是 8，因此代码 将立即数 8 存储到
+r3 寄存器，并跳转到 call_cache_fn 出执行，代码如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">call_cache_fn</span>:    <span style="color: #ffb6c1; font-size: 105%;">adr</span>    r12, proc_types
+<span style="color: #87cefa; text-decoration: underline;">#ifdef</span> <span style="color: #ffd700;">CONFIG_CPU_CP15</span>
+    <span style="color: #ffb6c1; font-size: 105%;">mrc</span>    p15, 0, r9, c0, c0    @ get processor ID
+<span style="color: #87cefa; text-decoration: underline;">#elif</span> <span style="color: #87cefa; text-decoration: underline;">defined</span>(<span style="color: #ffd700;">CONFIG_CPU_V7M</span>)
+    <span style="color: #90ee90; font-style: italic;">/*</span>
+<span style="color: #90ee90; font-style: italic;">    * On v7-M the processor id is located in the V7M_SCB_CPUID</span>
+<span style="color: #90ee90; font-style: italic;">    * register, but as cache handling is IMPLEMENTATION DEFINED on</span>
+<span style="color: #90ee90; font-style: italic;">    * v7-M (if existant at all) we just return early here.</span>
+<span style="color: #90ee90; font-style: italic;">    * If V7M_SCB_CPUID were used the cpu ID functions (i.e.</span>
+<span style="color: #90ee90; font-style: italic;">    * __armv7_mmu_cache_{on,off,flush}) would be selected which</span>
+<span style="color: #90ee90; font-style: italic;">    * use cp15 registers that are not implemented on v7-M.</span>
+<span style="color: #90ee90; font-style: italic;">    */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">bx</span>    lr
+<span style="color: #87cefa; text-decoration: underline;">#else</span>
+    <span style="color: #ffb6c1; font-size: 105%;">ldr</span>    r9, =CONFIG_PROCESSOR_ID
+<span style="color: #87cefa; text-decoration: underline;">#endif</span>
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">1</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">ldr</span>    r1, [r12, #0]        @ get value
+    <span style="color: #ffb6c1; font-size: 105%;">ldr</span>    r2, [r12, #4]        @ get mask
+    <span style="color: #ffb6c1; font-size: 105%;">eor</span>    r1, r1, r9        @ (real ^ match)
+    <span style="color: #ffb6c1; font-size: 105%;">tst</span>    r1, r2            @       &amp; mask
+ <span style="color: #ffb6c1; font-size: 105%;">ARM</span>(addeq pc, r12, r3) @ call cache function
+ <span style="color: #ffb6c1; font-size: 105%;">THUMB</span>(addeq    r12, r3)
+ <span style="color: #ffb6c1; font-size: 105%;">THUMB</span>(moveq    pc, r12) @ call cache function
+    <span style="color: #ffb6c1; font-size: 105%;">add</span>    r12, r12, #PROC_ENTRY_SIZE
+    <span style="color: #ffb6c1; font-size: 105%;">b</span>      1b
+</pre>
+</div>
+
+
+<p>
+本段代码的主要任务就是 cache_on 表中找到 armv7 对应的 cache_on 操作。
+代码首先使用 adr 伪指令获得 proc_types 的地址，然后在 CONFIG_CPU_CPU15
+宏启用的情况下，armv7 这个宏启用， 使用 mrc 指令，读取了 CPU ID 寄存器。
+</p>
+
+
+<p>
+将 ID 相关的信息存储在 r9 寄存器里，然后使用 ldr 指令，从 proc_types
+表里按顺序取出每个 成员的第一个值和第二个值，分别存储在 r1, r2 寄存器
+中。接着代码将 r1 寄存器的值与 r9 寄存器 的值做异或运算，然后将结果存
+储到 r1 寄存器，接着再调用 tst 命令，将 r1 寄存器与 r2 寄存器 按位与操
+作。如果结果为零，那么就执行 addeq 指令，将 pc 指向表中的位置；如果结
+果不为零， 那么调用 add 指令，将 r12 指向下一个表成员，调用 b 指令继续
+循环。
+</p>
+
+
+<p>
+表 proc_types 定义为一个 object 对象，其中包含了 armv7 对应的成员，
+cache_on 对应的入口 函数就是： __armv7_mmu_cache_on，结构如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;"> * Table for cache operations.  This is basically:</span>
+<span style="color: #90ee90; font-style: italic;"> *   - CPU ID match</span>
+<span style="color: #90ee90; font-style: italic;"> *   - CPU ID mask</span>
+<span style="color: #90ee90; font-style: italic;"> *   - 'cache on' method instruction</span>
+<span style="color: #90ee90; font-style: italic;"> *   - 'cache off' method instruction</span>
+<span style="color: #90ee90; font-style: italic;"> *   - 'cache flush' method instruction</span>
+<span style="color: #90ee90; font-style: italic;"> *</span>
+<span style="color: #90ee90; font-style: italic;"> * We match an entry using: ((real_id ^ match) &amp; mask) == 0</span>
+<span style="color: #90ee90; font-style: italic;"> *</span>
+<span style="color: #90ee90; font-style: italic;"> * Writethrough caches generally only need 'on' and 'off'</span>
+<span style="color: #90ee90; font-style: italic;"> * methods.  Writeback caches _must_ have the flush method</span>
+<span style="color: #90ee90; font-style: italic;"> * defined.</span>
+<span style="color: #90ee90; font-style: italic;"> */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">.align</span>    2
+    <span style="color: #ffb6c1; font-size: 105%;">.type</span>    proc_types,#object
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">proc_types</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>    0x41000000  @ old ARM ID
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>    0xff00f000
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>    pc, lr
+ <span style="color: #ffb6c1; font-size: 105%;">THUMB</span>(nop)
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>    pc, lr
+ <span style="color: #ffb6c1; font-size: 105%;">THUMB</span>(nop)
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>    pc, lr
+ <span style="color: #ffb6c1; font-size: 105%;">THUMB</span>(nop)
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span> 0x000f0000 @ new CPU Id               
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span> 0x000f0000
+    <span style="color: #ffb6c1; font-size: 105%;">W</span>(b)  __armv7_mmu_cache_on
+    <span style="color: #ffb6c1; font-size: 105%;">W</span>(b)  __armv7_mmu_cache_off
+    <span style="color: #ffb6c1; font-size: 105%;">W</span>(b)  __armv7_mmu_cache_flush
+</pre>
+</div>
+
+<p>
+__armv7_mmu_cache_on 函数首先将 lr 寄存器的值存储到 r12 寄存器，然后判
+断 CONFIG_MMU 宏是否启用。在 armv7 里，这个宏是启用的，所以执行宏限定
+的代码。首先也是通过 mrc 指令读取 ID_MMFR0 寄存器的值到 r11 寄存器中,
+其中， ID_MMFR0 的最低位用于指示当前 CPU 是支持 VMSA 还是 PMSA。VMSA
+指的是 Virtual Memory System Architecture。PMSA 指的是 Protected
+Memory System Architecture。 两种模式具有不同的内存管理策略，具体介绍
+开发者可以参考 ARMv7 Reference Manual。接着使用 tst 指令查看 r11 寄存
+器的最低 4 位的值，以此判断目前 CPU 是 VMSA 模式还是 PMSA 模式。 如果
+r11 寄存器的最低 4 bit 不为零，即 CPU 支持 VMSA 模式，那么代码继续执行
+带ne条件的指令。
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">__armv7_mmu_cache_on</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span> r12, lr
+<span style="color: #87cefa; text-decoration: underline;">#ifdef</span> <span style="color: #ffd700;">CONFIG_MMU</span>
+    <span style="color: #ffb6c1; font-size: 105%;">mrc</span> p15, 0, r11, c0, c1, 4    @ read ID_MMFR0
+    <span style="color: #ffb6c1; font-size: 105%;">tst</span> r11, #0xf  @ VMSA
+    <span style="color: #ffb6c1; font-size: 105%;">movne</span> r6, #CB_BITS | 0x02    @ !XN
+    <span style="color: #ffb6c1; font-size: 105%;">blne</span>  __setup_mmu
+</pre>
+</div>
+
+<p>
+CPU 支持 VMSA，将 CB_BITS 或上 0x2 的值存储到 r6 寄存器，并将跳转到
+__setup_mmu 继续执行
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">__setup_mmu</span>:
+  <span style="color: #ffb6c1; font-size: 105%;">sub</span>     r3, r4, #16384  @ Page directory size
+  <span style="color: #ffb6c1; font-size: 105%;">bic</span>     r3, r3, #0xff   @ Align the pointer
+  <span style="color: #ffb6c1; font-size: 105%;">bic</span>     r3, r3, #0x3f00
+</pre>
+</div>
+
+<p>
+__setup_mmu 的主要功能是建立一个临时页表，并打开 MMU，以此供解压程序使
+用虚拟地址。正如 上面的代码所示，此时 r4 寄存器指向真正内核运行的起始
+地址，那么就在这个地址前 16K 处开始 建立页表，将页表的起始地址存储到
+r3 寄存器，并使用 bic 指令对 r3 的地址做对齐。所以页表和内核的位置关系
+如下图所示：
+<img src="./pic/kernel-mem.png" alt="kernel-mem.png" />
+</p>
+
+<p>
+继续执行__setup_mmu中如下代码:
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;"> * Initialise the page tables, turning on the cacheable and bufferable</span>
+<span style="color: #90ee90; font-style: italic;"> * bits for the RAM area only.</span>
+<span style="color: #90ee90; font-style: italic;"> */</span>
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">mov</span>     <span style="color: #ffb6c1; font-size: 105%;">r0</span>, r3
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">mov</span>     <span style="color: #ffb6c1; font-size: 105%;">r9</span>, r0, lsr #18
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">mov</span>     <span style="color: #ffb6c1; font-size: 105%;">r9</span>, r9, lsl #18         @ start of RAM
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">add</span>     <span style="color: #ffb6c1; font-size: 105%;">r10</span>, r9, #0x10000000    @ a reasonable RAM size
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">mov</span>     <span style="color: #ffb6c1; font-size: 105%;">r1</span>, #0x12               @ XN|U + section mapping
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">orr</span>     <span style="color: #ffb6c1; font-size: 105%;">r1</span>, r1, #3 &lt;&lt; 10        @ AP=11
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">add</span>     <span style="color: #ffb6c1; font-size: 105%;">r2</span>, r3, #16384
+</pre>
+</div>
+
+<p>
+代码首先将r3寄存器的值存储到r0寄存器，并通过对r0寄存器按(1«18)对齐，获
+得RAM的起始地址，然后假设 RAM 的长度大概是 256M，并将 RAM 结束地址存放
+在 r10 寄存器中。这里 这样做的目的是：该阶段，内核采用一个临时页表，页
+表按 1:1 映射物理地址与虚拟地址，通过计算 获得 RAM 的长度，以此对能真
+实映射 RAM 的页表项设置一种标志集；同理对不能映射物理地址的页表项设置
+另外一种标志集。接着将 0x12 的值和 (3&lt;&lt;10) 值存储到 r1 寄存器中。将
+r3 寄存器 的值加上 16K 存放到 r2 寄存器，主要是为了防止写页表时越界。
+上面的左移 18 bit, 再右移 18 bit， 主要是按 1M 页表进行对齐。继续执行
+如下代码：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">1</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">cmp</span>     r1, r9           @ if virt &gt; start of RAM
+    <span style="color: #ffb6c1; font-size: 105%;">cmphs</span>   r10, r1          @   &amp;&amp; end of RAM &gt; virt
+    <span style="color: #ffb6c1; font-size: 105%;">bic</span>     r1, r1, #0x1c    @ clear XN|U + C + B
+    <span style="color: #ffb6c1; font-size: 105%;">orrlo</span>   r1, r1, #0x10    @ Set XN|U for non-RAM
+    <span style="color: #ffb6c1; font-size: 105%;">orrhs</span>   r1, r1, r6       @ set RAM section settings
+    <span style="color: #ffb6c1; font-size: 105%;">str</span>     r1, [r0], #4     @ 1:1 mapping
+    <span style="color: #ffb6c1; font-size: 105%;">add</span>     r1, r1, #1048576
+    <span style="color: #ffb6c1; font-size: 105%;">teq</span>     r0, r2
+    <span style="color: #ffb6c1; font-size: 105%;">bne</span>     1b
+</pre>
+</div>
+
+<p>
+这段代码的主要任务就是设置各个页表项。有前面的代码可以知道，r1 存储着
+虚拟地址，并且从虚拟 地址 0 开始。r9 寄存器值存储着物理起始地址。上面
+代码的逻辑基本可以归纳为当虚拟地址不在 RAM 对于的物理地址上，那么执行
+bic 指令将 r1 寄存器的 0x1c 对应的位清理，然后将 r1 与 0x10 做或运算，
+以此标记这类页表；如果虚拟地址在 RAM 对于的物理地址上，那么执行 bic 指
+令将 r1 寄存器的 0x1c 对应的位清理，然后将 r6 对应的标志与 r1 相与。经
+过上面的处理之后调用 str 指令将 r1 的值写入 r0 寄存器对应的内存里，然
+后将 r0 寄存器的值加上 4. 然后将 r1 寄存器 的值加上 1M，如果 r0 的值小
+于 r2, 那么跳转到 1 处继续循环写页表。通过上面分析，可以获得 两种页表
+的表示分别是： 1) 0xc12 (不映射 RAM) 2)0xc0e (映射 RAM)。
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;"> * If ever we are running from Flash, then we surely want the cache</span>
+<span style="color: #90ee90; font-style: italic;"> * to be enabled also for our execution instance...  We map 2MB of it</span>
+<span style="color: #90ee90; font-style: italic;"> * so there is no map overlap problem for up to 1 MB compressed kernel.</span>
+<span style="color: #90ee90; font-style: italic;"> * If the execution is in RAM then we would only be duplicating the above.</span>
+<span style="color: #90ee90; font-style: italic;"> */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">orr</span>    r1, r6, #0x04  @ ensure B is set for this
+    <span style="color: #ffb6c1; font-size: 105%;">orr</span>    r1, r1, #3 &lt;&lt; 10
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>    r2, pc
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>    r2, r2, lsr #20
+    <span style="color: #ffb6c1; font-size: 105%;">orr</span>    r1, r1, r2, lsl #20
+    <span style="color: #ffb6c1; font-size: 105%;">add</span>    r0, r3, r2, lsl #2
+    <span style="color: #ffb6c1; font-size: 105%;">str</span>    r1, [r0], #4
+    <span style="color: #ffb6c1; font-size: 105%;">add</span>    r1, r1, #1048576
+    <span style="color: #ffb6c1; font-size: 105%;">str</span>    r1, [r0]
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>    pc, lr
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">ENDPROC</span>(__setup_mmu)
+</pre>
+</div>
+
+<p>
+接下来这段代码主要的目的就是为了区分系统是从 Flash 启动，如果是，那么
+就将 RAM 对应的页表 的前 2M 设置特殊的页表标志。此时经过映射之后，r1
+指向了虚拟地址 0，然后调用 orr 指令将 r1 寄存器存储特定的标志。通过将
+PC 的值传入 r2 寄存器，并计算出 r2 对应的页表中的偏移， 然后写入 r1 中
+的值到页表中，然后在将 r1 的值指向下 1M 地址空间，最后将 lr 的值传递给
+pc 寄存器，那么函数至此返回。接着返回__setup_mmu的调用点。执行如下代码：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">__armv7_mmu_cache_on</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>     r12, lr
+<span style="color: #87cefa; text-decoration: underline;">#ifdef</span> <span style="color: #ffd700;">CONFIG_MMU</span>
+    <span style="color: #ffb6c1; font-size: 105%;">mrc</span>     p15, 0, r11, c0, c1, 4  @ read ID_MMFR0
+    <span style="color: #ffb6c1; font-size: 105%;">tst</span>     r11, #0xf               @ VMSA
+    <span style="color: #ffb6c1; font-size: 105%;">movne</span>   r6, #CB_BITS | 0x2      @ !XN
+    <span style="color: #ffb6c1; font-size: 105%;">blne</span>    __setup_mmu
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>     r0, #0
+    <span style="color: #ffb6c1; font-size: 105%;">mcr</span>     p15, 0, r0, c7, c10, 4  @ drain write buffer
+    <span style="color: #ffb6c1; font-size: 105%;">tst</span>     r11, #0xf               @ VMSA
+    <span style="color: #ffb6c1; font-size: 105%;">mcrne</span>   p15, 0, r0, c8, c7, 0   @ flush I,D TLBs
+<span style="color: #87cefa; text-decoration: underline;">#endif</span>
+</pre>
+</div>
+
+<p>
+从 __setup_mmu 返回之后，代码首先将 r0 寄存器设置为 0，然后调用 mcr 指
+令实现以此 DMB， 也就是内存屏障，保证这条指令之前所有内存访问都必须完
+成。继续使用 tst 指令确定当前模式是 VMSA 模式。如果是 VMSA 模式，那么
+就是调用 mcrne 指令，此时 CP15 调用情况如下图：
+<img src="./pic/armv7-tbl.png" alt="armv7-tbl.png" />
+</p>
+
+<p>
+因此此时选择的是 TLBIALL 寄存器，向该寄存器写入任何值都会影响刷 I-TLB
+和 D-TLB. 这在 MMU 启用之前是必要的。接下来执行的代码是：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">mrc</span>    <span style="color: #ffb6c1; font-size: 105%;">p15</span>, 0, r0, c1, c0, 0 @ read control reg
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">bic</span>    <span style="color: #ffb6c1; font-size: 105%;">r0</span>, r0, #1 &lt;&lt; 28      @ clear SCTLR.TRE
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">orr</span>    <span style="color: #ffb6c1; font-size: 105%;">r0</span>, r0, #0x5000       @ I-cache enable, RR cache replacement
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">orr</span>    <span style="color: #ffb6c1; font-size: 105%;">r0</span>, r0, #0x003c       @ write buffer
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">bic</span>    <span style="color: #ffb6c1; font-size: 105%;">r0</span>, r0, #2            @ A (no unaligned access fault)
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">orr</span>    <span style="color: #ffb6c1; font-size: 105%;">r0</span>, r0, #1 &lt;&lt; 22      @ U (v6 unaligned access model)
+                    @ (needed for ARM1176)
+</pre>
+</div>
+
+<p>
+首先通过 mrc 指令读取 CP15 寄存器，该寄存器的布局如下：
+<img src="./pic/armv7-cp15.png" alt="armv7-cp15.png" />
+</p>
+
+<p>
+选择 SCTLR 寄存器，其位布局图如下：
+<img src="./pic/armv7-sctlr.png" alt="armv7-sctlr.png" />
+</p>
+
+<p>
+接着就是对 SCTLR 寄存器特定位的操作，首先清楚掉 TRE 位，然后选中
+I-cache enable, RR cache 替代算法，写缓存，设置对齐方式，具体细节可以
+查看 ARMv7 Reference Manual。接下来执行的代码如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #87cefa; text-decoration: underline;">#ifdef</span> <span style="color: #ffd700;">CONFIG_MMU</span>
+    <span style="color: #ffb6c1; font-size: 105%;">mrcne</span>   p15, 0, r6, c2, c0, 2   @ read ttb control reg
+    <span style="color: #ffb6c1; font-size: 105%;">orrne</span>   r0, r0, #1              @ MMU enable
+    <span style="color: #ffb6c1; font-size: 105%;">movne</span>   r1, #0xfffffffd         @ domain 0 = client
+    <span style="color: #ffb6c1; font-size: 105%;">bic</span>     r6, r6, #1 &lt;&lt; 31        @ 32-bit translation system
+    <span style="color: #ffb6c1; font-size: 105%;">bic</span>     r6, r6, #(7 &lt;&lt; 0) | (1 &lt;&lt; 4)    @ use only ttbr0
+    <span style="color: #ffb6c1; font-size: 105%;">mcrne</span>   p15, 0, r3, c2, c0, 0   @ load page table pointer
+    <span style="color: #ffb6c1; font-size: 105%;">mcrne</span>   p15, 0, r1, c3, c0, 0   @ load domain access control
+    <span style="color: #ffb6c1; font-size: 105%;">mcrne</span>   p15, 0, r6, c2, c0, 2   @ load ttb control
+<span style="color: #87cefa; text-decoration: underline;">#endif</span>
+</pre>
+</div>
+
+<p>
+接下来的代码是设置 MMU 最重要的代码，这段代码主要任务就是设置页表的基
+地址寄存器，并将该寄存器 的值指向了页表的基地址。首先调用 mrcne 指令，
+代表了在 VMSA 模式下，读取 TTB 控制器，对应 的 CP15 c2 寄存器如下：
+<img src="./pic/armv7-cp15-c2.png" alt="armv7-cp15-c2.png" />
+</p>
+
+<p>
+选择了 TTBCR 寄存器，对应的位图如下：
+<img src="./pic/armv7-ttbcr.png" alt="armv7-ttbcr.png" />
+</p>
+
+<p>
+继续上面 r0 寄存器，设置了 r0 最地位，这里对应这 MMU enable 位，置位之
+后一旦写入 SCTR 寄存器，那么 MMU 就可以使用了。domain 的访问设置为
+client. 对于 TTBCR 寄存器，将 31 bit 清理，以此支持 32 位的地址转换，
+然后对 TTBCR 寄存器，清楚低 3 位和第 4 位，以此告诉页表 只是用 TTBR0
+作为页表的基地址。接下来是将值写到 CP15 对应的寄存器上，第一条指令是
+“mcrne p15, 0, r3, c2, c0, 0”, 这条命令的作用是将页表的基地址存储到
+TTBR0 寄存器， 从上面的代码可以知道，r3 寄存器一直存储着页表的基地址。
+第二条指令是 “mcrne p15, 0, r1, c3, c0, 0”, 设置了 domain 的访问域。第
+三条指令是 “mcrne p15, 0, r6, c2, c0, 2”, 告诉页表控制器， 目前使用的
+页表是 32 位装换方式，并且只使用 TTBR0 寄存器作为页表的基地址。接下来
+执行的代码是：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">mcr</span>     <span style="color: #ffb6c1; font-size: 105%;">p15</span>, 0, r0, c7, c5, 4   @ ISB
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">mcr</span>     <span style="color: #ffb6c1; font-size: 105%;">p15</span>, 0, r0, c1, c0, 0   @ load control register
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">mrc</span>     <span style="color: #ffb6c1; font-size: 105%;">p15</span>, 0, r0, c1, c0, 0   @ and read it back
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">mov</span>     <span style="color: #ffb6c1; font-size: 105%;">r0</span>, #0
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">mcr</span>     <span style="color: #ffb6c1; font-size: 105%;">p15</span>, 0, r0, c7, c5, 4   @ ISB
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">mov</span>     <span style="color: #ffb6c1; font-size: 105%;">pc</span>, r12
+</pre>
+</div>
+
+<p>
+运行到最后阶段，将这前设置好的值写入到对应的寄存器中。首先执行以此 ISB
+指令，将流水线，内存 访问操作全部 flush 一次。接着执行命令 “mcr p15,
+0, r0, c1, c0, 0”, 将之前关于 MMU enable/I-cache/D-cache 等在 SCTR 控
+制器的配置全部写入到 SCTR 寄存器中，写入之后， 系统立即生效。至此 MMU
+和 I-cache 和 D-cache 都能使用。这里再次调用 ISB 指令，将流水线 上的指
+令等同步到最新的配置。最后将 r12 的返回地址赋值给 pc，实现函数返回。
+</p>
+
+<p>
+在启用 MMU 之后，此时物理地址和虚拟地址按 1:1 映射。回到之前执行代码的
+位置继续执行如下 代码：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">restart</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">adr</span>     r0, LC0
+    <span style="color: #ffb6c1; font-size: 105%;">ldmia</span>   r0, {r1, r2, r3, r6, r10, r11, r12}
+    <span style="color: #ffb6c1; font-size: 105%;">ldr</span>     sp, [r0, #28]
+</pre>
+</div>
+<p>
+这段代码很简单，就是 zImage 阶段创建了一个简单的表 LC0,然后将 LC0 表的
+内容分别赋值给指定 的寄存器。LC0 表用于存储 zImage 链接阶段各个重要段
+的偏移值，这里首先查看一下 LC0 表的内容：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #ffb6c1; font-size: 105%;">.align</span>  2
+    <span style="color: #ffb6c1; font-size: 105%;">.type</span>   LC0, #object
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">LC0</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>   LC0                     @ r1
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>   __bss_start             @ r2
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>   _end                    @ r3
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>   _edata                  @ r6
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>   input_data_end - 4      @ r10 (inflated size location)
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>   _got_start              @ r11
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>   _got_end                @ ip
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>   .L_user_stack_end       @ sp
+    <span style="color: #ffb6c1; font-size: 105%;">.word</span>   _end - restart + 16384 + 1024*1024
+    <span style="color: #ffb6c1; font-size: 105%;">.size</span>   LC0, . - LC0
+</pre>
+</div>
+<p>
+从上面的定义可以知道:
+</p>
+<ul class="org-ul">
+<li>LC0 + 0: LC0 在 zImage 中的偏移地址</li>
+<li>LC0 + 4: BSS 段起始地址在 zImage 镜像中的偏移地址</li>
+<li>LC0 + 8: BSS 段结束地址在 zImage 镜像中的偏移地址</li>
+<li>LC0 + 12: 压缩内核的长度在 zImage 镜像中的偏移地址</li>
+<li>LC0 + 16: zImage GOT 表起始地址在 zImage 镜像中的偏移地址</li>
+<li>LC0 + 20: zImage GOT 表结束的地址 zImage 镜像中的偏移地址</li>
+<li>LC0 + 24: zImage 堆栈的位置</li>
+<li>LC0 + 28: zImage 重定位的长度</li>
+<li>LC0 + 32: LC0 表长</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;"> * We might be running at a different address. We need</span>
+<span style="color: #90ee90; font-style: italic;"> * to fix up various pointers.</span>
+<span style="color: #90ee90; font-style: italic;"> */</span>
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">sub</span>     <span style="color: #ffb6c1; font-size: 105%;">r0</span>, r0, r1    @ caclculate the delta offset
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">add</span>     <span style="color: #ffb6c1; font-size: 105%;">r6</span>, r6, r0    @ _edata
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">add</span>     <span style="color: #ffb6c1; font-size: 105%;">r10</span>, r10, r0  @ inflated kernel size location
+</pre>
+</div>
+
+
+<p>
+由于 LC0 表内的值有的是链接时相对于 zImage 镜像的偏移值，此时开发者需
+要通过这些值 加载到内存之后对应的值，因此上面的代码就是用于矫正 LC0 内
+的新值。从之前的代码可以知道， r0 寄存器存储的值是 LC0 表在内存中的地
+址，此时由于 MMU 已经启用，因此 r0 的值代表 LC0 表的虚拟地址，r1 寄存
+器存储着 LC0 相对于 zImage 镜像的偏移值。因此命令 “sub r0, r0, r1” 可
+以计算 LC0 表的基础偏移，然后表内各项的偏移都可以通过这个值 进行计算。
+</p>
+
+
+<p>
+r10 寄存器经过矫正之后对应这内核原始大小，那么原始内核大小是如何被存放
+到 LC0 表里 呢？回答这个问题首先应该明确几点：解压后的内核就是之前所说
+的 Image， Image 有完整的 vmlinux 经过 OBJCOPY 命令生成的二进制文件，
+这个 Image 是可以直接在内存上运行的， 所以知道 Image 长度是一个至关重
+要的问题。那么下面介绍一下编译系统 Kbuild 是如何 计算 Image 长度呢？
+</p>
+
+
+<p>
+首先 Image 经过压缩之后获得压缩内核 piggy_data，其使用的压缩命令如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$(<span style="color: #fa8072;">obj</span>)/piggy_data: $(<span style="color: #fa8072;">obj</span>)/../Image FORCE
+        $(<span style="color: #fa8072;">call if_changed,$(compress-y</span>))
+</pre>
+</div>
+
+<p>
+这段代码位于 arch/arm/boot/compressed/Makefile, 这段代码就是 Image 压
+缩生成 piggy_data 压缩内核的过程，具体使用哪种压缩方法，通过
+compress-y 决定，其定义 也在同一个文件中，如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-makefile"><span style="color: #ffd700;">compress-$(</span><span style="color: #ffd700;">CONFIG_KERNEL_GZIP</span><span style="color: #ffd700;">)</span> = gzip
+<span style="color: #ffd700;">compress-$(</span><span style="color: #ffd700;">CONFIG_KERNEL_LZO</span><span style="color: #ffd700;">)</span>  = lzo
+<span style="color: #ffd700;">compress-$(</span><span style="color: #ffd700;">CONFIG_KERNEL_LZMA</span><span style="color: #ffd700;">)</span> = lzma
+<span style="color: #ffd700;">compress-$(</span><span style="color: #ffd700;">CONFIG_KERNEL_XZ</span><span style="color: #ffd700;">)</span>   = xzkern
+<span style="color: #ffd700;">compress-$(</span><span style="color: #ffd700;">CONFIG_KERNEL_LZ4</span><span style="color: #ffd700;">)</span>  = lz4
+</pre>
+</div>
+
+<p>
+从上面的定义可知，内核支持多种压缩方式，其中以 gzip 为例，piggy_data
+的压缩命令是：
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$(<span style="color: #fa8072;">obj</span>)/piggy_data: $(<span style="color: #fa8072;">obj</span>)/../Image FORCE
+        $(<span style="color: #fa8072;">call if_changed,gzip</span>)
+</pre>
+</div>
+
+
+<p>
+Kbuild 的命令库里查看这个命令的具体过程，Kbuild 的命令库位于源码
+scripts/Makefile.lib, gzip 命令如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">quiet_cmd_gzip = GZIP    $<span style="color: #ffd700;">@</span>
+      cmd_gzip = cat $(<span style="color: #fa8072;">filter-out FORCE,$^</span>) | gzip -n -f -9 &gt; $<span style="color: #ffd700;">@</span>
+</pre>
+</div>
+
+<p>
+所以可以看到 gizp 的执行过程，这里有个很重要的概念：压缩工具无论进行何
+种压缩算法， 会在压缩文件的最后四个字节存储原始文件的大小，并按大端的
+模式存储。例如使用工具分别 查看 Image 的大小以及 piggy_data 的最后四个
+字节，如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">$ ll arch/arm/boot/Image
+    -rwxrwxr-x 1 buddy buddy 11931944 4&#26376;   1 07:06 Image*
+
+$ bless arch/arm/boot/compressed/piggy_data
+    EB 11 97 AB C6 BC B8 40 5D 87 38 5B 35 E6 05 45 6A EC 99 66 4F 5F
+    49 A3 3F 96 EB A4 1D 2B E9 1A BB 1B D7 B7 78 F5 80 26 4E 4E FF 0F
+    A1 10 18 DA 28 11 B6 00
+</pre>
+</div>
+
+<p>
+通过上面的数据分析可到，piggy_data 的最后四个字节是 28 11 B6 00, 按小
+端调整之后的 值是 0x00B61128, 对应十进制值是 11931944, 数值正好对应
+Image 的长度，因此上面的 推论是正确的。这是 piggy_data 的最后四字节存
+储着 Image 的长度，根据原理可以知道 Kbuild 编译系统将 piggy.S 汇编文件
+将 piggy_data 二进制文件封装成一个汇编文件，并 链接成一个 ELF 文件，并
+在 piggy.S 中定义了两个全局符号： “input_data” 和 “input_data_end”, 这
+两个符号标记了 piggy.o 里 piggy_data 的起始偏移地址和 终止偏移地址。并
+在该目录下的 vmlinux.lds.S 脚本里定义了 .piggydata section, section 内
+部也定义了一个变量 __piggy_size_addr, 这个变量正好指向了 piggy_data 最
+后 4 个字节。因此在 LC0+32 处定义为 “input_data_end - 4”, 因此以上数据
+都可以 知道压缩内核解压之后的长度。其他压缩方法同理。接着执行如下命令：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;"> * The kernel build system appends the size of the</span>
+<span style="color: #90ee90; font-style: italic;"> * decompressed kernel at the end of the compressed data</span>
+<span style="color: #90ee90; font-style: italic;"> * in little-endian form.</span>
+<span style="color: #90ee90; font-style: italic;"> */</span>
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">ldrb</span>    <span style="color: #ffb6c1; font-size: 105%;">r9</span>, [r10, #0]
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">ldrb</span>    <span style="color: #ffb6c1; font-size: 105%;">lr</span>, [r10, #1]
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">orr</span>     <span style="color: #ffb6c1; font-size: 105%;">r9</span>, r9, lr, lsl #8
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">ldrb</span>    <span style="color: #ffb6c1; font-size: 105%;">lr</span>, [r10, #2]
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">ldrb</span>    <span style="color: #ffb6c1; font-size: 105%;">r10</span>, [r10, #3]
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">orr</span>     <span style="color: #ffb6c1; font-size: 105%;">r9</span>, r9, lr, lsl #16
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">orr</span>     <span style="color: #ffb6c1; font-size: 105%;">r9</span>, r9, r10, lsl #24
+</pre>
+</div>
+
+<p>
+通过上面的分析可以知道，r10 寄存里存储 piggy_data 的最后面四个字节地址，
+这个地址 存储着压缩内核解压之后的长度，也就是 Image 的长度，但是其长度
+在这四个字节里按大端 格式存储，因此需要上面的代码将大端数据读出转换为
+小端格式。代码逻辑很简单，就是使用 ldrb 指令从 r10 对应的地址上读一个
+字节，然后调整字节序，最后压缩内核解压之后的长度 存储到 r9 寄存器里。
+获得了 Image 长度的正确值后，接着继续执行代码：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #87cefa; text-decoration: underline;">#ifndef</span> <span style="color: #ffd700;">CONFIG_ZBOOT_ROM</span>
+    <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">malloc space is above the relocated stack (64k max)</span><span style="color: #90ee90; font-style: italic;"> */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">add</span>     sp, sp, r0
+    <span style="color: #ffb6c1; font-size: 105%;">add</span>     r10, sp, #0x10000
+<span style="color: #87cefa; text-decoration: underline;">#endif</span>
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>     r5, #0                  @ init dtb size to 0
+</pre>
+</div>
+
+<p>
+这里主要作用是分配 64K 的空间。首先矫正了堆栈的虚拟地址，并且将堆栈之
+后增加了 64K 空间 用于 malloc，将 malloc + stack + zImage 的长度存储到
+r10 寄存器中。然后将 r5 设置 为 0 供 DTB 使用，但是由于本实践不支持
+DTB APPEND 模式，因此接下来执行代码如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;"> * Check to see if we will overwrite ourselves.</span>
+<span style="color: #90ee90; font-style: italic;"> *   r4  = final kernel address (possibly with LSB set)</span>
+<span style="color: #90ee90; font-style: italic;"> *   r9  = size of decompressed image</span>
+<span style="color: #90ee90; font-style: italic;"> *   r10 = end of this image, including  bss/stack/malloc space if non XIP</span>
+<span style="color: #90ee90; font-style: italic;"> * We basically want:</span>
+<span style="color: #90ee90; font-style: italic;"> *   r4 - 16k page directory &gt;= r10 -&gt; OK</span>
+<span style="color: #90ee90; font-style: italic;"> *   r4 + image length &lt;= address of wont_overwrite -&gt; OK</span>
+<span style="color: #90ee90; font-style: italic;"> * Note: the possible LSB in r4 is harmless here.</span>
+<span style="color: #90ee90; font-style: italic;"> */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">add</span>     r10, r10, #16384
+    <span style="color: #ffb6c1; font-size: 105%;">cmp</span>     r4, r10
+    <span style="color: #ffb6c1; font-size: 105%;">bhs</span>     wont_overwrite
+    <span style="color: #ffb6c1; font-size: 105%;">add</span>     r10, r4, r9
+    <span style="color: #ffb6c1; font-size: 105%;">adr</span>     r9, wont_overwrite
+    <span style="color: #ffb6c1; font-size: 105%;">cmp</span>     r10, r9
+    <span style="color: #ffb6c1; font-size: 105%;">bls</span>     wont_overwrite
+</pre>
+</div>
+
+<p>
+这段代码的主要任务是确定当前 zImage 运行的范围会不会与内核解压之后的地
+址范围重合，如果 重合，那么 zImage 要做相应的调整，这里涉及到 zImage
+重定位到一个新的地址继续运行，这样 zImage 和解压内核相互影响。在执行代
+码之前，r4 指向解压内核的起始地址，r9 代表解压 之后内核的长度，r10 寄
+存器代表当前 zImage 的长度(该长度也包含了 bss/stack/malloc) 的长度，
+因此需要做对比操作。那么在什么情况下不用重定位或重合呢，如下面几种情况：
+\[r4-16K >= r10\]
+</p>
+
+<p>
+对于这种情况，内存分布如下：
+<img src="./pic/kernel-mem1.png" alt="kernel-mem1.png" />
+</p>
+
+<p>
+在这种情况下，zImage 运行的地址域与内核解压之后的地址域是不重合的，所
+以 zImage 不需要重定位，直接在原始地址上直接运行。
+\[r4 + image < wont_overwrite\]
+</p>
+
+<p>
+对于这种情况，内存布局如下：
+<img src="./pic/kernel-mem2.png" alt="kernel-mem2.png" />
+</p>
+
+<p>
+首先调用命令 “add r10, r10, #16384”, 将 r10 的长度再增加 16K，此时 r10
+代表 zImage 长度加上 BSS/Stack/Malloc，再加上 16K 的长度，此时 r10 也
+可以表示 zImage 运行时完整的长度。接着调用 “cmp r4, r10” 命令，查看此
+时 zImage 的长度域与解压内核 长度域之间的关系是否满足 “r4 - 16K &gt;=
+r10” 条件, 如果满足，则执行 “bhs wont_overwrite”, 这样 zImage 就不需要
+重定位；如果不满足，那么继续确认是否 满足第二个条件，执行命令 “add
+r10, r4, r9”, 使 r10 寄存器存储解压内核的终止 物理地址，再调用命令
+“adr r9, wont_overwrite” 获得 zImage 中 wont_overwrite 的地址，最后执
+行命令 “cmp r10, r9”, 如果 r10 小于 r9, 那么满足第二个条件，则执行
+“bls wont_overwrite”, zImage 不需要重定位；反之 zImage 需要重定位。
+zImage 与解压之后的内核存在重叠时，zImage 需要重定位，它们 之间的关系
+如下：
+<img src="./pic/kernel-mem3.png" alt="kernel-mem3.png" />
+经过上面代码执行，r9 寄存器存储着 wont_overwrite 的地址, r10 寄存器存
+储着解压之后 内核的终止地址。接下来运行代码：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;"> * Relocate ourselves past the end of the decompressed kernel.</span>
+<span style="color: #90ee90; font-style: italic;"> *   r6  = _edata</span>
+<span style="color: #90ee90; font-style: italic;"> *   r10 = end of the decompressed kernel</span>
+<span style="color: #90ee90; font-style: italic;"> * Because we always copy ahead, we need to do it from the end and go</span>
+<span style="color: #90ee90; font-style: italic;"> * backward in case the source and destination overlap.</span>
+<span style="color: #90ee90; font-style: italic;"> */</span>
+    <span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;">    * Bump to the next 256-byte boundary with the size of</span>
+<span style="color: #90ee90; font-style: italic;">    * the relocation code added. This avoids overwriting</span>
+<span style="color: #90ee90; font-style: italic;">    * ourself when the offset is small.</span>
+<span style="color: #90ee90; font-style: italic;">    */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">add</span>     r10, r10, #((reloc_code_end - restart + 256) &amp; ~255)
+    <span style="color: #ffb6c1; font-size: 105%;">bic</span>     r10, r10, #255
+
+    <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">Get start of code we want to copy and align it down.</span><span style="color: #90ee90; font-style: italic;"> */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">adr</span>     r5, restart
+    <span style="color: #ffb6c1; font-size: 105%;">bic</span>     r5, r5, #31
+</pre>
+</div>
+
+<p>
+此时 r10 寄存器存储着解压之后内核的终止地址。”((reloc_code_end -
+restart + 256) &amp; ~255)” 表示了 head.S 中 reloc_code_end 的长度，并按
+256 字节对齐，运行命令之后，r10 寄存器 存储了解压之后内核的终止地址再
+加上 head.s 重定位代码的长度。并将 head.S 中 restart 的地址存储在 r5
+寄存器中，并按 32 字节对齐。接下来执行代码：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">sub</span>     <span style="color: #ffb6c1; font-size: 105%;">r9</span>, r6, r5   @ size to copy
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">add</span>     <span style="color: #ffb6c1; font-size: 105%;">r9</span>, r9, #31  @ rounded up to a multiple
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">bic</span>     <span style="color: #ffb6c1; font-size: 105%;">r9</span>, r9, #31  @ ... of 32 bytes
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">add</span>     <span style="color: #ffb6c1; font-size: 105%;">r6</span>, r9, r5
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">add</span>     <span style="color: #ffb6c1; font-size: 105%;">r9</span>, r9, r10
+</pre>
+</div>
+
+<p>
+此处，r6 寄存器表示 zImage 不带 BSS 段的长度，即原始 zImage 的长度。这
+里调用命令 “sub r9, r6, r5”，将 zImage 的长度减去需要 head.S 中需要重
+定位的长度之后的值， 存储到 r9 寄存器中，并将 r9 寄存器按 32 字节对齐。
+接着将 r9 寄存器的值存储到 r6 寄存器中，这样 r6 寄存器存储着 zImage 减
+去 head.S 中重定位长度之后的终止地址。接着执行命令 “add r9, r9, r10”,
+通过这个命令，r9 存储了 zImage 重定位之后的结束物理地址， 他们之间关系
+如下图：
+<img src="./pic/kernel-mem4.png" alt="kernel-mem4.png" />
+</p>
+
+<p>
+接下来执行代码：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">1</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">ldmdb</span>   r6!, {r0 - r3, r10 - r12, lr}
+    <span style="color: #ffb6c1; font-size: 105%;">cmp</span>     r6, r5
+    <span style="color: #ffb6c1; font-size: 105%;">stmdb</span>   r9!, {r0 - r3, r10 - r12, lr}
+    <span style="color: #ffb6c1; font-size: 105%;">bhi</span>     1b
+
+    <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">Preserve offset to relocated code.</span><span style="color: #90ee90; font-style: italic;"> */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">sub</span>     r6, r9, r6
+</pre>
+</div>
+
+<p>
+这段代码的主要任务就是搬运 zImage 到重定位的位置，搬运的内容不包括
+zImage 的 BSS/ Stack/Malloc 区域。此时 r6 寄存器存储着 zImage 的减去
+head.S 重定位段之后的结束地址。 r9 寄存器存储着解压之后的内核终止地址
+加上 zImage 重定位的地址。此时内存布局如下：
+<img src="./pic/kernel-mem5.png" alt="kernel-mem5.png" />
+</p>
+
+<p>
+这里使用 ldmdb 从 r6 对应的 zImage 的末尾往重定位 zImage 的末尾拷贝数
+据，这里 也就是搬运 zImage 到新的地址。ldmdb 一直循环知道 r6 的地址与
+r5 对应的地址重合， 方才停止循环。接下来执行的代码如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #87cefa; text-decoration: underline;">#ifndef</span> <span style="color: #ffd700;">CONFIG_ZBOOT_ROM</span>
+    <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">cache_clean_flush may use the satck, so relocated it</span><span style="color: #90ee90; font-style: italic;"> */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">add</span>     sp, sp, r6
+<span style="color: #87cefa; text-decoration: underline;">#endif</span>
+</pre>
+</div>
+
+<p>
+并未定义 CONFIG_ZBOOT_ROM 宏情况下，由于接下来要执行 cache_clean_flush
+需要使用 堆栈，所以将堆栈指向一个合适的位置，这里将堆栈加上 r6 寄存器
+的值。接下来调用 cache_clean_flush. 具体代码如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #90ee90; font-style: italic;">/**</span>
+<span style="color: #90ee90; font-style: italic;"> * Clean and flush the cache to maintain consistency</span>
+<span style="color: #90ee90; font-style: italic;"> *</span>
+<span style="color: #90ee90; font-style: italic;"> * On exit,</span>
+<span style="color: #90ee90; font-style: italic;"> *  r1, r2, r3, r9, r10, r11, r12 corrupted</span>
+<span style="color: #90ee90; font-style: italic;"> * This routine must preserve:</span>
+<span style="color: #90ee90; font-style: italic;"> *  r4, r6, r7, r8</span>
+<span style="color: #90ee90; font-style: italic;"> */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">.align</span>  5
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">cache_clean_flush</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>     r3, #16
+    <span style="color: #ffb6c1; font-size: 105%;">b</span>       call_cache_fn
+</pre>
+</div>
+
+<p>
+cache_clean_flush 的定义很简单，与 cache_on 一样的机制，都是在 CACHE
+表中找到 __armv7_mmu_cache_flush 的入口，具体查找过程，查看前面关于
+call_cache_fn 源码解析， 通过 call_cache_fn 之后，会定位到
+__armv7_mmu_cache_flush 处，代码如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">__armv7_mmu_cache_flush</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">tst</span>     r4, #1
+    <span style="color: #ffb6c1; font-size: 105%;">bne</span>     iflush
+    <span style="color: #ffb6c1; font-size: 105%;">mrc</span>     p15, 0, r10, c0, c1, 5  @ read ID_MMFR1
+    <span style="color: #ffb6c1; font-size: 105%;">tst</span>     r10, #0xf &lt;&lt; 16         @ hierarchical cache (ARMv7)
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>     r10, #0
+    <span style="color: #ffb6c1; font-size: 105%;">beq</span>     hierarchical
+    <span style="color: #ffb6c1; font-size: 105%;">mcr</span>     p15, 0, r10, c7, c14, 0 @ clean+invalidate D
+    <span style="color: #ffb6c1; font-size: 105%;">b</span>       iflush
+</pre>
+</div>
+
+<p>
+首先检查 r4 寄存器的最低位是否置位，从前面的代码可以知道，MMU 打开的情
+况下，r4 最低位清零； 如果 MMU 未启用，那么 r4 最低位置位。由之前的分
+析可知，此处 MMU 已经启用，所以 tst 的结果 未零，那么 “bne iflush” 命
+令将不被执行。接下来执行的代码是： “mrc p15, 0, r10, c0, c1, 5”, 此时
+CP15 C0 寄存器的布局如下：
+<img src="./pic/armv7-cp15-c0.png" alt="armv7-cp15-c0.png" />
+</p>
+
+<p>
+通过上面的代码选中了 ID_MMFR1 寄存器，该寄存器用于指定当前 CACHE 的类
+型，其位图如下：
+<img src="./pic/armv7-cp15-id_mmfr1.png" alt="armv7-cp15-id_mmfr1.png" />
+</p>
+
+<p>
+接着调用 tst 命令查看 ID_MMFR1 寄存器的 [19:16] 域，该域表示：
+<img src="./pic/armv7-cp15-id_mmfr11916.png" alt="armv7-cp15-id_mmfr11916.png" />
+</p>
+
+<p>
+有上面的定义可知，该域用于指示 L1 cache 的维护操作。但在 armv7 中，这
+是不需要的，因此 tst 的结果等于 0，那么代码接下来跳转到 hierarchical
+处继续执行。跳转到 hierarchical 处继续执行，由于 armv7 的 L1 cache 按
+分层管理，要给 cache 进行 flush 操作，首先要了解一下 cache 的基础知识，
+这里只介绍必要的知识，更多 cache 知识请查看：
+<a href="https://biscuitos.github.io/blog/ARM-BOOT/#">ARMv7-L1 cache manual</a>
+</p>
+
+<p>
+L1 cache:在 ARMv7 中，cache 分为了指令 cache (I-Cache) 和数据 cache
+(D-cache), cache 是 用来加速内存访问，其逻辑结构如下图：
+<img src="./pic/armv7-l1cache.png" alt="armv7-l1cache.png" />
+</p>
+
+<p>
+cache 的最小数据单位是 cache line, cache line 的长度成为 cache size；
+为了标记每个 cache line，使用的标记叫 cache tag, cache tag、cache line
+与一些标志信息组成一个 cache line frame; 多个 cache line frame 组成一
+个 cache set；cache 被分成多个 cache set，每个 cache set 含有的 cache
+line 数成为 cache way.在 armv7 中要 flush D-cache 按如下逻辑：
+<img src="./pic/armv7-dcache.png" alt="armv7-dcache.png" />
+</p>
+
+<p>
+在 armv7 中，首先从 CLIDR 寄存器中读取 LoC 域对应的 Ctype，从中找到
+D-cache, 然后 在 CSSELR 寄存器写入 D-cache 的 level 信息之后，CCSIDR
+寄存器就指向了所要查找 cache 的信息，这些信息存储在 CCSIDR 寄存器中，
+从这个寄存器中可以获得当前 CACHE 的 cache line 数值，cache Set/Way 的
+值，通过这些值可以计算出需要 flush 的长度，最后将要清楚的值写入 到
+DCCISW 寄存器中，这样该 level 的 cache 就被 flush 完了，接着遍历 flush
+下一级 cache。 因此 CACHE 的 flush 逻辑就是这样。接下来通过代码分析具
+体过程：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">hierarchical</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">mcr</span>     p15, 0, r10, c7, c10, 5 @ DMB
+    <span style="color: #ffb6c1; font-size: 105%;">stmfd</span>   sp!, {r0-r7, r9-r11}
+    <span style="color: #ffb6c1; font-size: 105%;">mrc</span>     p15, 1, r0, c0, c0, 1   @ read clidr
+    <span style="color: #ffb6c1; font-size: 105%;">ands</span>    r3, r0, #0x7000000      @ extract loc from clidr
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>     r3, r3, lsr #23         @ left align loc bit field
+    <span style="color: #ffb6c1; font-size: 105%;">beq</span>     finished                @ if loc is 0, then no need to c
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>     r10, #0                 @ start clean at cache level 0
+</pre>
+</div>
+
+<p>
+首先做一次 DMB 内存屏蔽操作，将之前的内存访问都同步。然后使用 stmfd 指
+令保存指定的寄存器， 接着调用 mrc 寄存器读取 CP15 C0 寄存器，选择如下：
+<img src="./pic/armv7-cp15-c00.png" alt="armv7-cp15-c00.png" />
+</p>
+
+<p>
+通过上面选中了 CLIDR 寄存器，该寄存器的布局如下图：
+<img src="./pic/armv7-clidr.png" alt="armv7-clidr.png" />
+然后执行代码 “ands r3, r0, #0x7000000”, 以此读取 CLIDR [26:24] 域，这
+个域用于 LoC (Level of Coherence for the cache hierarchy). 这个域用于
+指定一致性数据 cache 所在的 cache Level，然后通过 “mov r3, r3, lsr
+#23” 获得 cache level 的具体 数值。如果该值为 0，那么代表没有对应的
+cache，直接跳转到 finished 处；如果该值为 0， 那么代码存在对应需要
+flush 的 cache，那么继续执行下面的代码不跳转。
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">loop1</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">add</span>     r2, r10, r10, lsr #1    @ work out 3x current cache leve
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>     r1, r0, lsr r2          @ extract cache type bits from c
+    <span style="color: #ffb6c1; font-size: 105%;">and</span>     r1, r1, #7              @ mask of the bits for current c
+    <span style="color: #ffb6c1; font-size: 105%;">cmp</span>     r1, #2                  @ see what cache we have at this
+    <span style="color: #ffb6c1; font-size: 105%;">blt</span>     skip                    @ skip if no cache, or just i-ca
+    <span style="color: #ffb6c1; font-size: 105%;">mcr</span>     p15, 2, r10, c0, c0, 0  @ select current cache level in
+    <span style="color: #ffb6c1; font-size: 105%;">mcr</span>     p15, 0, r10, c7, c5, 4  @ isb to sych the new cssr&amp;csidr
+    <span style="color: #ffb6c1; font-size: 105%;">mcr</span>     p15, 1, r1, c0, c0, 0   @ read the new csidr
+</pre>
+</div>
+
+<p>
+由于在 armv7 中 LoC cache 采用分级模式，所以在 flush cache 的时候，需
+要从 ctype0 开始 flush，每个 cache ctype 之间相差 3，所以这里使用 “add
+r2, r10, r10, lsr #1” 达到遍历下一个 cache 的作用。接着就是对 ctypes
+对应的值进行对比，这个值从手册中可以 知道：1) 当该值为 0， 代表没有
+cache. 2) 该值为 1 代表指令 cache。 3) 该值为 2 代表数据 cache。4) 该
+值为 3 代表指令和数据分离的 cache。 5) 该值为 4 代表 Unified cache。
+</p>
+<ol class="org-ol">
+<li>其他值为 Reserved。如果此时 “cmp r1, #2” 的值小于 2，那么就代表这个</li>
+</ol>
+<p>
+cache 是一个指令 cache 或者没有 cache。如果 r1 寄存器的值小于 2 那么直
+接跳转到 skip 处继续执行，如果大于等于 2，那么继续往下执行。接着如果是
+数据 cache，那么调用命令 “mcr p15, 2, r10, c0, c0, 0”, 此时CP15 C0 的
+布局如下：
+<img src="./pic/armv7-cp1515.png" alt="armv7-cp1515.png" />
+</p>
+
+<p>
+选中的寄存器是 CSSELR 寄存器，其内存布局如下：
+<img src="./pic/armv7-csselr.png" alt="armv7-csselr.png" />
+</p>
+
+<p>
+这里用于选择 Cache 的级数，在 armv7 中，只要在 CSSELR 寄存器的 Level
+域中选中了 cache Level，那么 CSIDR 寄存器就反应被选中 cache 相关信息。
+为了是 CSSELR 写入有效， 这里调用了内存屏蔽指令 ISB，执行完 ISB 之后，
+CSIDR 寄存器的值就是反应 CSSELR 选中 的结果，CSSELR 的内存布局如下：
+<img src="./pic/armv7-ccsidr.png" alt="armv7-ccsidr.png" />
+</p>
+
+<p>
+正如上图所示，CSIDR 寄存器包含了当前 cache 的 Set 域，Way 域，以及
+line size 域。开发者可以在上面代码中加入适当的断点，然后使用 GDB 进行
+调试，调试情况如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">(gdb) b BS_debug
+    Breakpoint 1 at 0x600102a4: file arch/arm/boot/compressed/head.S, line 341.
+(gdb) c
+    Continuing.
+    Breakpoint 1, BS_debug () at arch/arm/boot/compressed/head.S:341
+    341   add    r2, r10, r10, lsr <span style="color: #90ee90; font-style: italic;">#</span><span style="color: #90ee90; font-style: italic;">1    @ work out 3x current cache level</span>
+(gdb) n
+    342   mov    r1, r0, lsr r2  @ extract cache type bits from clidr
+(gdb) info reg r10
+    r10   0x0    0
+(gdb) info reg r2
+    r2    0x0    0
+(gdb) n
+    343   and    r1, r1, <span style="color: #90ee90; font-style: italic;">#</span><span style="color: #90ee90; font-style: italic;">7  @ mask of the bits for current cache only</span>
+(gdb) info reg r1
+    r1    0x9000003  150994947
+(gdb) n
+    344   cmp    r1, <span style="color: #90ee90; font-style: italic;">#</span><span style="color: #90ee90; font-style: italic;">2      @ see what cache we have at this level</span>
+(gdb) info reg r1
+    r1    0x3     3
+(gdb) n
+    345   blt    skip  @ skip if no cache, or just i-cache
+(gdb) n
+    346   mcr    p15, 2, r10, c0, c0, 0    @ select current cache level<span style="color: #ffb6c1; font-size: 105%;"> in</span> cssr
+(gdb) n
+    347   mcr    p15, 0, r10, c7, c5, 4    @ isb to sych the new cssr&amp;csidr
+(gdb) info reg r10
+    r10   0x0    0
+(gdb) n
+    348   mrc    p15, 1, r1, c0, c0, 0    @ read the new csidr
+(gdb) n
+    349   and    r2, r1, <span style="color: #90ee90; font-style: italic;">#</span><span style="color: #90ee90; font-style: italic;">7        @ extract the length of the cache lines</span>
+(gdb) info reg r1
+    r1    0xe00fe019          -535830503
+</pre>
+</div>
+
+<p>
+从上面的实践可以看出，LoC 所使用的 cache 是一个数据 cache，对应的
+Ctype1，并且 Ctype0 的 cache 为 0x3, 将该值写入到 CSIDR 寄存器，就获得
+Ctype1 对应的 cache 长度信息。从 r1 读入的值为 0xe00fe019, 从这个数值
+中可以知道 Cache 的 set 数为 (0x3F + 1), 也就是该 cache 包含了 128 个
+set。每个 set 包含的 cache line 数 (0x3 + 1), 那么该 cache 是 4 way。
+cache line size 是 8 字节。接下来执行的 代码是：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">and</span>     <span style="color: #ffb6c1; font-size: 105%;">r2</span>, r1, #7              @ extract the length of the cache lines
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">add</span>     <span style="color: #ffb6c1; font-size: 105%;">r2</span>, r2, #4              @ add 4 (line length offset)
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">ldr</span>     <span style="color: #ffb6c1; font-size: 105%;">r4</span>, =0x3ff
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">ands</span>    <span style="color: #ffb6c1; font-size: 105%;">r4</span>, r4, r1, lsr #3      @ find maximum number on the way size
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">clz</span>     <span style="color: #ffb6c1; font-size: 105%;">r5</span>, r4                  @ find bit position of way size increment
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">ldr</span>     <span style="color: #ffb6c1; font-size: 105%;">r7</span>, =0x7fff
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">ands</span>    <span style="color: #ffb6c1; font-size: 105%;">r7</span>, r7, r1, lsr #13     @ extract max number of the index size
+</pre>
+</div>
+
+<p>
+从之前的分析可以知道，r1 寄存器里面存储着当前 cache 长度相关的信息，首
+先使用 “and r2, r1, #7” 获得 cache line 的长度。然后调用 “add r2, r2,
+#4”,这条命令的 作用是为了后面 cache flush 特定寄存器写信息的特殊格式要
+求，可以参看后面 flush 操作。 接着将常量 0x3ff 赋值给 r4， 然后执行命
+令 “ands r4, r4, r1, lsr #3”，通过这条 命令读出 cache way 的信息，接着
+调用 “clz r5, r4” 也是为了拼凑一个格式化数据。同理， 将常量 0x7fff 赋
+值给 r7，然后获得 cache 的 set 信息。接下来执行的代码如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">loop2</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>     r9, r4    @ create working copy of max way size
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">loop3</span>:
+ <span style="color: #ffb6c1; font-size: 105%;">ARM</span>(orr  r11, r10, r9, lsl r5) @ factor way and cache number into r11
+ <span style="color: #ffb6c1; font-size: 105%;">ARM</span>(orr  r11, r11, r7, lsl r2) @ factor index number into r11
+    <span style="color: #ffb6c1; font-size: 105%;">mcr</span>  p15, 0, r11, c7, c14, 2 @ clean &amp; invalidate by set/way
+    <span style="color: #ffb6c1; font-size: 105%;">subs</span> r9, r9, #1   @ decrement the way
+    <span style="color: #ffb6c1; font-size: 105%;">bge</span>  loop3
+    <span style="color: #ffb6c1; font-size: 105%;">subs</span> r7, r7, #1   @ decrement the index
+    <span style="color: #ffb6c1; font-size: 105%;">bge</span>  loop2
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">skip</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">add</span>  r10, r10, #2 @ increment cache number
+    <span style="color: #ffb6c1; font-size: 105%;">cmp</span>  r3, r10
+    <span style="color: #ffb6c1; font-size: 105%;">bgt</span>  loop1
+</pre>
+</div>
+
+
+<p>
+这段代码就是按 set/way 方式 flush cache，这讲解代码之前，先了解 cache
+flush 的 方法，armv7 中采用 set/way 方式管理 cache。通过之前 cache 基
+本原理可以知道，每个 cache set 包含了 way 个 cache line，而 cache 被均
+分成多个 cache set。因此可以将 cache set 理解为行，cache way 理解为列，
+所以刷新的时候按行-列的模式刷，因此这里 的代码就是用于实现将所有 set
+和 way 都 flush。另外，armv7 中，往特定寄存器写入 set/way 信息就可以刷
+新指定的 set/way cache, 这个寄存器就是 DCCISW 寄存器，这个 寄存器的位
+图如下：
+<img src="./pic/armv7-dccisw.png" alt="armv7-dccisw.png" />
+</p>
+
+<p>
+从上图可以知道，要刷新特定的 cache line，那么需要往 DCCISW 寄存器内写
+入 Way 和 Set 的信息。因此在分析之前的代码，为什么 line size 的值要加
+上 4，以及 way 的值要这么 处理也就知道了，就是为了制作出一个符合
+DCCISW 格式的数据。因此上面的代码分析如下： 首先调用 “mov r9, r4”，为
+了进行 set 的遍历，接着 “orr r11, r10, r9, lsl r5” 和 “orr r11, r11,
+r7, lsl r2” 命令也是为了构建 DCCISW 格式化数据，准备好数据之后， 就将
+数据写入到 DCCISW 寄存器里面，使用的命令是 “mcr p15, 0, r11, c7, c14,
+2”. 接下来的代码就是遍历所有的 set 以及 set 里面的所有 way，通过上面的
+操作，当前 cache 的所有 set/way 就被 flush 完毕。最后到达 skip 处，如
+果当前 cache flush 完毕， 那么跳转到 loop1 采用同样的方式遍历下一个
+cache。接下来执行的代码是：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">finished</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">ldmfd</span>   sp!, {r0-r7, r9-r11}
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>     r10, #0                 @ switch back to cache level 0
+    <span style="color: #ffb6c1; font-size: 105%;">mcr</span>     p15, 2, r10, c0, c0, 0  @ select current cache level in cssr
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">iflush</span>:
+    <span style="color: #ffb6c1; font-size: 105%;">mcr</span>     p15, 0, r10, c7, c10, 4 @ DSB
+    <span style="color: #ffb6c1; font-size: 105%;">mcr</span>     p15, 0, r10, c7, c5, 0  @ invalidate I+BTB
+    <span style="color: #ffb6c1; font-size: 105%;">mcr</span>     p15, 0, r10, c7, c10, 4 @ DSB
+    <span style="color: #ffb6c1; font-size: 105%;">mcr</span>     p15, 0, r10, c7, c5, 4  @ ISB
+    <span style="color: #ffb6c1; font-size: 105%;">mov</span>     pc, lr
+</pre>
+</div>
+
+<p>
+cache flush 完毕之后，就做最后的收尾工作，将期间使用过的寄存器都恢复原
+值，然后 将当前 cache 设置为 0。然后刷新 I-cache。首先调用 DSB 内存屏
+障，将之访问全部落盘， 然后调用 “mcr p15, 0, r10, c7, c5, 0”, 此时
+CP15 C7 的布局如下：
+<img src="./pic/armv7-cp15c7.png" alt="armv7-cp15c7.png" />
+</p>
+
+<p>
+通过上面的命令选中了寄存器：ICIALLU, 向该寄存器写入任意值就会让
+I-cache 无效。 接着调用两条内存屏障指令 DSB 和 ISB，让所有改变都生效。
+最后将 lr 赋值给 pc，实现 调用返回。支持 armv7 的 flush 操作已经全部完
+成。代码继续执行如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span style="color: #1e90ff; font-size: 105%; font-weight: bold;">badr</span>    <span style="color: #ffb6c1; font-size: 105%;">r0</span>, restart
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">add</span>     <span style="color: #ffb6c1; font-size: 105%;">r0</span>, r0, r6
+<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">mov</span>     <span style="color: #ffb6c1; font-size: 105%;">pc</span>, r0
+</pre>
+</div>
+
+<p>
+首先获得 restart 的地址，存储到 r0 寄存器内，然后将 r0 寄存器的值加上
+r6 偏移值， 以此计算出 restart 重定位之后的地址，最后将该值赋值给 pc，
+然后 CPU 就跳转到 restart 重定位处继续执行。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2f7735d" class="outline-2">
+<h2 id="org2f7735d"><span class="section-number-2">5.</span> 文件系统</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+在移植Linux内核早期时，如果flash等存储设备的驱动还没写好，可以将文件系
+统放到内存中运行。此时可以使用ramfs和ramdisk，即将内存的一部分用作文件
+系统。
+</p>
+
+
+<p>
+而busybox所起的作用为,制作kernel启动后需要的一些辅助工具,在制作时,具体
+是用交叉编译工具编译好busybox,然后将这些工具make install到被制作文件系
+统的文件夹中,然后再用genext2fs/mke2fs将这些文件夹打包成文件系统文件,通
+过jtag/tftp/emmc等方式load到ddr中,被kernel引导起来,引导成功后输出如下.
+</p>
+<pre class="example" id="org514b687">
+## Loading init Ramdisk from Legacy Image at 42000000 ...
+   Image Name:   
+   Image Type:   ARM Linux RAMDisk Image (gzip compressed)
+   Data Size:    2168875 Bytes = 2.1 MiB
+   Load Address: 00000000
+   Entry Point:  00000000
+   Verifying Checksum ... OK
+</pre>
+</div>
+<div id="outline-container-org33a6bde" class="outline-3">
+<h3 id="org33a6bde"><span class="section-number-3">5.1.</span> ramfs</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+ramfs就是将文件系统和内核一起编译，编译出来的镜像就包括内核本身和文件
+系统。内核打开ramfs的配置如图<a href="#orgb3a5b97">5</a>所示.
+</p>
+
+<div id="orgb3a5b97" class="figure">
+<p><img src="./pic/img-kernel-ramfs-set.png" alt="img-kernel-ramfs-set.png" />
+</p>
+<p><span class="figure-number">Figure 5: </span>Kernel中RAMFS配置</p>
+</div>
+
+
+<p>
+在Initramfs source file(s)选项中，填入文件系统的路径即可。最后，uboot
+的bootargs中需要将init=/sbin/init修改为rdinit=/sbin/init，主要就是init
+和rdinit的区别。
+</p>
+</div>
+</div>
+<div id="outline-container-org724fc4f" class="outline-3">
+<h3 id="org724fc4f"><span class="section-number-3">5.2.</span> ramdisk</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+ramdisk也是将内存的一部分用作文件系统，只不过不用像上面一样要重新编译
+内核。ramdisk制作可以使用genext2fs工具或者mke2fs等工具制作。以下制作过
+程,建议都在root权限下进行.
+</p>
+</div>
+<div id="outline-container-org24e1402" class="outline-4">
+<h4 id="org24e1402"><span class="section-number-4">5.2.1.</span> genext2fs</h4>
+<div class="outline-text-4" id="text-5-2-1">
+<p>
+genext2fs是主机中的一个工具,用于将某个目录或文件制作成ext2类型的文件系
+统镜像.Ubuntu中可以使用apt安装.具体的ram文件系统制作参考以下脚本.
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">sudo genext2fs -b 16384 -d /home/book/rootfs ramdisk.image
+sudo gzip &#8211;v9 ramdisk.image             <span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">&#36755;&#20986;ramdisk.image.gz</span>
+sudo mkimage -A arm -O linux -T ramdisk -C gzip -n <span style="color: #ffa07a;">'xx ramdisk filesystem'</span><span style="color: #ffa07a;">\</span>
+        -d ramdisk.image.gz uramdisk.image.gz
+</pre>
+</div>
+<ul class="org-ul">
+<li>先使用genext2fs把/home/book/rootfs制作成一个名为ramdisk.image的
+ramdisk.</li>
+<li>然后使用gizp压缩ramdisk.image，得到ramdisk.image.gz.</li>
+<li>最后用mkimage工具生成uramdisk.image.gz给uboot使用.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgb2128b1" class="outline-4">
+<h4 id="orgb2128b1"><span class="section-number-4">5.2.2.</span> mke2fs</h4>
+<div class="outline-text-4" id="text-5-2-2">
+<p>
+mke2fs实际上和genext2fs类似,制作脚本如下.注意"0x15000000"是设置文件系
+统的"load address", 在u-boot对kernel的bootargs配置中需要用到,如果这个
+地址不设置,则bootargs中也不能设置,由kernel自己检测得到这个地址.
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">count&#23601;&#26159;&#25991;&#20214;&#31995;&#32479;&#30340;&#22823;&#23567;,bootargs&#20013;&#20063;&#26377;&#21442;&#25968;&#20570;&#23545;&#24212;</span>
+sudo dd <span style="color: #ffd700;">if</span>=/dev/zero <span style="color: #ffd700;">of</span>=ramdisk <span style="color: #ffd700;">bs</span>=1024 <span style="color: #ffd700;">count</span>=8192
+sudo mke2fs -F -v -m0 ramdisk
+sudo mkdir /mnt/loop
+sudo mount -t ext2 ramdisk /mnt/loop
+sudo cp -arf ./ramdiskfs/* /mnt/loop
+sudo umount /mnt/loop
+sudo rm -rf /mnt/loop
+gzip -v9 ramdisk                <span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">&#36755;&#20986;ramdisk.gz</span>
+mkimage -A arm -O linux -T ramdisk -C gzip -a 0x15000000<span style="color: #ffa07a;">\</span>
+        -n <span style="color: #ffa07a;">"ramdisk"</span> -d ramdisk.gz uramdisk.image.gz
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org7b88a40" class="outline-3">
+<h3 id="org7b88a40"><span class="section-number-3">5.3.</span> 引导配置</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+kernel和u-boot中也要做相应的引导配置.
+</p>
+</div>
+<div id="outline-container-org2ef57dc" class="outline-4">
+<h4 id="org2ef57dc"><span class="section-number-4">5.3.1.</span> u-boot配置</h4>
+<div class="outline-text-4" id="text-5-3-1">
+<p>
+bootargs也可以在kernel的dts配置中指定.
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">setenv <span style="color: #ffd700;">initrd_high</span>=0xffffffff
+setenv bootargs <span style="color: #ffd700;">console</span>=ttyS0,115200 <span style="color: #ffd700;">root</span>=/dev/ram0 rw <span style="color: #ffd700;">init</span>=/sbin/init; <span style="color: #ffa07a;">\</span>
+    bootm ${<span style="color: #ffd700;">loadaddr</span>} ${<span style="color: #ffd700;">ramdiskaddr</span>} ${<span style="color: #ffd700;">fdtaddr</span>}
+</pre>
+</div>
+<ul class="org-ul">
+<li>initrd_high为0xffffffff，表示将initrd加载到最高的可用内存地址上。这
+样可以确保在启动过程中有足够的内存空间来加载initrd文件.</li>
+<li>bootargs中，主要是这句：root=/dev/ram rw init=/sbin/init要对.</li>
+<li>bootm(或booti)启动中，loadaddr是内核的加载地址，ramdiskaddr是ramdisk
+的加载地址，fdtaddr是设备树的加载地址.</li>
+</ul>
+
+
+<p>
+制作好的uramdisk.image.gz文件系统，可以在uboot中，先通过tftp命令将
+uramdisk.image.gz加载到某段内存，例如tftp 82000000 uramdisk.image.gz。
+最后通过bootxxx(取决于kernel的类型)启动。
+</p>
+</div>
+</div>
+<div id="outline-container-org1950a41" class="outline-4">
+<h4 id="org1950a41"><span class="section-number-4">5.3.2.</span> kernel配置</h4>
+<div class="outline-text-4" id="text-5-3-2">
+<p>
+打开ramfs支持,如图<a href="#org628e1a8">6</a>所示.
+</p>
+
+<div id="org628e1a8" class="figure">
+<p><img src="./pic/img-kernelramfs-set0.png" alt="img-kernelramfs-set0.png" />
+</p>
+<p><span class="figure-number">Figure 6: </span>Kernel配置ramfs</p>
+</div>
+
+
+
+<p>
+打开ext2文件系统支持,如图<a href="#org0b8b596">7</a>所示.
+</p>
+
+<div id="org0b8b596" class="figure">
+<p><img src="./pic/img-kernelext2-set.png" alt="img-kernelext2-set.png" />
+</p>
+<p><span class="figure-number">Figure 7: </span>Kernel配置ext2</p>
+</div>
+
+
+
+<p>
+打开ram block支持，并设置大小,如图<a href="#orgeb493eb">8</a>所示.
+</p>
+
+<div id="orgeb493eb" class="figure">
+<p><img src="./pic/img-kernelext2-size.png" alt="img-kernelext2-size.png" />
+</p>
+<p><span class="figure-number">Figure 8: </span>Kernel RAMDISK大小配置</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org6c3d6fc" class="outline-2">
+<h2 id="org6c3d6fc"><span class="section-number-2">6.</span> 驱动</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-orgfe486de" class="outline-3">
+<h3 id="orgfe486de"><span class="section-number-3">6.1.</span> 框架基础</h3>
+<div class="outline-text-3" id="text-6-1">
+</div>
+<div id="outline-container-orgb6aeeff" class="outline-4">
+<h4 id="orgb6aeeff"><span class="section-number-4">6.1.1.</span> 模块声明</h4>
+<div class="outline-text-4" id="text-6-1-1">
+<p>
+模块声明与描述如下
+</p>
+<ul class="org-ul">
+<li>MODULE_AUTHOR: 模块作者；</li>
+<li>MODULE_DESCRIPTION: 模块描述；</li>
+<li>MODULE_VERSION： 模块版本；</li>
+<li>MODULE_DEVICE_TABLE：模块设备表，USB、PCI设备驱动常用；</li>
+<li>MODULE_ALIAS：模块别名；</li>
+<li>MODULE_LICENSE： 模块license版权；</li>
+<li>EXPORT_SYMBOL：导出模块符号给其他模块使用；</li>
+<li>EXPORT_SYMBOL_GPL：导出模块符号给其他GPL模块使用；</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org3b78517" class="outline-4">
+<h4 id="org3b78517"><span class="section-number-4">6.1.2.</span> 模块修饰</h4>
+<div class="outline-text-4" id="text-6-1-2">
+<ul class="org-ul">
+<li>module_init： 模块初始化修饰，修饰模块初始化函数；</li>
+<li>module_exit：模块退出修饰；</li>
+<li>module_param：为模块定义参数；</li>
+<li>module_param_array： 为模块定义参数数组；</li>
+<li>函数修饰
+<ul class="org-ul">
+<li>__init：修饰的函数会在.initcall.init区段中保存一份函数指针，对应
+module_init模块修饰；</li>
+<li>__exit: 修饰卸载函数对应module_exit模块修饰；</li>
+<li>__initdata: 数据也可以被定义为__initdata，对于只是初始化阶段需要的数
+据，内核在初始化完后，也可以释放它们占用的内存；</li>
+<li>__exitdata: 只是退出阶段采用的数据也可以用__exitdata修饰；</li>
+</ul></li>
+
+<li>宏修饰
+<ul class="org-ul">
+<li>MOD_INC_USE_COUNT：模块使用计数，增加，Linux2.4中使用；</li>
+<li>MOD_DEC_USE_COUNT：模块使用计数，减少，Linux2.4中使用；</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org1abddaa" class="outline-4">
+<h4 id="org1abddaa"><span class="section-number-4">6.1.3.</span> 模块函数</h4>
+<div class="outline-text-4" id="text-6-1-3">
+<ul class="org-ul">
+<li>try_module_get：Linux2.6后，替代MOD_INC_USE_COUNT；</li>
+<li>module_put：Linux2.6后，替代MOD_DEC_USE_COUNT；</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgf7b4e49" class="outline-4">
+<h4 id="orgf7b4e49"><span class="section-number-4">6.1.4.</span> 模块命令</h4>
+<div class="outline-text-4" id="text-6-1-4">
+<ul class="org-ul">
+<li>insmod： 加载模块，调用module_init修饰的函数；</li>
+<li>rmmod：卸载模块，调用module_exit修饰的函数；</li>
+<li>lsmod：读取模块信息，读取分析/proc/modules；</li>
+<li>modprobe：比insmod强大，加载模块时，会同时加载该模块所依赖的其他模块。</li>
+<li>modprobe -r：卸载模块时，会同时卸载该模块所依赖的其他模块。</li>
+<li>modinfo：获取模块的信息：作者、说明、参数、vermagic等；</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgbe05823" class="outline-4">
+<h4 id="orgbe05823"><span class="section-number-4">6.1.5.</span> 模块文件</h4>
+<div class="outline-text-4" id="text-6-1-5">
+<ul class="org-ul">
+<li>/proc/modules: 包含各个模块信息；</li>
+<li>/sys/module/xxx: 模块目录；</li>
+<li>/sys/module/xxx/parameters: 模块参数目录，module_param定义的参数；</li>
+<li>/lib/modules/&lt;kernel-version&gt;/modules.dep: 模块间的依赖关系文件，由
+depmod工具生成；</li>
+<li>/var/log/message: 日志文件可以看到kernel对模块信息的输出；</li>
+<li>/proc/kallsyms: 内核符号表，它记录了符号以及符号所在的内存地址,由
+EXPORT_SYMBOL导出；</li>
+<li>/proc/devices: 文件可以获知系统中注册的设备，第1列为主设备号，第2列
+为设备名；</li>
+<li>/dev/xxx: 查看/dev目录可以获知系统中包含的设备文件，日期的前两列给出
+了对应设备的主设备号和次设备号;</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org78aa98c" class="outline-4">
+<h4 id="org78aa98c"><span class="section-number-4">6.1.6.</span> vfs</h4>
+<div class="outline-text-4" id="text-6-1-6">
+<p>
+所有的kernel空间操作，都用vfs抽象给用户程序，提供一套open，read，write，
+seek等接口。
+</p>
+</div>
+</div>
+<div id="outline-container-orgdb2c01d" class="outline-4">
+<h4 id="orgdb2c01d"><span class="section-number-4">6.1.7.</span> devfs</h4>
+<div class="outline-text-4" id="text-6-1-7">
+<p>
+devfs，设备文件系统，工作在内核空间，Linux2.4内核引入的驱动框架。
+</p>
+<ul class="org-ul">
+<li>register_chrdev: 注册字符设备，传入主设备号0，系统自动分配主设备号；</li>
+<li>devfs_register: 可以指定次设备号；</li>
+<li>devfs_mk_dir： 创建设备目录；</li>
+<li>devfs_unregister： 撤销设备文件；</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgc643f03" class="outline-4">
+<h4 id="orgc643f03"><span class="section-number-4">6.1.8.</span> udev</h4>
+<div class="outline-text-4" id="text-6-1-8">
+<p>
+udev，用户空间设备管理系统，工作在用户空间，Linux2.6内核中引入的驱动框
+架；在嵌入式系统中，有一个轻量级版本实现叫mdev；在Android中，也有一个
+类似的叫vold，机制一样。
+</p>
+</div>
+</div>
+<div id="outline-container-org6fd8a64" class="outline-4">
+<h4 id="org6fd8a64"><span class="section-number-4">6.1.9.</span> sysfs</h4>
+<div class="outline-text-4" id="text-6-1-9">
+<p>
+Linux2.6内核以后引入的sysfs文件系统，sysfs被看成是与proc、devfs和
+devpty同类别的文件系统，该文件系统是一个虚拟的文件系统，它可以产生一个
+包括所有系统硬件的层级视图，与提供进程和状态信息的proc文件系统十分类似。
+</p>
+
+
+<p>
+sysfs把连接在系统上的设备和总线组织成为一个分级的文件，它们可以由用户
+空间存取，向用户空间导出内核数据结构以及它们的属性。sysfs的一个目的就
+是展示设备驱动模型中各组件的层次关系，其顶级目录包括block、bus、class、
+dev、devices、fs、kernel、power和firmware等，总线、驱动和设备最终都会
+落实为sysfs中的1个目录。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org07b6ef8" class="outline-3">
+<h3 id="org07b6ef8"><span class="section-number-3">6.2.</span> 驱动并发</h3>
+</div>
+<div id="outline-container-orgfe6812a" class="outline-3">
+<h3 id="orgfe6812a"><span class="section-number-3">6.3.</span> 驱动架构</h3>
+<div class="outline-text-3" id="text-6-3">
+<p>
+在Linux 2.6以后的设备驱动模型中，需要关心到总线、设备和驱动，驱动只管
+驱动，设备只管设备，总线则负责匹配设备和驱动，而驱动则以标准途径拿到板
+级信息，进而将各个组件串接起来。在系统每注册一个设备的时候，会寻找与之
+匹配的驱动；相反的，在系统每注册一个驱动的时候，会寻找与之匹配的设备，
+而匹配由总线完成。
+</p>
+
+
+<p>
+一个现实的Linux设备和驱动通常都需要挂接在一种总线上，对于本身依附于PCI、
+USB、I2C等的设备而言，不是问题，但是在嵌入式系统里面，在SoC系统中集成
+的独立外设控制器、挂接在SoC内存空间的外设等却不依附于此类总线。由此，
+Linux发明了一种虚拟的总线，称为platform总线，相应的设备称为
+platform_device，而驱动成为platform_driver。匹配platform_device和
+platform_driver有4种可能性
+</p>
+<ul class="org-ul">
+<li>基于设备树风格的匹配；</li>
+<li>基于ACPI风格的匹配；</li>
+<li>匹配ID表:即platform_device设备名是否出现在platform_driver的ID表内；</li>
+<li>匹配platform_device设备名和驱动的名字。</li>
+</ul>
+
+
+<p>
+platform_device并不是与字符设备、块设备和网络设备并列的概念，而是Linux
+系统提供的一种附加手段，通常把在SoC内部集成的I2C、LCD等控制器都归纳为
+platform_device，而它们本身就是字符设备。
+</p>
+
+
+<p>
+platform_driver这个结构体中包含probe、remove、一个device_driver实例、
+电源管理函数suspend、resume，与platform_driver地位对等的i2c_driver、
+spi_driver、usb_driver、pci_driver中都包含了device_driver结构体实例成
+员。它其实描述了各种xxx_driver（xxx是总线名）在驱动意义上的一些共性。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8b90e34" class="outline-3">
+<h3 id="org8b90e34"><span class="section-number-3">6.4.</span> 内存管理</h3>
+<div class="outline-text-3" id="text-6-4">
+<p>
+每个进程的用户空间都是完全独立、互不相干，用户进程各自有不同的页表。而
+内核空间是由内核负责映射，它并不会跟着进程改变，是固定的。内核空间的虚
+拟地址到物理地址映射是被所有进程共享的，内核的虚拟空间独立于其他程序
+</p>
+
+
+<p>
+x86 Linux中1GB的内核地址空间又被划分为几个区域.
+</p>
+<ul class="org-ul">
+<li>系统保留映射区：Linux保留内核空间最顶部FIXADDR_TOP~4GB区域作为保留区；</li>
+<li>专用页面映射区：紧接着最顶端的保留区以下的一段区域为专用页面映射区
+(FIXADDR_START~FIXADDR_TOP)，它的总尺寸和每一页的用途由
+fixed_address枚举结构在编译时预定义，用__fix_to_virt(index)可获取
+专用区内预定义页面的逻辑地址；</li>
+<li>高端页面映射区：如果系统配置了高端内存，则位于专用页面映射区之下的就
+是一段高端内存映射区，其起始地址为PKMAP_BAS。</li>
+<li>虚拟内存分配区：在物理区和高端映射区之间为虚拟内存分配器区
+(VMALLOC_START~VMALLOC_END)，用于vmalloc()函数，它的前部与物理内
+存映射区有一个隔离带，后部与高端映射区也有一个隔离带。</li>
+<li>物理内存映射区：直接映射物理内存(x86为896MB)
+<ul class="org-ul">
+<li>常规区域：6MB~896MB之间的为常规区域；</li>
+<li>DMA区域: 在低于16MB的区域，ISA设备可以做DMA，所以该区域为DMA区域；</li>
+</ul></li>
+</ul>
+
+
+
+<p>
+arm Linux中1GB的内核地址空间又被划分为几个区域.
+</p>
+<ul class="org-ul">
+<li>向量表区：固定为0xffff0000~0xffff0fff；</li>
+<li>vmalloc区：VMALLOC_START~VMALLOC_END-1区域；</li>
+<li>DMA映射区：0xffc00000~0xffefffff区域；</li>
+<li>常规映射区域：PAGE_OFFSET~high_memory-1区域；</li>
+<li>高端内存映射区：PKMAP_BASE~PAGE_OFFSET区域；</li>
+<li>内核模块区：MODULES_VADDR~MODULES_END区域，在PAGE_OFFSET附近16MB区域；</li>
+</ul>
+</div>
+<div id="outline-container-orgbc05171" class="outline-4">
+<h4 id="orgbc05171"><span class="section-number-4">6.4.1.</span> slab缓存</h4>
+<div class="outline-text-4" id="text-6-4-1">
+<p>
+slab缓存适用于小数据的内存申请，slab是建立在buddy算法之上的，它从buddy
+算法拿到2n页面后再次进行二次管理，这一点和用户空间的C库很像。slab申请
+的内存以及基于slab的kmalloc()申请的内存，与物理内存之间也是一个简单的
+线性偏移。
+</p>
+<ul class="org-ul">
+<li>创建slab缓存：kmem_cache_create；</li>
+<li>分配slab缓存：kmem_cache_alloc；</li>
+<li>释放slab缓存：kmem_cache_free；</li>
+<li>收回slab缓存：kmem_cache_destroy；</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org05e506b" class="outline-4">
+<h4 id="org05e506b"><span class="section-number-4">6.4.2.</span> 内存池</h4>
+<div class="outline-text-4" id="text-6-4-2">
+<p>
+内存池技术也是一种非常经典的用于分配大量小对象的后备缓存技术。
+</p>
+<ul class="org-ul">
+<li>创建内存池：mempool_create</li>
+<li>分配对象：mempool_alloc</li>
+<li>回收对象：mempool_free</li>
+<li>回收内存池：mempool_destroy</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org77aa879" class="outline-4">
+<h4 id="org77aa879"><span class="section-number-4">6.4.3.</span> 操作函数</h4>
+<div class="outline-text-4" id="text-6-4-3">
+<ul class="org-ul">
+<li>virt_to_phys: 内核虚拟地址转化物理地址，适用于DMA/常规映射区域；</li>
+<li>phys_to_virt: 物理地址转换内核虚拟地址，适用于DMA/常规映射区域；</li>
+<li>kmalloc: 申请的内存位于DMA和常规区域的映射区，而且在物理上也是连续的，
+它们与真实的物理地址只有一个固定的偏移，和kfree对应.
+<ul class="org-ul">
+<li>GFP_KERNEL： 在内核空间的进程中申请内存，底层依赖__get_free_pages;</li>
+<li>GFP_ATOMIC: 在中断处理函数、tasklet和内核定时器等非进程上下文中不
+能阻塞的地方申请内存，若不存在空闲页，则不等待，直接返回;</li>
+<li>GFP_USER：为用户空间页分配内存，可能阻塞；</li>
+<li>GFP_HIGHUSER</li>
+<li>GFP_USER: 从高端内存分配；</li>
+<li>GFP_DMA：从dma区域分配内存；</li>
+<li>GFP_NOIO：不允许任何I/O初始化；</li>
+<li>GFP_NOFS：不允许进行任何文件系统调用；</li>
+<li>__GFP_COLD: 请求一个较长时间不访问的页；</li>
+<li>__GFP_NOWARN：当一个分配无法满足时，阻止内核发出警告；</li>
+<li>__GFP_HIGH：高优先级请求，允许获得被内核保留给紧急状况使用的最后的
+内存页；</li>
+<li>__GFP_REPEAT：分配失败，则尽力重复尝试；</li>
+<li>__GFP_NOFAIL：标志只许申请成功，不推荐；</li>
+<li>__GFP_NORETRY：若申请不到，则立即放弃；</li>
+</ul></li>
+<li>vmalloc: 在虚拟内存空间给出一块连续的内存区，这片连续的虚拟内存在物
+理内存中并不一定连续，和vfree对应。</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org38ffa40" class="outline-3">
+<h3 id="org38ffa40"><span class="section-number-3">6.5.</span> 设备IO</h3>
+<div class="outline-text-3" id="text-6-5">
+<p>
+设备寄存器可能位于I/O空间中，也可能位于内存空间中。当位于I/O空间时，通
+常被称为I/O端口；当位于内存空间时，对应的内存空间被称为I/O内存。
+</p>
+</div>
+<div id="outline-container-orge504810" class="outline-4">
+<h4 id="orge504810"><span class="section-number-4">6.5.1.</span> 地址</h4>
+<div class="outline-text-4" id="text-6-5-1">
+<p>
+地址涉及到3种地址概念,系统中，物理地址0在设备端看起来是0x80000000，而
+0通常又被映射为虚拟地址0xC0000000，所以同一地址就具备了三重身份：物理
+地址0、总线地址0x80000000及虚拟地址0xC0000000。
+</p>
+<ul class="org-ul">
+<li>虚拟地址：从CPU核角度看到的是虚拟地址；</li>
+<li>物理地址：从MMU控制器外围角度上看到的内存地址；</li>
+<li>总线地址：从设备角度上看到的内存地址，基于DMA的硬件使用的是总线地址
+而不是物理地址；
+<ul class="org-ul">
+<li>virt_to_bus：虚拟地址到总线地址的转换；</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0726ec2" class="outline-4">
+<h4 id="org0726ec2"><span class="section-number-4">6.5.2.</span> 内核空间IO端口</h4>
+<div class="outline-text-4" id="text-6-5-2">
+
+<div id="org1ffd023" class="figure">
+<p><img src="./pic/img-iodriver.png" alt="img-iodriver.png" />
+</p>
+<p><span class="figure-number">Figure 9: </span>IO端口用法</p>
+</div>
+
+<ul class="org-ul">
+<li>IO端口申请：request_region；</li>
+<li>IO端口释放：release_region；</li>
+<li>8位宽读写字节端口
+<ul class="org-ul">
+<li>inb</li>
+<li>outb</li>
+</ul></li>
+<li>16位宽读写字端口
+<ul class="org-ul">
+<li>inw</li>
+<li>outw</li>
+</ul></li>
+<li>32位宽读写长字端口
+<ul class="org-ul">
+<li>inl</li>
+<li>outl</li>
+</ul></li>
+<li>读写一串字节
+<ul class="org-ul">
+<li>insb：从端口port开始读count个字节，并将读取结果写入addr指向的内存；</li>
+<li>outsb：将addr指向的内存中的count个字节连续写入以port开始的端口；</li>
+</ul></li>
+<li>读写一串字
+<ul class="org-ul">
+<li>insw</li>
+<li>outsw</li>
+</ul></li>
+<li>读写一串长字
+<ul class="org-ul">
+<li>insl</li>
+<li>outsl</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org5c1c400" class="outline-4">
+<h4 id="org5c1c400"><span class="section-number-4">6.5.3.</span> 内核空间IO内存</h4>
+<div class="outline-text-4" id="text-6-5-3">
+<p>
+在内核中访问I/O内存前（如SPI、USB等控制器的寄存器），需首先使用
+ioremap()函数将设备所处的物理地址映射到虚拟地址上,和iounmap对应，
+ioremap()有个变体函数是devm_ioremap.
+</p>
+
+
+<p>
+在设备的物理地址（一般都是寄存器）被映射到虚拟地址之后，可以直接通过指
+针访问这些地址，但Linux内核推荐用一组标准的API来完成设备内存映射的虚拟
+地址的读写
+</p>
+
+<div id="org518d55b" class="figure">
+<p><img src="./pic/img-iomemdriver.png" alt="img-iomemdriver.png" />
+</p>
+<p><span class="figure-number">Figure 10: </span>IO内存用法</p>
+</div>
+<ul class="org-ul">
+<li>申请IO内存：request_mem_region</li>
+<li>释放IO内存：release_mem_region</li>
+<li>读寄存器
+<ul class="org-ul">
+<li>readb_relaxed：读8bit，包含内存屏障；</li>
+<li>readw_relaxed：读16bit，包含内存屏障；</li>
+<li>readl_relaxed：读32bit，包含内存屏障；</li>
+<li>readb：读8bit；</li>
+<li>readw：读16bit；</li>
+<li>readl：读32bit；</li>
+</ul></li>
+<li>写寄存器
+<ul class="org-ul">
+<li>writeb_relaxed:写8bit，包含内存屏障；</li>
+<li>writew_relaxed:写16bit，包含内存屏障；</li>
+<li>writel_relaxed:写32bit，包含内存屏障；</li>
+<li>writeb:写8bit；</li>
+<li>writew:写16bit；</li>
+<li>writel:写32bit；</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org177d77d" class="outline-4">
+<h4 id="org177d77d"><span class="section-number-4">6.5.4.</span> 用户空间IO</h4>
+<div class="outline-text-4" id="text-6-5-4">
+<p>
+大多数设备驱动都不需要提供设备内存到用户空间的映射能力，因为，对于串口
+等面向流的设备而言，实现这种映射毫无意义。而对于显示、视频等设备，建立
+映射可减少用户空间和内核空间之间的内存复制。常用映射方法如下。
+</p>
+<ul class="org-ul">
+<li>mmap：实现了这样的一个映射过程：它将用户空间的一段内存与设备内存关联，
+当用户访问用户空间的这段地址范围时，实际上会转化为对设备的访问,和
+munmap对应.</li>
+<li>fault： 在驱动程序中实现VMA的fault函数通常可以为设备提供更加灵活的内
+存映射途径。当访问的页不在内存里，即发生缺页异常时，fault会被内核自
+动调用，而fault的具体行为可以自定义。这是因为当发生缺页异常时，系统
+会经过如下处理过程。
+<ul class="org-ul">
+<li>找到缺页的虚拟地址所在的VMA；</li>
+<li>如果必要，分配中间页目录表和页表；</li>
+<li>如果页表项对应的物理页面不存在，则调用这个VMA的fault（）方法，它返
+回物理页面的页描述符；</li>
+<li>将物理页面的地址填充到页表中；</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org734a864" class="outline-4">
+<h4 id="org734a864"><span class="section-number-4">6.5.5.</span> 静态映射IO内存</h4>
+<div class="outline-text-4" id="text-6-5-5">
+<p>
+在将Linux移植到目标电路板的过程中，有得会建立外设I/O内存物理地址到虚拟
+地址的静态映射，这个映射通过在与电路板对应的map_desc结构体数组中添加新
+的成员来完成。
+</p>
+<ul class="org-ul">
+<li>iotable_init</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb6f98f2" class="outline-3">
+<h3 id="orgb6f98f2"><span class="section-number-3">6.6.</span> 字符驱动</h3>
+<div class="outline-text-3" id="text-6-6">
+</div>
+<div id="outline-container-orgb44ffe6" class="outline-4">
+<h4 id="orgb44ffe6"><span class="section-number-4">6.6.1.</span> 结构体</h4>
+<div class="outline-text-4" id="text-6-6-1">
+<ul class="org-ul">
+<li><p>
+cdev结构体: 字符设备的抽象结构体；
+</p>
+<ul class="org-ul">
+<li>cdev_init：函数用于初始化cdev的成员，并建立cdev和file_operations之间</li>
+</ul>
+<p>
+的连接。
+</p>
+<ul class="org-ul">
+<li>cdev_alloc：函数用于动态申请一个cdev内存；</li>
+<li>cdev_put：</li>
+<li>cdev_add：向系统添加一个cdev，完成字符设备的注册;</li>
+<li>cdev_del：向系统删除一个cdev，完成字符设备注销;</li>
+</ul></li>
+<li>file_operations: 结构体中的成员函数是字符设备驱动程序设计的主体内容，
+这些函数实际会在应用程序进行Linux的open()、write()、read()、close()
+等系统调用时最终被内核调用。
+<ul class="org-ul">
+<li>open</li>
+<li>llseek:用来修改一个文件的当前读写位置；</li>
+<li>read</li>
+<li>write</li>
+<li>ioctl</li>
+<li>mmap：函数将设备内存映射到进程的虚拟地址空间中;</li>
+<li>release：与open对应</li>
+<li>poll：用于询问设备是否可被非阻塞地立即读写；</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orge62aece" class="outline-4">
+<h4 id="orge62aece"><span class="section-number-4">6.6.2.</span> 函数</h4>
+<div class="outline-text-4" id="text-6-6-2">
+<ul class="org-ul">
+<li>copy_from_user：用户空间向内核空间memory拷贝；</li>
+<li>copy_to_user：内核空间向用户空间memory拷贝；</li>
+<li>get_user：copy_from_user简化版；</li>
+<li>put_user：copy_to_user简化版；</li>
+<li>access_ok：检查用户空间buffer的合法性；</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge086de7" class="outline-4">
+<h4 id="orge086de7"><span class="section-number-4">6.6.3.</span> 实例模板</h4>
+<div class="outline-text-4" id="text-6-6-3">
+<ul class="org-ul">
+<li><p>
+关于cdev的实现模板。
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">xxx_dev_t</span> {
+    <span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">cdev</span> <span style="color: #ffd700;">cdev</span>;
+    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">...</span>
+} <span style="color: #ffd700;">xxx_dev</span>;
+<span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#35774;&#22791;&#39537;&#21160;&#27169;&#22359;&#21152;&#36733;&#20989;&#25968;</span><span style="color: #90ee90; font-style: italic;"> */</span>
+<span style="color: #ffb6c1; font-size: 105%;">static</span> <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">__init</span> xxx_init(<span style="color: #ffff00; font-size: 105%;">void</span>)
+{
+    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">...</span>
+    cdev_init(&amp;xxx_dev.cdev, &amp;xxx_fops); <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#21021;&#22987;&#21270;cdev</span><span style="color: #90ee90; font-style: italic;"> */</span>
+    xxx_dev.cdev.owner = THIS_MODULE;
+    <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#33719;&#21462;&#23383;&#31526;&#35774;&#22791;&#21495;</span><span style="color: #90ee90; font-style: italic;"> */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">if</span> (xxx_major) {
+        register_chrdev_region(xxx_dev_no, 1, DEV_NAME);
+    } <span style="color: #ffb6c1; font-size: 105%;">else</span> {
+        alloc_chrdev_region(&amp;xxx_dev_no, 0, 1, DEV_NAME);
+    }
+
+    ret = cdev_add(&amp;xxx_dev.cdev, xxx_dev_no, 1); <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#27880;&#20876;&#35774;&#22791;</span><span style="color: #90ee90; font-style: italic;"> */</span>
+    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">...</span>
+}
+<span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#35774;&#22791;&#39537;&#21160;&#27169;&#22359;&#21368;&#36733;&#20989;&#25968;</span><span style="color: #90ee90; font-style: italic;">*/</span>
+<span style="color: #ffb6c1; font-size: 105%;">static</span> <span style="color: #ffff00; font-size: 105%;">void</span> <span style="color: #ffd700;">__exit</span> xxx_exit(<span style="color: #ffff00; font-size: 105%;">void</span>)
+{
+    unregister_chrdev_region(xxx_dev_no, 1); <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#37322;&#25918;&#21344;&#29992;&#30340;&#35774;&#22791;&#21495;</span><span style="color: #90ee90; font-style: italic;"> */</span>
+    cdev_del(&amp;xxx_dev.cdev); <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#27880;&#38144;&#35774;&#22791;</span><span style="color: #90ee90; font-style: italic;"> */</span>
+    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">...</span>
+}
+</pre>
+</div></li>
+<li><p>
+关于file_operations的实现模板
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#35835;&#35774;&#22791;</span><span style="color: #90ee90; font-style: italic;"> */</span>
+<span style="color: #ffff00; font-size: 105%;">ssize_t</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">xxx_read</span>(<span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">file</span> *<span style="color: #ffd700;">filp</span>, <span style="color: #ffff00; font-size: 105%;">char</span> <span style="color: #ffd700;">__user</span> *buf,<span style="color: #ffff00; font-size: 105%;">size_t</span> <span style="color: #ffd700;">count</span>,<span style="color: #ffff00; font-size: 105%;">loff_t</span>*<span style="color: #ffd700;">f_pos</span>)
+{
+    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">...</span>
+    copy_to_user(buf, ..., ...);
+    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">...</span>
+}
+<span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#20889;&#35774;&#22791;</span><span style="color: #90ee90; font-style: italic;"> */</span>
+<span style="color: #ffff00; font-size: 105%;">ssize_t</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">xxx_write</span>(<span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">file</span> *<span style="color: #ffd700;">filp</span>, <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">char</span> <span style="color: #ffd700;">__user</span> *buf, <span style="color: #ffff00; font-size: 105%;">size_t</span> <span style="color: #ffd700;">count</span>, <span style="color: #ffff00; font-size: 105%;">loff_t</span> *<span style="color: #ffd700;">f_pos</span>)
+{
+    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">...</span>
+    copy_from_user(..., buf, ...);
+    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">...</span>
+}
+<span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">ioctl&#20989;&#25968;</span><span style="color: #90ee90; font-style: italic;"> */</span>
+<span style="color: #ffff00; font-size: 105%;">long</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">xxx_ioctl</span>(<span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">file</span> *<span style="color: #ffd700;">filp</span>, <span style="color: #ffff00; font-size: 105%;">unsigned</span> <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">cmd</span>,<span style="color: #ffff00; font-size: 105%;">unsigned</span> <span style="color: #ffff00; font-size: 105%;">long</span> <span style="color: #ffd700;">arg</span>)
+{
+    <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">...</span>
+    <span style="color: #ffb6c1; font-size: 105%;">switch</span> (cmd) {
+        <span style="color: #ffb6c1; font-size: 105%;">case</span> XXX_CMD1:
+            <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">...</span>
+            <span style="color: #ffb6c1; font-size: 105%;">break</span>;
+        <span style="color: #ffb6c1; font-size: 105%;">case</span> XXX_CMD2:
+            <span style="color: #90ee90; font-style: italic;">//</span><span style="color: #90ee90; font-style: italic;">...</span>
+            <span style="color: #ffb6c1; font-size: 105%;">break</span>;
+        <span style="color: #ffb6c1; font-size: 105%;">default</span>:
+            <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">&#19981;&#33021;&#25903;&#25345;&#30340;&#21629;&#20196;</span><span style="color: #90ee90; font-style: italic;"> */</span>
+            <span style="color: #ffb6c1; font-size: 105%;">return</span> - ENOTTY;
+    }
+    <span style="color: #ffb6c1; font-size: 105%;">return</span> 0;
+}
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5c9b642" class="outline-3">
+<h3 id="org5c9b642"><span class="section-number-3">6.7.</span> 块驱动</h3>
+</div>
+<div id="outline-container-org650e063" class="outline-3">
+<h3 id="org650e063"><span class="section-number-3">6.8.</span> 网络驱动</h3>
+</div>
+</div>
+<div id="outline-container-org4fb783e" class="outline-2">
+<h2 id="org4fb783e"><span class="section-number-2">7.</span> tools</h2>
+<div class="outline-text-2" id="text-7">
+<ul class="org-ul">
+<li><p>
+config: 多种config前端见表格<a href="#org29f9004">2</a>。
+</p>
+<table id="org29f9004" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 2:</span> Config前端</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Name</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">config</td>
+<td class="org-left">Update config using a line-oriented program</td>
+</tr>
+
+<tr>
+<td class="org-left">menuconfig</td>
+<td class="org-left">Update config using a menu-based program</td>
+</tr>
+
+<tr>
+<td class="org-left">xconfig</td>
+<td class="org-left">Update config using a QT-based front end</td>
+</tr>
+
+<tr>
+<td class="org-left">gconfig</td>
+<td class="org-left">Update config using a GTK-based front end</td>
+</tr>
+
+<tr>
+<td class="org-left">oldconfig</td>
+<td class="org-left">Update config using a provided .config as the base</td>
+</tr>
+
+<tr>
+<td class="org-left">randconfig</td>
+<td class="org-left">New config with random answer to all options</td>
+</tr>
+
+<tr>
+<td class="org-left">defconfig</td>
+<td class="org-left">New config with default answer to all options</td>
+</tr>
+
+<tr>
+<td class="org-left">allmodconfig</td>
+<td class="org-left">New config that selects modules, when possible</td>
+</tr>
+
+<tr>
+<td class="org-left">allyesconfig</td>
+<td class="org-left">New config in which all options are accepted with yes</td>
+</tr>
+
+<tr>
+<td class="org-left">allnoconfig</td>
+<td class="org-left">New minimal config</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org285784c" class="outline-2">
+<h2 id="org285784c"><span class="section-number-2">8.</span> SOC 架构</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+该SOC集成了2个NODE，每个NODE集成2个Cluster，每个Cluster集成2个物理Core，
+每物理Core虚拟出2个逻辑CPU
+</p>
+<ul class="org-ul">
+<li>SOC
+<ul class="org-ul">
+<li>Node 0
+<ol class="org-ol">
+<li>Cluster 0
+<ol class="org-ol">
+<li>Core 0
+a. CPU 0
+b. CPU 1</li>
+<li>Core 1
+a. CPU 2
+b. CPU 3</li>
+</ol></li>
+<li>Cluster 1
+<ol class="org-ol">
+<li>Core 2
+a. CPU 4
+b. CPU 5</li>
+<li>Core 3
+a. CPU 6
+b. CPU 7</li>
+</ol></li>
+</ol></li>
+<li>Node 1
+<ol class="org-ol">
+<li>Cluster 2
+<ol class="org-ol">
+<li>Core 4
+a. CPU 8
+b. CPU 9</li>
+<li>Core 5
+a. CPU 10
+b. CPU 11</li>
+</ol></li>
+<li>Cluster 3
+<ol class="org-ol">
+<li>Core 0
+a. CPU 12
+b. CPU 13</li>
+<li>Core 7
+a. CPU 14
+b. CPU 15</li>
+</ol></li>
+</ol></li>
+</ul></li>
+</ul>
+</div>
+<div id="outline-container-org49d0362" class="outline-3">
+<h3 id="org49d0362"><span class="section-number-3">8.1.</span> MMU</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+ARMv8的Page Table结构如图<a href="#org3b8b541">11</a>所示。其分为4级，每级页表有512
+个条目，支持如下3种表条目描述符。
+</p>
+<ul class="org-ul">
+<li>Table descriptor，指向下一级table；</li>
+<li>Page descriptor，指向一个4KB(或64KB、1MB)大小page size的页面；</li>
+<li>Block descriptor，指向一个block size的内存区域；在1级页表中block
+size是1GB，2级页表中block size是2MB。</li>
+</ul>
+
+
+
+<div id="org3b8b541" class="figure">
+<p><img src="./pic/img-armv8-mmupg.png" alt="img-armv8-mmupg.png" />
+</p>
+<p><span class="figure-number">Figure 11: </span>ARMv8 Page Table</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Joe</p>
+<p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
+<p class="date">Created: 2026-07-12 日 12:54</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

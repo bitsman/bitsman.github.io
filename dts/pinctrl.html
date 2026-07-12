@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2026-07-12 日 12:50 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PINCTRL子系统</title>
+<meta name="author" content="Joe" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="css/org-manual.css"/>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">PINCTRL子系统</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orga37a5ec">1. pinctrl子系统简介</a>
+<ul>
+<li><a href="#org301c6e6">1.1. Pin Controller</a>
+<ul>
+<li><a href="#org62827d5">1.1.1. Pin Configuration</a></li>
+<li><a href="#orgccb92e0">1.1.2. Pinctrl Driver</a></li>
+<li><a href="#orgc47d57d">1.1.3. Pin Groups</a></li>
+<li><a href="#org4be3b9c">1.1.4. Pin function</a></li>
+<li><a href="#org2cd13af">1.1.5. Pin state</a></li>
+<li><a href="#orgf505a12">1.1.6. Pin map</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orga37a5ec" class="outline-2">
+<h2 id="orga37a5ec"><span class="section-number-2">1.</span> pinctrl子系统简介</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+PIN Control子系统驱动的硬件叫做Pin Controller，在有些芯片中，有专门的
+管理模块，也有些是集成在GPIO模块中。主要功能包括：
+</p>
+<ul class="org-ul">
+<li>pin multiplexing：pin引脚复用，将pin复用为GPIO、SPI、IIC等功能；</li>
+<li>pin configuration： 这些配置参数包括如下，也可以根据芯片情况增加；
+<ul class="org-ul">
+<li>pull-up/down：电阻上下拉设定；</li>
+<li>tri-state：三态设定；</li>
+<li>drive-strength：驱动能力设定。</li>
+</ul></li>
+</ul>
+</div>
+<div id="outline-container-org301c6e6" class="outline-3">
+<h3 id="org301c6e6"><span class="section-number-3">1.1.</span> Pin Controller</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Pin Controller这个硬件模块是dts中的一个节点node（也叫server node）。
+device（如UART/IIC）也需要在它自己的dts node中描述相关内容。也就是说引
+脚配置在Pin Controller的设备树节点中（server node），device的节点中
+（client device）通过其phandle去引用这些节点去使用，U-BOOT中使用
+pinctrl-name和pinctrl-n来引用server node中的配置。
+</p>
+</div>
+<div id="outline-container-org62827d5" class="outline-4">
+<h4 id="org62827d5"><span class="section-number-4">1.1.1.</span> Pin Configuration</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+每个pin configuration都是pin controller的child node，描述了client
+device要使用到的一组pin的配置信息。具体如何定义pin configuration是和具
+体的pin controller相关的。在pin controller node中定义pin configuration
+其目的是为了让client device引用。
+</p>
+
+
+<p>
+Pin configuration的对象是pin或者pin group，SoC中的管脚有些属性可以配置，
+例如上拉、下拉、高阻、驱动能力等，pinctrl subsystem使用pin
+configuration来封装这些功能，具体体现在struct pinconf_ops数据结构中，
+如下，U-BOOT对这些API做了整合放在“struct pinctrl_ops”变量中：
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">pinconf_ops</span> {
+<span style="color: #87cefa; text-decoration: underline;">    #ifdef</span> CONFIG_GENERIC_PINCONF
+    <span style="color: #ffff00; font-size: 105%;">bool</span> <span style="color: #ffd700;">is_generic</span>;
+<span style="color: #87cefa; text-decoration: underline;">    #endif</span>
+    <span style="color: #ffa07a;">/** &#33719;&#21462;&#25351;&#23450;pin(&#31649;&#33050;&#30340;&#32534;&#21495;&#65292;&#30001;pin&#30340;&#27880;&#20876;&#20449;&#24687;&#33719;&#24471;)&#24403;&#21069;&#37197;&#32622;&#65292;&#20445;&#23384;&#22312;</span>
+<span style="color: #ffa07a;">     * config&#25351;&#38024;&#20013;</span>
+<span style="color: #ffa07a;">     * */</span>
+    <span style="color: #ffff00; font-size: 105%;">int</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">pin_config_get</span>) (...);
+
+    <span style="color: #ffa07a;">/** &#35774;&#32622;&#25351;&#23450;pin&#30340;&#37197;&#32622;(&#21487;&#20197;&#21516;&#26102;&#37197;&#32622;&#22810;&#20010;config&#65292;&#20855;&#20307;&#24847;&#20041;&#35201;&#30001;&#30456;&#24212;</span>
+<span style="color: #ffa07a;">     * pinctrl driver&#23454;&#29616;</span>
+<span style="color: #ffa07a;">     * */</span>
+    <span style="color: #ffff00; font-size: 105%;">int</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">pin_config_set</span>) (...);
+
+    <span style="color: #ffa07a;">/** &#33719;&#21462;&#25351;&#23450;pin group&#30340;&#37197;&#32622;&#39033; */</span>
+    <span style="color: #ffff00; font-size: 105%;">int</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">pin_config_group_get</span>) (...);
+
+    <span style="color: #ffa07a;">/** &#35774;&#32622;&#25351;&#23450;pin group&#30340;&#37197;&#32622;&#39033; */</span>
+    <span style="color: #ffff00; font-size: 105%;">int</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">pin_config_group_set</span>) (...);
+    <span style="color: #ffff00; font-size: 105%;">int</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">pin_config_dbg_parse_modify</span>) (...);
+    <span style="color: #ffff00; font-size: 105%;">void</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">pin_config_dbg_show</span>) (...);
+    <span style="color: #ffff00; font-size: 105%;">void</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">pin_config_group_dbg_show</span>)(...);
+    <span style="color: #ffff00; font-size: 105%;">void</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">pin_config_config_dbg_show</span>)(...);
+};
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgccb92e0" class="outline-4">
+<h4 id="orgccb92e0"><span class="section-number-4">1.1.2.</span> Pinctrl Driver</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+Pinctrl Driver需要根据实际情况，将系统中所有的pin组织成一个pin 描述结
+构数组（struct pinctrl_pin_desc类型），并使用Pinctrl Driver来处理Pin
+Configuration的配置。
+</p>
+</div>
+</div>
+<div id="outline-container-orgc47d57d" class="outline-4">
+<h4 id="orgc47d57d"><span class="section-number-4">1.1.3.</span> Pin Groups</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<p>
+有时需要将很多pin组合在一起，以实现特定的功能，例如SPI、I2C等。因此pin
+controller需要以group为单位，访问、控制多个pin。相应地，pin controller
+子需要提供一些机制，来获取系统中到底有多少groups、每个groups包含哪些
+pins等。因此，pinctrl的核心驱动在struct pinctrl_ops中抽象出三个回调函
+数，用来获取groups相关信息，U-BOOT对这些API做了整合放在“struct
+pinctrl_ops”变量中。在dts中用属性groups来给出（如groups="uart0_tx_rx"）。
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">pinctrl_ops</span> {
+    <span style="color: #ffa07a;">/** &#33719;&#21462;&#31995;&#32479;&#20013;pin groups&#30340;&#20010;&#25968;&#65292;&#21518;&#32493;&#30340;&#25805;&#20316;&#65292;&#23558;&#20197;&#30456;&#24212;&#30340;&#32034;&#24341;&#20026;&#21333;&#20301;</span>
+<span style="color: #ffa07a;">     * (&#31867;&#20284;&#25968;&#32452;&#30340;&#19979;&#26631;selector&#65289;&#25805;&#20316;&#36825;&#20010;group&#37324;&#38754;&#30340;pin</span>
+<span style="color: #ffa07a;">     * */</span>
+    <span style="color: #ffff00; font-size: 105%;">int</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">get_groups_count</span>) (<span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">pinctrl_dev</span> *<span style="color: #ffd700;">pctldev</span>);
+    <span style="color: #ffa07a;">/** &#33719;&#21462;&#25351;&#23450;group&#65288;&#30001;&#32034;&#24341;selector&#25351;&#23450;&#65289;&#30340;&#21517;&#31216;&#65292;&#22312;dts&#20013;&#29992;&#23646;&#24615;groups</span>
+<span style="color: #ffa07a;">     * &#26469;&#32473;&#20986;&#65288;&#22914;groups="uart0_tx_rx"&#65289;</span>
+<span style="color: #ffa07a;">     * */</span>
+    <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">char</span> *(*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">get_group_name</span>) (...);
+    <span style="color: #ffa07a;">/** &#33719;&#21462;&#25351;&#23450;group&#30340;&#25152;&#26377;pins&#65288;&#30001;&#32034;&#24341;selector&#25351;&#23450;&#65289;&#65292;&#32467;&#26524;&#20445;&#23384;&#22312;pins</span>
+<span style="color: #ffa07a;">     * &#25351;&#38024;&#25968;&#32452;&#20013;</span>
+<span style="color: #ffa07a;">     * */</span>
+    <span style="color: #ffff00; font-size: 105%;">int</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">get_group_pins</span>) (...);
+
+    <span style="color: #ffff00; font-size: 105%;">void</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">pin_dbg_show</span>) (...);
+
+    <span style="color: #ffa07a;">/** &#23558;device tree&#20013;&#30340;pin state&#20449;&#24687;&#36716;&#25442;&#20026;pin map */</span>
+    <span style="color: #ffff00; font-size: 105%;">int</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">dt_node_to_map</span>) (...);
+    <span style="color: #ffff00; font-size: 105%;">void</span> (*<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">dt_free_map</span>) (...);
+};
+</pre>
+</div>
+
+<p>
+配置node中groups属性和pins属性是平级，且U-BOOT中如果检测到pins属性，
+groups属性，就会被当成普通属性，并对pins的值一个一个的进行配置。如下，
+如有groups，驱动中就会整合配置"uart0_0_tx_rx"所代表的这些引脚。如果有
+pins，驱动就会一个一个的将这些属性配置给这些引脚。
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">pinconfig_uart0_default: uart0-default-pin {
+        bootph-all;
+        <span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">groups&#21644;function&#21512;&#20316;</span>
+        groups = <span style="color: #ffa07a;">"uart0_0_tx_rx"</span>;
+        <span style="color: #ffb6c1; font-size: 105%;">function</span> = <span style="color: #ffa07a;">"uart"</span>; 
+        bias-disable;
+        speed-freq-very-high;
+        <span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">pins&#65292;pinmux&#21644;groups&#20914;&#31361;</span>
+        pins = <span style="color: #ffa07a;">"PS_MIO15_500"</span>, <span style="color: #ffa07a;">"PS_MIO14_500"</span>;
+        pinmux = &lt;6&gt;;
+};
+</pre>
+</div>
+
+
+<p>
+dts 配置node中groups用于确定引脚，function用于确定引脚的功能，驱动中需
+要做对应的定义。
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span style="color: #ffb6c1; font-size: 105%;">static</span> <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">hwd10909_emmc_pins</span>[] = { 40, 41, 42, 43, 44, 45, 47, 48,49, 50, }; <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">pin&#24207;&#21495;</span><span style="color: #90ee90; font-style: italic;"> */</span>
+<span style="color: #ffb6c1; font-size: 105%;">static</span> <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">hwd10909_emmc_funcs</span>[] = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, };<span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">pin&#21151;&#33021;</span><span style="color: #90ee90; font-style: italic;"> */</span>
+
+<span style="color: #ffb6c1; font-size: 105%;">static</span> <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">hwd10909_emmc_rst_pins</span>[] = { 37, };
+<span style="color: #ffb6c1; font-size: 105%;">static</span> <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">hwd10909_emmc_rst_funcs</span>[] = { 1, };
+
+<span style="color: #ffb6c1; font-size: 105%;">static</span> <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">hwd10909_uart0_0_tx_rx_pins</span>[] = { 15, 14, }; <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">RX: MIO14 TX: MIO15</span><span style="color: #90ee90; font-style: italic;"> */</span>
+<span style="color: #ffb6c1; font-size: 105%;">static</span> <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">hwd10909_uart0_0_tx_rx_funcs</span>[] = { 6, 6, }; <span style="color: #90ee90; font-style: italic;">/* </span><span style="color: #90ee90; font-style: italic;">AF6 AF6</span><span style="color: #90ee90; font-style: italic;"> */</span>
+
+<span style="color: #ffb6c1; font-size: 105%;">static</span> <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">hwd_group_desc</span> <span style="color: #ffd700;">hwd10909_groups</span>[] = {
+    { <span style="color: #ffa07a;">"emmc"</span>, hwd10909_emmc_pins, <span style="color: #ffb6c1; font-size: 105%;">sizeof</span>(hwd10909_emmc_pins), hwd10909_emmc_funcs},
+    { <span style="color: #ffa07a;">"emmc_rst"</span>, hwd10909_emmc_rst_pins, <span style="color: #ffb6c1; font-size: 105%;">sizeof</span>(hwd10909_emmc_rst_pins), hwd10909_emmc_rst_funcs},
+    { <span style="color: #ffa07a;">"uart0_0_tx_rx"</span>, hwd10909_uart0_0_tx_rx_pins, <span style="color: #ffb6c1; font-size: 105%;">sizeof</span>(hwd10909_uart0_0_tx_rx_pins), hwd10909_uart0_0_tx_rx_funcs},
+};
+<span style="color: #ffb6c1; font-size: 105%;">static</span> <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">char</span> *<span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffd700;">hwd10909_emmc_groups</span>[] = { <span style="color: #ffa07a;">"emmc"</span>, <span style="color: #ffa07a;">"emmc_rst"</span>, };
+<span style="color: #ffb6c1; font-size: 105%;">static</span> <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffff00; font-size: 105%;">char</span> *<span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffd700;">hwd10909_uart_groups</span>[] = { <span style="color: #ffa07a;">"uart0_0_tx_rx"</span>};
+
+<span style="color: #ffb6c1; font-size: 105%;">static</span> <span style="color: #ffb6c1; font-size: 105%;">const</span> <span style="color: #ffb6c1; font-size: 105%;">struct</span> <span style="color: #ffff00; font-size: 105%;">hwd_function_desc</span> <span style="color: #ffd700;">hwd10909_functions</span>[] = {
+    {<span style="color: #ffa07a;">"emmc"</span>,    hwd10909_emmc_groups, ARRAY_SIZE(hwd10909_emmc_groups)},
+    {<span style="color: #ffa07a;">"uart"</span>,    hwd10909_uart_groups, ARRAY_SIZE(hwd10909_uart_groups)},
+};
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4be3b9c" class="outline-4">
+<h4 id="org4be3b9c"><span class="section-number-4">1.1.4.</span> Pin function</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<p>
+为了管理SoC的管脚复用，pinctrl subsystem抽象出function的概念，用来表示
+I2C0、UART5等功能。pin（或者pin group）所对应的function一经确定，它们
+的管脚复用状态也就确定了。在dts中用属性function来给出（如
+function="uart"）。
+</p>
+
+
+<p>
+和Pin groups类似，pinctrl核心驱动不关心function的具体形态，只要求
+pinctrl驱动将SoC的所有可能的function枚举出来（格式自行定义，不过需要有
+编号、名称等内容），并注册给pinctrl核心驱动。后续pinctrl核心驱动将会通
+过function的索引，访问、控制相应的function。同一个function（如I2C0），
+可能可以map到不同的pin（或者pin group）上。
+</p>
+</div>
+</div>
+<div id="outline-container-org2cd13af" class="outline-4">
+<h4 id="org2cd13af"><span class="section-number-4">1.1.5.</span> Pin state</h4>
+<div class="outline-text-4" id="text-1-1-5">
+<p>
+pin(pin group)以及相应的function和configuration的组合，可以确定一个设
+备的一个“状态”。这个状态在pinctrl subsystem中就称作pin state。在dts的
+client device中使用pinctrl-name属性来给出这个client device可能的状态
+state，然后这些使用这些pinctrl-n句柄来引用server node中的每个
+configuration，通常引用标签（如pinctrl-names = "default";
+pinctrl-0 = &lt;&amp;pinconfig_uart0_default&gt;;），然后在client device驱动中，
+可使用API（pinctrl_select_state(dev, "default");）来切换这个设备的引脚
+状态到default态。
+</p>
+</div>
+</div>
+<div id="outline-container-orgf505a12" class="outline-4">
+<h4 id="orgf505a12"><span class="section-number-4">1.1.6.</span> Pin map</h4>
+<div class="outline-text-4" id="text-1-1-6">
+<p>
+在Linux的pinctrl subsystem中，pin state有关的信息是通过pin map收集。在
+旧时代，kernel的bsp工程师需要在machine有关的代码中，静态的定义pin map
+数组，这一个非常繁琐且不易维护的过程。不过当kernel引入device tree之后，
+事情就简单了很多：pinctrl driver确定了pin map各个字段的格式之后，就可
+以在dts文件中维护pin state以及相应的mapping table。pinctrl core在初始
+化的时候，会读取并解析dts，并生成pin map。而各个consumer，可以在自己的
+dts node中，直接引用pinctrl driver定义的pin state，并在设备驱动的相应
+的位置，调用pinctrl subsystem提供的API，active或者deactive这些state。
+至于dts中pin map描述的格式是什么，则完全由pinctrl driver自己决定，因为，
+最终的解析工作（dts to map）也是它自己做的。
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Joe</p>
+<p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
+<p class="date">Created: 2026-07-12 日 12:50</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

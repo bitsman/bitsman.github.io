@@ -23,6 +23,12 @@
 总结信号与系统的方方面面。
 * [[./os.org][操作系统]]
 总结工作中用到的操作系统，Android、Linux、嵌入式操作系统等。
+** 基础
+*** [[./dts/dts.org][dts]]
+- [[./dts/pinctrl.org][pinctrl]]
+** [[./kernel/kernel.org][kernel]]
+*** 驱动
+- [[./kernel/remoteproc.org][remoteproc]]
 * [[./communication.org][通信]]
 总结通信系统的方方面面，从基础到LTE。
 * [[./security.org][安全]]
@@ -31,7 +37,7 @@
 总结工作中接触到的百科知识比如GPS等。
 * [[./language.org][外语]]                                                             :noexport:
 总结平时用到的英语知识、短语、翻译技巧等。 
-* [[./decoration.org][装修]]                                                             :noexport:
+* [[./decoration.org][置业]]                                                             :noexport:
 介绍一些装修常识和问题点。
 * 附录
 ** 帮助
