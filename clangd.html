@@ -6,8 +6,8 @@
 <!-- 2026-07-16 四 10:29 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>°²È«</title>
-<meta name="author" content="±È¿ËÂü" />
+<title>Clangd工具</title>
+<meta name="author" content="Joe" />
 <meta name="generator" content="Org Mode" />
 <style>
   #content { max-width: 60em; margin: auto; }
@@ -197,26 +197,220 @@
 </head>
 <body>
 <div id="content" class="content">
-<h1 class="title">°²È«</h1>
+<h1 class="title">Clangd工具</h1>
 <div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgb277dc3">1. ¹úÃÜ</a></li>
-<li><a href="#orga64a174">2. ÉÌÃÜ</a></li>
+<li><a href="#org9569743">1. 简介</a></li>
+<li><a href="#org81e7a4e">2. 配置文件</a>
+<ul>
+<li><a href="#orgc48c0d2">2.1. 层次结构</a></li>
+</ul>
+</li>
+<li><a href="#orga924d8b">3. compile_commands.json</a>
+<ul>
+<li><a href="#orgd410330">3.1. CMake生成compile_commands.json</a></li>
+<li><a href="#org5a77f18">3.2. Makefile生成 compile_commands.json</a>
+<ul>
+<li><a href="#org7dcc555">3.2.1. Bear</a></li>
+<li><a href="#org0cb21ad">3.2.2. CompileDB</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
-
-<div id="outline-container-orgb277dc3" class="outline-2">
-<h2 id="orgb277dc3"><span class="section-number-2">1.</span> ¹úÃÜ</h2>
+<div id="outline-container-org9569743" class="outline-2">
+<h2 id="org9569743"><span class="section-number-2">1.</span> 简介</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+clangd是一个基于LLVM的Clang编译器前端提供的代码补全服务工具，主要用于C
+和C++的代码补全、诊断、重构等功能。它支持多种编辑器和IDE，并且通过
+Language Server Protocol (LSP) 提供服务，使得它可以很容易地集成到不同
+的开发环境中。实际使用中不需要了解clangd的细节, 只需要通过.clangd配置
+文件指导clangd行为。
+</p>
 </div>
-<div id="outline-container-orga64a174" class="outline-2">
-<h2 id="orga64a174"><span class="section-number-2">2.</span> ÉÌÃÜ</h2>
+</div>
+<div id="outline-container-org81e7a4e" class="outline-2">
+<h2 id="org81e7a4e"><span class="section-number-2">2.</span> 配置文件</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+.clangd是Clangd的配置文件，用于在项目中自定义Clangd的行为。该文件通常
+位于项目的根目录下，Clangd会在当前文件所在的父目录中搜索.clangd文件。
+</p>
+</div>
+<div id="outline-container-orgc48c0d2" class="outline-3">
+<h3 id="orgc48c0d2"><span class="section-number-3">2.1.</span> 层次结构</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+.clangd文件使用YAML格式，可以包含以下几个主要部分：
+</p>
+<ul class="org-ul">
+<li>CompileFlags: 编译标志部分；</li>
+<li>Diagnostics: 诊断设置部分；</li>
+<li>InlayHints: 代码提示设置部分；</li>
+<li>Completion: 代码补全设置部分；</li>
+<li>SemanticTokens: 语义标记设置部分；</li>
+</ul>
+
+<p>
+实例：
+</p>
+<pre class="example" id="org59a794f">
+# 最顶层包含几个主要部分：
+# If/CompileFlags/Diagnostics/InlayHints/Completion/SemanticTokens
+If:                               # 设置配置文件的使用条件
+  PathMatch: .*\.h                # 所有头文件都使用
+  PathExclude: include/llvm-c/.*  # 排除该路径下的所有文件
+CompileFlags:            # 编译标志部分
+  Add:
+    - "-Wall"           # 启用所有警告
+    - "-Wextra"         # 启用额外警告
+    - "-std=c++20"      # 使用C++20标准
+    - "-Iinclude"       # 包含头文件, 相对路径
+    - "-isystemF:/include" # 包含头文件, 绝对路径
+
+  Remove: ["-Werror"]   # 移除将所有警告作为错误的选项
+  Compiler: clang++     # 指定编译器
+
+Index:
+  Background: true            # 在后台索引项目代码
+  BuildSystem: "CMake"        # 指定构建系统类型
+  IndexFile: ".clangd-index"  # 索引文件路径
+  ImplicitDynamic: true       # 动态索引所有头文件
+  ResourceDir: "/path/to/resource"  # 资源目录路径
+
+Diagnostics:             # 诊断设置部分
+  ClangTidy:             # Clang-Tidy 配置
+    Add: ["cppcoreguidelines-*", "modernize-*", "performance-*"] 
+    # 添加Clang-Tidy检查项, 其含义参见https://clang.llvm.org/extra/clang-tidy/
+    Remove: ["clang-analyzer-*"] # 移除Clang分析器检查项
+  ClangTidyChecks: true  # 启用 Clang-Tidy 检查
+  Options:               # Clang-Tidy 的选项设置
+    UseChecks: ["*"]     # 使用所有检查项
+    HeaderFilterRegex: ".*" # 正则表达式，用于过滤头文件
+    WarningsAsErrors: "cppcoreguidelines-*" # 将特定警告视为错误
+
+InlayHints:              # 代码提示设置部分
+  Enabled: true          # 启用代码提示
+  ParameterNames: true   # 显示参数名称提示
+  DeducedTypes: true     # 显示推断类型提示
+  Designators: true      # 显示设计器提示
+
+Completion:              # 代码补全设置部分
+  AllScopes: true        # 启用所有作用域的代码补全
+  Brackets: "[]"         # 补全时使用的括号类型
+
+SemanticTokens:          # 语义标记设置部分
+  Enabled: true          # 启用语义标记
+  DisabledKinds: ["Macro"] # 禁用宏语义标记
+  DisabledModifiers: ["Static"] # 禁用静态修饰符语义标记
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga924d8b" class="outline-2">
+<h2 id="orga924d8b"><span class="section-number-2">3.</span> compile_commands.json</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+compile_commands.json 是一个包含编译命令的JSON文件，用于描述项目中每个
+源文件的编译方式。它的主要作用是帮助Clangd和其他工具了解项目的编译设置，
+从而提供更准确的代码补全、跳转和诊断功能。具体作用如下：
+</p>
+</div>
+
+<div id="outline-container-orgd410330" class="outline-3">
+<h3 id="orgd410330"><span class="section-number-3">3.1.</span> CMake生成compile_commands.json</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+CMake下有两种方式可以生成compile_commands.json。
+</p>
+<ul class="org-ul">
+<li><p>
+方案一: CMakeLists.txt设置
+</p>
+<div class="org-src-container">
+<pre class="src src-makefile">set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+</pre>
+</div></li>
+<li><p>
+方案二: 命令行参数设置
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">mkdir build &amp;&amp; <span style="color: #87cefa; text-decoration: underline;">cd</span> build
+cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org5a77f18" class="outline-3">
+<h3 id="org5a77f18"><span class="section-number-3">3.2.</span> Makefile生成 compile_commands.json</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Makefile本身不能直接生成 compile_commands.json文件。不过，可以使用一些
+工具来生成这个文件，例如Bear和CompileDB。
+</p>
+</div>
+<div id="outline-container-org7dcc555" class="outline-4">
+<h4 id="org7dcc555"><span class="section-number-4">3.2.1.</span> Bear</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+Bear是一个生成JSON编译数据库的工具，适合用于Makefile项目。使用方法如下：
+</p>
+<ul class="org-ul">
+<li><p>
+安装Bear
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">sudo apt install bear
+</pre>
+</div></li>
+<li><p>
+运行Makefile并生成 compile_commands.json
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="color: #90ee90; font-style: italic;"># </span><span style="color: #90ee90; font-style: italic;">&#26377;&#30340;&#29256;&#26412;&#38656;&#35201;&#20351;&#29992; bear -- make</span>
+bear make
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org0cb21ad" class="outline-4">
+<h4 id="org0cb21ad"><span class="section-number-4">3.2.2.</span> CompileDB</h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+CompileDB是另一个生成compile_commands.json的工具，适用于GNU Make项目。
+使用方法如下：
+</p>
+<ul class="org-ul">
+<li><p>
+安装CompileDB
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">pip install compiledb
+</pre>
+</div></li>
+<li><p>
+运行Makefile并生成 compile_commands.json
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">compiledb make
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="author">Author: ±È¿ËÂü</p>
+<p class="author">Author: Joe</p>
 <p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
 <p class="date">Created: 2026-07-16 四 10:29</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>

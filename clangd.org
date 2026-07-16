@@ -1,0 +1,121 @@
+#+title: Clangd工具
+# #+subtitle: 
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+* 简介
+clangd是一个基于LLVM的Clang编译器前端提供的代码补全服务工具，主要用于C
+和C++的代码补全、诊断、重构等功能。它支持多种编辑器和IDE，并且通过
+Language Server Protocol (LSP) 提供服务，使得它可以很容易地集成到不同
+的开发环境中。实际使用中不需要了解clangd的细节, 只需要通过.clangd配置
+文件指导clangd行为。
+* 配置文件
+.clangd是Clangd的配置文件，用于在项目中自定义Clangd的行为。该文件通常
+位于项目的根目录下，Clangd会在当前文件所在的父目录中搜索.clangd文件。
+** 层次结构
+.clangd文件使用YAML格式，可以包含以下几个主要部分：
+- CompileFlags: 编译标志部分；
+- Diagnostics: 诊断设置部分；
+- InlayHints: 代码提示设置部分；
+- Completion: 代码补全设置部分；
+- SemanticTokens: 语义标记设置部分；
+
+实例：
+#+begin_example
+  # 最顶层包含几个主要部分：
+  # If/CompileFlags/Diagnostics/InlayHints/Completion/SemanticTokens
+  If:                               # 设置配置文件的使用条件
+    PathMatch: .*\.h                # 所有头文件都使用
+    PathExclude: include/llvm-c/.*  # 排除该路径下的所有文件
+  CompileFlags:            # 编译标志部分
+    Add:
+      - "-Wall"           # 启用所有警告
+      - "-Wextra"         # 启用额外警告
+      - "-std=c++20"      # 使用C++20标准
+      - "-Iinclude"       # 包含头文件, 相对路径
+      - "-isystemF:/include" # 包含头文件, 绝对路径
+
+    Remove: ["-Werror"]   # 移除将所有警告作为错误的选项
+    Compiler: clang++     # 指定编译器
+
+  Index:
+    Background: true            # 在后台索引项目代码
+    BuildSystem: "CMake"        # 指定构建系统类型
+    IndexFile: ".clangd-index"  # 索引文件路径
+    ImplicitDynamic: true       # 动态索引所有头文件
+    ResourceDir: "/path/to/resource"  # 资源目录路径
+
+  Diagnostics:             # 诊断设置部分
+    ClangTidy:             # Clang-Tidy 配置
+      Add: ["cppcoreguidelines-*", "modernize-*", "performance-*"] 
+      # 添加Clang-Tidy检查项, 其含义参见https://clang.llvm.org/extra/clang-tidy/
+      Remove: ["clang-analyzer-*"] # 移除Clang分析器检查项
+    ClangTidyChecks: true  # 启用 Clang-Tidy 检查
+    Options:               # Clang-Tidy 的选项设置
+      UseChecks: ["*"]     # 使用所有检查项
+      HeaderFilterRegex: ".*" # 正则表达式，用于过滤头文件
+      WarningsAsErrors: "cppcoreguidelines-*" # 将特定警告视为错误
+
+  InlayHints:              # 代码提示设置部分
+    Enabled: true          # 启用代码提示
+    ParameterNames: true   # 显示参数名称提示
+    DeducedTypes: true     # 显示推断类型提示
+    Designators: true      # 显示设计器提示
+
+  Completion:              # 代码补全设置部分
+    AllScopes: true        # 启用所有作用域的代码补全
+    Brackets: "[]"         # 补全时使用的括号类型
+
+  SemanticTokens:          # 语义标记设置部分
+    Enabled: true          # 启用语义标记
+    DisabledKinds: ["Macro"] # 禁用宏语义标记
+    DisabledModifiers: ["Static"] # 禁用静态修饰符语义标记
+#+end_example
+
+* compile_commands.json
+compile_commands.json 是一个包含编译命令的JSON文件，用于描述项目中每个
+源文件的编译方式。它的主要作用是帮助Clangd和其他工具了解项目的编译设置，
+从而提供更准确的代码补全、跳转和诊断功能。具体作用如下：
+
+** CMake生成compile_commands.json
+CMake下有两种方式可以生成compile_commands.json。
+- 方案一: CMakeLists.txt设置
+  #+begin_src makefile
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+  #+end_src
+- 方案二: 命令行参数设置
+  #+begin_src shell
+    mkdir build && cd build
+    cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+  #+end_src
+** Makefile生成 compile_commands.json
+Makefile本身不能直接生成 compile_commands.json文件。不过，可以使用一些
+工具来生成这个文件，例如Bear和CompileDB。
+*** Bear
+Bear是一个生成JSON编译数据库的工具，适合用于Makefile项目。使用方法如下：
+- 安装Bear
+  #+begin_src shell
+    sudo apt install bear
+  #+end_src
+- 运行Makefile并生成 compile_commands.json
+  #+begin_src shell
+    # 有的版本需要使用 bear -- make
+    bear make
+  #+end_src
+*** CompileDB
+CompileDB是另一个生成compile_commands.json的工具，适用于GNU Make项目。
+使用方法如下：
+- 安装CompileDB
+  #+begin_src shell
+    pip install compiledb
+  #+end_src
+- 运行Makefile并生成 compile_commands.json
+  #+begin_src shell
+    compiledb make
+  #+end_src
+

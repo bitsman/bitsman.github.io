@@ -19,6 +19,13 @@
 总结硬件中的数字电路、模拟电路、射频、器件、芯片内核等。
 * [[./tool.org][工具]]
 总结工作中用到的工具，emacs、latex、git、软件工具等。
+** 编码
+*** [[./clangd.org][clangd]]
+clangd是一个基于LLVM的Clang编译器前端提供的代码补全服务工具，主要用于C
+和C++的代码补全、诊断、重构等功能。它支持多种编辑器和IDE，并且通过
+Language Server Protocol (LSP) 提供服务，使得它可以很容易地集成到不同
+的开发环境中。实际使用中不需要了解clangd的细节, 只需要通过.clangd配置
+文件指导clangd行为。
 * [[./signal.org][信号系统]]
 总结信号与系统的方方面面。
 * [[./os.org][操作系统]]

@@ -1,0 +1,100 @@
+#+title: Rockchip NPU
+# #+subtitle: 
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+
+
+
+
+前置关键认知：
+- 适配硬件平台：RK3568/RK3588，Cortex-A55+ARC EV协核+Synopsys NPX NPU
+- Rockchip `rknpu` 内核驱动 ≠ Synopsys 原生 `snps_accel`
+- RK在Synopsys原厂NPX驱动基础上做了二次封装、平台适配、电源 / 时钟 /
+  内存管理封装。
+- 整体架构分层：用户态 RKNN API-> librknn_api.so-> rknpu内核驱动->
+  Mailbox-> ARC固件-> ARCSync-> NPX硬件;
+* 模块整体定位
+- 路径：`drivers/rknpu/`
+- 职责：
+  + 向上：提供字符设备 `/dev/rknpu`，对接用户态 RKNN Runtime；
+  + 中间层：封装平台资源（时钟、PD 电源域、复位、IRQ、IOMMU/SMMU）；
+  + 向下：封装底层Synopsys NPX硬件交互逻辑（内部复用/封装snps_accel核
+    心逻辑）；
+  + 实现A55 Linux域<->ARC协核的任务中转、内存管理、异常捕获、功耗控制。
+- 重要区分
+  + `snps_accel`：偏原厂NPX硬件寄存器、ARCSync、缓存同步、Mailbox原始
+    通信；
+  + `rknpu`：瑞芯上层适配层，面向RKNN框架，增加平台电源、频率调压、任
+    务队列、安全内存、版本校验、错误统计。
+* drivers/rknpu 典型源码目录结构
+#+begin_example
+  drivers/rknpu/
+  ├── rknpu_drv.c          // 驱动入口、platform_driver、probe/remove
+  ├── rknpu_ioctl.c        // 核心：unlocked_ioctl 实现，用户态命令入口
+  ├── rknpu_mem.c          // DMA内存管理、物理内存分配、SMMU/IOMMU映射
+  ├── rknpu_mbox.c         // Mailbox封装（A55 ↔ ARC消息收发，封装snps_accel底层mbox接口）
+  ├── rknpu_hw.c           // NPU硬件初始化：时钟、复位、PD电源域、频率调节
+  ├── rknpu_fw.c           // ARC固件加载管理（firmware rknpu_fw.bin）
+  ├── rknpu_task.c         // 任务管理：任务队列、等待队列、超时处理、多任务调度
+  ├── rknpu_debugfs.c      // debugfs调试节点 /sys/kernel/debug/rknpu
+  ├── rknpu_common.h       // 数据结构、ioctl命令、消息结构体
+  └── rknpu_regs.h         // NPX、ARCSync相关寄存器宏（衍生自snps_accel寄存器定义）
+#+end_example
+* 核心模块逐块解析
+** 3.1 rknpu_drv.c 驱动入口
+- rknpu_probe()
+  + 解析 DTS 节点：reg 寄存器、irq、时钟、电源域、mbox 通道、固件名称；
+  + 分配`struct rknpu_dev`主设备结构体（整个驱动上下文容器）；
+  + 初始化 Mailbox 客户端、注册中断；
+  + 加载 ARC 固件 (`request_firmware`)，释放 ARC 复位，启动 ARC 协核；
+  + 注册字符设备 `/dev/rknpu`，绑定`file_operations`；
+  + 创建 debugfs 调试目录。
+
+
+** 3.2 rknpu_ioctl.c（用户态最重要交互层）
+用户态 `librknnmrt.so` 通过 ioctl 和内核交互，典型命令：
+#+begin_example
+  RKNPU_IOCTL_LOAD_MODEL      // 下发模型地址、尺寸
+  RKNPU_IOCTL_RUN_INFER       // 启动推理任务
+  RKNPU_IOCTL_WAIT_DONE       // 阻塞等待推理完成
+  RKNPU_IOCTL_SET_FREQ        // 设置NPU运行频率
+  RKNPU_IOCTL_GET_STATUS      // 查询NPU状态
+  RKNPU_IOCTL_RESET           // NPU软复位
+#+end_example
+
+工作流程：
+`copy_from_user` -> 封装任务消息 -> 调用 mbox 层发送给 ARC -> 等待完成
+信号量 /waitqueue -> `copy_to_user` 状态返回。
+** 3.3 rknpu_mbox.c 核间通信封装
+对底层 snps_accel/mailbox 做二次封装
+- 封装 A55→ARC 消息发送；
+- 封装 ARC→A55 中断回调接收；
+- 消息格式：扩展原厂`npu_msg_t`，增加 RK 平台扩展字段（任务 ID、优先级、内存域标识）；
+- 维护消息状态表，支持**多任务区分**（支持多个推理任务并发排队）。
+
+
+通信链路：
+rknpu_mbox->mailbox框架硬件驱动-> 硬件Mailbox寄存器-> ARC 协核固件
+** 3.4 rknpu_mem.c 内存管理
+RK NPU 是非硬件 Cache 一致性系统（No Coherent），所以内存模块核心职责：
+- 分配连续物理内存（CMA/DMA buffer）；
+- `dma_sync_single_for_device()` / `dma_sync_single_for_cpu()`负责
+  Cortex-A55 L1/L2 缓存 <-> DDR (L3)同步；这里只同步 A55 自身缓存！不
+  会操作 NPX L1/L2，NPX 缓存同步完全由 ARC 固件调用 ARCSync 完成！
+- SMMU 地址映射管理（虚拟地址↔物理地址转换）；
+- 区分：普通 DDR 缓冲区、安全内存、模型只读内存、输入输出Feature缓冲区。
+  
+
+
+关键边界
+#+begin_example
+  A55侧 rknpu_mem.c ：dma_sync_xxx()  -> 同步【A55 Cache<-> DDR】
+  ARC固件内部       ：配置ARCSync     -> 同步【NPX L1/L2<-> DDR】
+  两者互相独立，缺一不可！
+#+end_example

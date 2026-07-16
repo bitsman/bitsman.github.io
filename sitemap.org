@@ -1,5 +1,6 @@
 #+TITLE: Sitemap
 
+- [[file:clangd.org][Clangd工具]]
 - [[file:index.org][比克曼的知识管理]]
 - [[file:language.org][外语学习]]
 - [[file:tool.org][工具]]
@@ -15,8 +16,58 @@
 - [[file:communication.org][通信]]
 - [[file:security.org][°²È«]]
 - kernel
+  - [[file:kernel/rknpu.org][Rockchip NPU]]
   - [[file:kernel/remoteproc.org][Kernel Remoteproc框架详解]]
   - [[file:kernel/kernel.org][Linux Kernel]]
 - dts
   - [[file:dts/dts.org][DTS详解]]
   - [[file:dts/pinctrl.org][PINCTRL子系统]]
+- doc
+  - [[file:doc/doc.org][blog]]
+  - chip
+    - [[file:doc/chip/embed_software_platform.org][SOC芯片软件开发平台]]
+    - [[file:doc/chip/digital.org][数字电路]]
+  - u-boot
+    - [[file:doc/u-boot/zynq-boot.org][ZYNQ Bootloader]]
+    - [[file:doc/u-boot/u-boot-dtb.org][U-Boot]]
+    - [[file:doc/u-boot/u-boot.org][U-Boot分析]]
+    - [[file:doc/u-boot/u-boot-pinctrl.org][U-Boot Driver Mode]]
+    - [[file:doc/u-boot/u-boot-clk.org][U-Boot]]
+  - v
+    - [[file:doc/v/v.org][Verilog]]
+  - sdmmc
+    - [[file:doc/sdmmc/sdmmc.org][SDMMC梳理]]
+    - [[file:doc/sdmmc/sdio.org][SDIO]]
+    - [[file:doc/sdmmc/sd_spec_part1_phy.org][SD Part1 物理层]]
+    - [[file:doc/sdmmc/sd.org][SDIO-SD]]
+  - rv
+    - [[file:doc/rv/riscv.org][Risc-V]]
+  - os
+    - [[file:doc/os/os.org][现代操作系统]]
+  - linux
+    - [[file:doc/linux/linux.org][Linux启动流程]]
+  - house
+    - [[file:doc/house/to-zhangchang.org][申请书]]
+    - [[file:doc/house/house.org][建房日记]]
+  - git
+    - [[file:doc/git/git.org][Git用法]]
+  - fs
+    - [[file:doc/fs/fatfs.org][文件系统]]
+  - debug
+    - [[file:doc/debug/stack_overflows.org][基于RTOS的栈溢出]]
+    - [[file:doc/debug/openocd.org][OpenOCD源码解读]]
+    - [[file:doc/debug/jtag.org][Diving into JTAG]]
+    - [[file:doc/debug/gdb.org][GDB使用方法]]
+    - [[file:doc/debug/coredumps.org][Linux Coredump]]
+    - [[file:doc/debug/adi.org][ARM Debug Interface]]
+  - compiler
+    - [[file:doc/compiler/mem_layout_datastruct.org][分析数据结构的内存布局]]
+    - [[file:doc/compiler/ld.org][链接脚本]]
+    - [[file:doc/compiler/elf.org][ELF分析鸿蒙内核]]
+  - arm
+    - [[file:doc/arm/fault4m.org][Cortex-M Fault定位]]
+    - [[file:doc/arm/armv7-guide-cn.org][ARMv7 软件开发梳理]]
+    - [[file:doc/arm/arm-coresight2.org][ARM CoreSight寄存器级调试]]
+    - [[file:doc/arm/armv78-guide.org][ARMv7/8 Guide]]
+    - [[file:doc/arm/arm-coresight.org][ARM CoreSight寄存器级调试]]
+    - [[file:doc/arm/arm-coresight3.org][AARCH64调试架构与CoreSight技术演进]]

@@ -1,0 +1,706 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2026-07-16 四 10:29 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>数字电路</title>
+<meta name="author" content="Joe" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="css/org-manual.css"/>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">数字电路
+<br />
+<span class="subtitle">verilog</span>
+</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgf22e560">1. 基本语法</a>
+<ul>
+<li><a href="#org677fc2b">1.1. 寄存器reg</a></li>
+<li><a href="#orged1ca1e">1.2. 门级建模</a></li>
+<li><a href="#org5b5e56a">1.3. 数据流级建模</a></li>
+<li><a href="#orge2638a1">1.4. 行为级建模</a></li>
+</ul>
+</li>
+<li><a href="#org8471258">2. 任务函数</a></li>
+<li><a href="#orgb0646e1">3. 基本门电路</a></li>
+<li><a href="#org71bb865">4. 组合逻辑</a>
+<ul>
+<li><a href="#org19fb0d6">4.1. 去毛刺</a>
+<ul>
+<li><a href="#org556eaa7">4.1.1. 组合逻辑输出加寄存器</a></li>
+<li><a href="#org1dae62f">4.1.2. 信号同步法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org4270ce2">5. 时序逻辑</a>
+<ul>
+<li><a href="#orgb91a7de">5.1. 锁存器</a></li>
+<li><a href="#orgae3ce0d">5.2. 触发器</a></li>
+<li><a href="#orgae7d62f">5.3. 寄存器</a></li>
+</ul>
+</li>
+<li><a href="#org9bbe2c2">6. 基本电路</a>
+<ul>
+<li><a href="#org20e7366">6.1. 计数器</a></li>
+<li><a href="#org79493a1">6.2. 边沿检测电路</a></li>
+<li><a href="#org38ad056">6.3. 格雷码转换电路</a></li>
+<li><a href="#orgfdff7a1">6.4. 复位电路</a>
+<ul>
+<li><a href="#org27dc527">6.4.1. 同步复位</a></li>
+<li><a href="#org91e42b4">6.4.2. 异步复位</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org69ddabe">7. RAM</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgf22e560" class="outline-2">
+<h2 id="orgf22e560"><span class="section-number-2">1.</span> 基本语法</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org677fc2b" class="outline-3">
+<h3 id="org677fc2b"><span class="section-number-3">1.1.</span> 寄存器reg</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+包含多个类型，寄存器可能被综合为一个触发器（数字建构）、一个锁存器（模
+拟建构）或一根导连线，甚至可能在优化时被去掉。
+</p>
+<ul class="org-ul">
+<li>integer：整数默认位宽为缩主机的字长，最小为32位，且为有符号类型。</li>
+<li>real</li>
+<li>time</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orged1ca1e" class="outline-3">
+<h3 id="orged1ca1e"><span class="section-number-3">1.2.</span> 门级建模</h3>
+</div>
+<div id="outline-container-org5b5e56a" class="outline-3">
+<h3 id="org5b5e56a"><span class="section-number-3">1.3.</span> 数据流级建模</h3>
+<div class="outline-text-3" id="text-1-3">
+<ul class="org-ul">
+<li>通过EDA设计工具，自动将电路的数据流设计直接转换为门级结构，被称为逻
+辑综合。</li>
+<li>RTL级：通常指数据流级和行为级的结合。</li>
+</ul>
+
+
+<p>
+数据流级包含的语法
+</p>
+<ul class="org-ul">
+<li>连续赋值语句：assign</li>
+<li>表达式语句：如+-*/等
+<ul class="org-ul">
+<li>算术操作符</li>
+<li>逻辑操作符</li>
+<li>关系操作符</li>
+<li>等价操作符</li>
+<li>按位操作符</li>
+<li>缩减操作符</li>
+<li>移位操作符</li>
+<li>拼接操作符</li>
+<li>复制操作符</li>
+<li>条件操作符，</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orge2638a1" class="outline-3">
+<h3 id="orge2638a1"><span class="section-number-3">1.4.</span> 行为级建模</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+行为级包含的语法
+</p>
+<ul class="org-ul">
+<li>always/initial：以下的所有行为语句都要在这2个结构化语句中。每个
+always和initial语句代表1个独立的执行过程，每个执行过程从仿真时间0开
+始执行，且不能嵌套使用。</li>
+<li>if/else</li>
+<li>case/casex/casez</li>
+<li>while/for/repeat/forever</li>
+<li>过程赋值：过程赋值语句只在执行到的时候才会起作用（注意和数据流的连续
+赋值assign的区别，assign总是活动状态，任意一个操作数变化都会导致表达
+式重新计算）。
+<ul class="org-ul">
+<li>阻塞赋值语句：使用“=”作为赋值符。</li>
+<li>非阻塞赋值语句：使用“&lt;=”作为赋值符号。</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org8471258" class="outline-2">
+<h2 id="org8471258"><span class="section-number-2">2.</span> 任务函数</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>$finish：表示为断电；</li>
+<li>$stop：中断；</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgb0646e1" class="outline-2">
+<h2 id="orgb0646e1"><span class="section-number-2">3.</span> 基本门电路</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>与门</li>
+<li>或门</li>
+<li>非门</li>
+<li>异或门</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org71bb865" class="outline-2">
+<h2 id="org71bb865"><span class="section-number-2">4.</span> 组合逻辑</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+组合逻辑是一种数字电路，其输出只与输入状态有关。
+</p>
+
+
+<ul class="org-ul">
+<li>时间延迟：在实际的IC/FPGA逻辑电路中，组合逻辑是有时间延迟的，也就是
+说组合逻辑的输入变化到输出变化之前是有时间的。</li>
+<li>逻辑级数：指组合逻辑的深度，深度越大组合逻辑越复杂，延迟越大。</li>
+</ul>
+
+
+<p>
+信号在IC/FPGA器件内部通过连线和逻辑单元时，都有一定的延时，延时的大小
+与连线的长短和逻辑单元的数目有关，还受器件的制造工艺、工作电压、温度等
+的影响。信号的高低电平转换也需要一定的过渡时间。由于存在这2方便因素，
+多路信号的电平值发生变化时，在信号变化的瞬间，组合逻辑的输出有先后顺序，
+并不是同时变化，往往会出现一些不正确的尖峰信号，这些尖峰信号称为毛刺。
+</p>
+
+
+<p>
+信号在器件中传输时，所需要的时间是不能精确估计的，当多路信号同时发生跳
+变的瞬间，就产生了“竞争冒险”，这时常会出现一些不正确的尖峰信号，即毛刺。
+</p>
+</div>
+<div id="outline-container-org19fb0d6" class="outline-3">
+<h3 id="org19fb0d6"><span class="section-number-3">4.1.</span> 去毛刺</h3>
+<div class="outline-text-3" id="text-4-1">
+</div>
+<div id="outline-container-org556eaa7" class="outline-4">
+<h4 id="org556eaa7"><span class="section-number-4">4.1.1.</span> 组合逻辑输出加寄存器</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<p>
+加寄存器去毛刺的原理就是用一个寄存器去读带毛刺的信号，利用寄存器对输入
+信号的毛刺不敏感的特点（寄存器一般只在时钟跳变沿对输入信号敏感），去除
+信号中的毛刺，但是如果信号毛刺发生在时钟信号的跳变沿，寄存器的输出端仍
+含有毛刺。
+</p>
+
+
+
+<p>
+另外，寄存器还会给系统带来一定的延时，特别是在系统级数较多的情况下，延
+时也将变大。
+</p>
+</div>
+</div>
+<div id="outline-container-org1dae62f" class="outline-4">
+<h4 id="org1dae62f"><span class="section-number-4">4.1.2.</span> 信号同步法</h4>
+<div class="outline-text-4" id="text-4-1-2">
+<p>
+同步电路设计可以大大减少毛刺。由于大多数毛刺都比较短（几纳秒），只要毛
+刺不出现在时钟跳变沿，毛刺信号就不会对系统造成危害。通常，在整个系统中
+使用同一个时钟就可以实现系统同步。但是时钟信号在FPGA器件中传递时是有延
+迟的，无法预知时钟跳变沿的精确位置。即，无法保证时钟跳变沿读取的数据是
+一个稳定的数据。因此，做到真正的同步就是去除毛刺信号的关键，保证在时钟
+跳变沿读取的数据是稳定的数据而不是毛刺数据。信号同步的方法有2种。
+</p>
+<ul class="org-ul">
+<li>信号延时同步法：就是在信号传递的过程中加一个延时环节，使得各个信号同
+时到达逻辑门。</li>
+<li>状态机控制法：由状态机在特定的时刻分别发出控制特定模块的时钟信号或使
+能信号，状态机的循环控制就可以使得整个系统协调运作，同时减少毛刺信号。
+那只要在状态机触发时间上加以处理，就可以避免竞争冒险，从而抑制毛刺。</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org4270ce2" class="outline-2">
+<h2 id="org4270ce2"><span class="section-number-2">5.</span> 时序逻辑</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+时序逻辑是一种数字电路，其输出不只与输入状态有关还与之前的输出有关，本
+质上，时序逻辑电路由组合逻辑和存储逻辑构成，组合逻辑完成输入到输出的逻
+辑处理，处理结果同时会进入存储逻辑里面存储起来，等到下一刻在和输入的信
+号作逻辑处理，存储电路一般组成有。
+</p>
+<ul class="org-ul">
+<li>锁存器（Latch）：是电平触发的存储单元，数据存储的动作取决于输入时钟
+信号的电平值，即当锁存器处于使能状态时，输出才会随着数据输入发生变化。
+锁存器的缺点是不能过滤毛刺。
+<ul class="org-ul">
+<li>RS锁存器</li>
+<li>门控RS锁存器</li>
+<li>D锁存器</li>
+</ul></li>
+<li>触发器（flip-flop）：是边沿敏感的存储单元，数据存储的动作由信号的边
+沿进行同步。
+<ul class="org-ul">
+<li>RS触发器</li>
+<li>JK触发器</li>
+<li>D触发器</li>
+<li>T触发器</li>
+<li>T'触发器</li>
+</ul></li>
+<li>寄存器（register）：能够用来存储一组二进制代码的同步时序逻辑电路称为
+寄存器。</li>
+</ul>
+
+
+
+<p>
+触发器和寄存器的区别：由于触发器内有记忆功能，因此利用触发器可以方便的
+构成寄存器。由于一个触发器能存储一位二进制码，所以把n个触发器的时钟端
+连接起来就构成了一个存储n位二进制的寄存器。
+</p>
+
+
+
+<p>
+寄存器和锁存器的功能是相同的，区别在于寄存器是同步时钟控制，锁存器是电
+位信号控制。
+</p>
+</div>
+<div id="outline-container-orgb91a7de" class="outline-3">
+<h3 id="orgb91a7de"><span class="section-number-3">5.1.</span> 锁存器</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+在组合逻辑中，if或者case语句不完整的描述，比如if缺少else分支，case缺少
+default分支，导致代码在综合过程中出现latch，所以实际使用中if必须带else
+分支，case必须带default分支。但是，只有不带时钟的always语句的if或case
+语句不完整才会产生latch，带时钟的语句if或case语句不完整描述不会产生
+latch。
+</p>
+</div>
+</div>
+<div id="outline-container-orgae3ce0d" class="outline-3">
+<h3 id="orgae3ce0d"><span class="section-number-3">5.2.</span> 触发器</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+触发器对脉冲边沿敏感的存储单元电路，它只在触发脉冲上升沿或下降沿瞬间改
+变状态。
+</p>
+</div>
+</div>
+<div id="outline-container-orgae7d62f" class="outline-3">
+<h3 id="orgae7d62f"><span class="section-number-3">5.3.</span> 寄存器</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+寄存器是构成时序逻辑最重要的单元，可以说没有寄存器就没有时序逻辑。寄存
+器是由多个触发器组成。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org9bbe2c2" class="outline-2">
+<h2 id="org9bbe2c2"><span class="section-number-2">6.</span> 基本电路</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org20e7366" class="outline-3">
+<h3 id="org20e7366"><span class="section-number-3">6.1.</span> 计数器</h3>
+</div>
+<div id="outline-container-org79493a1" class="outline-3">
+<h3 id="org79493a1"><span class="section-number-3">6.2.</span> 边沿检测电路</h3>
+</div>
+<div id="outline-container-org38ad056" class="outline-3">
+<h3 id="org38ad056"><span class="section-number-3">6.3.</span> 格雷码转换电路</h3>
+</div>
+<div id="outline-container-orgfdff7a1" class="outline-3">
+<h3 id="orgfdff7a1"><span class="section-number-3">6.4.</span> 复位电路</h3>
+<div class="outline-text-3" id="text-6-4">
+<p>
+结合同步和异步复位的优缺点，比较好的复位方式是：异步复位、同步释放，且
+复位信号为低电平有效。
+</p>
+<ul class="org-ul">
+<li>复位信号到来的有效性与clk无关，且复位信号的撤除也与clk无关，但是复位
+信号的撤除是在下一个clk来到后才起作用。</li>
+<li>异步复位同步撤离的目的为了防止复位信号撤除时，可能产生亚稳态。</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-verilog"><span style="color: #ffb6c1; font-size: 105%;">always</span> <span style="color: #ffff00; font-size: 105%;">@</span>(<span style="color: #ffb6c1; font-size: 105%;">posedge</span> clk <span style="color: #ffff00; font-size: 105%;">or</span> <span style="color: #ffb6c1; font-size: 105%;">negedge</span> rst_async_n) <span style="color: #ffff00; font-size: 105%;">begin</span>
+   <span style="color: #ffb6c1; font-size: 105%;">if</span> (!rst_async_n) <span style="color: #ffff00; font-size: 105%;">begin</span>
+      rst_s1 &lt;= 1'b0;
+      rst_s2 &lt;= 1'b0;
+   <span style="color: #ffff00; font-size: 105%;">end</span>
+   <span style="color: #ffb6c1; font-size: 105%;">else</span> <span style="color: #ffff00; font-size: 105%;">begin</span>
+      rst_s1 &lt;= 1'b1;
+      rst_s2 &lt;= rst_s1;
+   <span style="color: #ffff00; font-size: 105%;">end</span>
+<span style="color: #ffff00; font-size: 105%;">end</span>
+
+   <span style="color: #ffb6c1; font-size: 105%;">assign</span> rst_sync_n = rst_s2;
+
+<span style="color: #ffb6c1; font-size: 105%;">always</span> <span style="color: #ffff00; font-size: 105%;">@</span>(<span style="color: #ffb6c1; font-size: 105%;">posedge</span> clk <span style="color: #ffff00; font-size: 105%;">or</span> <span style="color: #ffb6c1; font-size: 105%;">negedge</span> rst_sync_n) <span style="color: #ffff00; font-size: 105%;">begin</span>
+   <span style="color: #ffb6c1; font-size: 105%;">if</span> (rst_sync_n == 1'b0)
+     y &lt;= 1'b0;
+   <span style="color: #ffb6c1; font-size: 105%;">else</span>
+     y &lt;= b;
+<span style="color: #ffff00; font-size: 105%;">end</span>   
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org27dc527" class="outline-4">
+<h4 id="org27dc527"><span class="section-number-4">6.4.1.</span> 同步复位</h4>
+<div class="outline-text-4" id="text-6-4-1">
+<p>
+同步复位指的是当时钟上升沿检测到复位信号，执行复位操作，有效的时钟沿是
+前提。
+</p>
+<div class="org-src-container">
+<pre class="src src-verilog"><span style="color: #ffb6c1; font-size: 105%;">always</span> <span style="color: #ffff00; font-size: 105%;">@</span>(<span style="color: #ffb6c1; font-size: 105%;">posedge</span> clk) <span style="color: #ffff00; font-size: 105%;">begin</span>
+   <span style="color: #ffb6c1; font-size: 105%;">if</span> (rst_n == 1'b0)
+     y &lt;= 1'b0;
+   <span style="color: #ffb6c1; font-size: 105%;">else</span>
+     y &lt;= b;
+<span style="color: #ffff00; font-size: 105%;">end</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>优点
+<ul class="org-ul">
+<li>有利于仿真器的仿真；</li>
+<li>可以使所设计的系统成为100%的同步时序电路，有利于时序分析，可综合出
+较高的Fmax；</li>
+<li>由于只在时钟有效电平到来时才有效，所以可以滤除高于时钟频率的复位毛
+刺；</li>
+</ul></li>
+<li>缺点
+<ul class="org-ul">
+<li>复位信号的有效时长必须大于时钟周期，才能真正被系统识别并完成复位任
+务，还要考虑时钟偏移、组合逻辑路径延时、复位延时等因素；</li>
+<li>由于大多数的逻辑器件的目标库内的DFF都只有异步复位端口，所以若采用
+同步复位，综合器就会在寄存器的数据输入端口插入组合逻辑，就会额外增
+加FPGA内部逻辑资源，还会增加相应的组合逻辑门延时；</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org91e42b4" class="outline-4">
+<h4 id="org91e42b4"><span class="section-number-4">6.4.2.</span> 异步复位</h4>
+<div class="outline-text-4" id="text-6-4-2">
+<p>
+异步复位指无论时钟沿是否到来，只要复位信号有效，就对系统进行复位，当时
+钟上升沿检测到复位信号，执行复位操作。
+</p>
+<div class="org-src-container">
+<pre class="src src-verilog"><span style="color: #ffb6c1; font-size: 105%;">always</span> <span style="color: #ffff00; font-size: 105%;">@</span>(<span style="color: #ffb6c1; font-size: 105%;">posedge</span> clk <span style="color: #ffff00; font-size: 105%;">or</span> <span style="color: #ffb6c1; font-size: 105%;">negedge</span> rst_n) <span style="color: #ffff00; font-size: 105%;">begin</span>
+   <span style="color: #ffb6c1; font-size: 105%;">if</span> (rst_n == 1'b0)
+     y &lt;= 1'b0;
+   <span style="color: #ffb6c1; font-size: 105%;">else</span>
+     y &lt;= b;
+<span style="color: #ffff00; font-size: 105%;">end</span>
+</pre>
+</div>
+<ul class="org-ul">
+<li>优点
+<ul class="org-ul">
+<li>大多数目标器件库的DFF都有异步复位端口，那么该触发器的复位端口就不
+需要额外的组合逻辑，省资源；</li>
+<li>设计相对简单；</li>
+<li>异步复位信号产生和响应都很方便（电路任何情况下都能复位而不管是否有
+时钟出现）；</li>
+</ul></li>
+<li>缺点
+<ul class="org-ul">
+<li>最大问题是它属于异步逻辑，问题出现在复位释放时，若复位释放接近时钟
+有效沿，则触发器的输出可能进入亚稳态（此时clk检测到的rst_n的状态就
+会是亚稳态，即是0是1不确定），从而导致复位失败。</li>
+<li>可能因为噪声或毛刺造成虚假复位信号（系统正常工作时突然复位）</li>
+<li>静态定时分析比较困难，静态时许分析一般都是针对同步设计的，都是基于
+时钟周期来分析时许的</li>
+<li>对于DFT设计，若复位信号不是直接来自于I/O引脚，在DFT扫描和测试时，
+复位信号必须被禁止，因此需要额外的同步电路。</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org69ddabe" class="outline-2">
+<h2 id="org69ddabe"><span class="section-number-2">7.</span> RAM</h2>
+<div class="outline-text-2" id="text-7">
+<ul class="org-ul">
+<li>静态RAM(SRAM)
+<ul class="org-ul">
+<li>单端口RAM(Single Port RAM)： SP RAM， 只有1个读写口，同时刻只能发
+起读或写；</li>
+<li>双端口RAM(Two Port RAM)：TP RAM，也叫伪双口，一个口只能读，一个口
+只能写；</li>
+<li>真双端口RAM(Dual Port RAM)：DP RAM，每个端口都可以读写；</li>
+</ul></li>
+</ul>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-right">数据读写</th>
+<th scope="col" class="org-right">地址口</th>
+</tr>
+
+<tr>
+<th scope="col" class="org-left">&#xa0;</th>
+<th scope="col" class="org-right">口数量</th>
+<th scope="col" class="org-right">数量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">SP RAM</td>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-left">TP RAM</td>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-left">DP RAM</td>
+<td class="org-right">2</td>
+<td class="org-right">2</td>
+</tr>
+</tbody>
+</table>
+
+<ul class="org-ul">
+<li>动态RAM(SDRAM)
+<ul class="org-ul">
+<li>SDRAM</li>
+<li>DDR SDRAM</li>
+<li>DDR2 SDRAM</li>
+<li>DDR3 SDRAM</li>
+<li>DDR4 SDRAM</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Joe</p>
+<p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
+<p class="date">Created: 2026-07-16 四 10:29</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
