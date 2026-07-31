@@ -937,6 +937,139 @@ configure，这个emacs才具备dynamic load dll或者so的能力，默认是关
     (require 'emtest)
   #+END_SRC
 
+** eglot
+*** clangd
+工程文件根目录下，可以放置1个.clangd的配置文件。通用模板如下。
+#+begin_example
+  CompileFlags:
+    Add:
+      - -std=c++17
+      - -I./include
+      - -I./src
+      - -I/usr/include
+      - -DDEBUG=1
+      - -DMODULE
+    Remove: []
+    # 提供目录，该目录下有compile_commands.json
+    CompilationDatabase: ./
+
+  Index:
+    Background: Build
+    Exclude:
+      - build/
+      - out/
+      - third_party/xxx
+
+  Diagnostics:
+    UnusedIncludes: Strict
+    MissingIncludes: Error
+#+end_example
+
+
+- CompileFlags 编译参数，控制传给 clang 的编译命令，替代手动写大量
+  -I、-D。
+  + Add：追加编译参数，字符串列表，每一项完整 flag
+    #+begin_example
+      CompileFlags:
+        Add:
+          # C标准
+          - -std=c99
+          # C++标准
+          - -std=c++14
+          # 头文件目录，支持相对/绝对路径
+          - -Iinclude
+          - -I../drivers
+          - -I/opt/aarch64-linux/include
+          # 宏定义
+          - -DMCU_RK3588
+          - -DNDEBUG
+          # 架构参数（嵌入式ARM/RISC-V必备）
+          - -march=armv8-a
+          - -mcpu=cortex-a55
+    #+end_example
+  + Remove：删掉默认自带的编译参数
+    #+begin_example
+      CompileFlags:
+        Remove:
+          - -Wall
+          - -std=c++11
+    #+end_example
+- CompilationDatabase：指定 compile_commands.json 路径，优先读取编译数
+  据库，比手动 Add 更准（Makefile/CMake 用 Bear 生成）
+- Compiler：指定交叉编译器（嵌入式必用）：clangd 本身用 clang 做解析，
+  但可告知目标交叉 gcc/clang，适配系统头文件
+  #+begin_example
+    CompileFlags:
+      Compiler: aarch64-linux-gnu-gcc
+      Add:
+        - --target=aarch64-linux-gnu
+  #+end_example
+- Index 索引配置:控制代码索引速度、忽略目录；
+  #+begin_example
+    Index:
+      # 后台自动构建索引 | No（不后台）
+      Background: Build
+      # 忽略目录，不会索引、不会补全里面代码
+      Exclude:
+        - build
+        - obj
+        - .git
+        - vendor
+        - test
+      # 大文件阈值，超过不索引
+      FileSizeLimit: 10485760
+  #+end_example
+- Diagnostics 诊断（报错、警告控制）
+  #+begin_example
+    Diagnostics:
+      # UnusedIncludes: Strict(报未使用头文件)|None|Basic
+      UnusedIncludes: Strict
+      # MissingIncludes：找不到头文件报错级别 Error/Warning/None
+      MissingIncludes: Error
+      # 禁用某些警告
+      Suppress:
+        - unused-parameter
+        - unused-variable
+      # 额外开启警告
+      Add:
+        - -Wextra
+        - -Wconversion
+  #+end_example
+- Include 头文件搜索补充：补充系统头文件，交叉编译经常缺内核头文件
+  #+begin_example
+    Include:
+      # 额外系统头文件路径
+      SystemHeaders:
+        - /usr/aarch64-linux-gnu/include
+        - /opt/kernel/include
+      # 优先顺序
+      Priority: User
+  #+end_example
+- ClangTidy 静态检查:绑定 clang-tidy 规则，代码静态分析
+  #+begin_example
+    ClangTidy:
+      Enable: true
+      Checks:
+        - *,
+        - -modernize-use-nullptr
+        - -readability-magic-numbers
+      Arguments: []
+  #+end_example
+- Style 格式化（clang-format 联动）
+  #+begin_example
+    Style:
+      # 读取 .clang-format 格式化规则
+      Formatting: clang-format
+      ColumnLimit: 120
+  #+end_example
+- PathMappings 路径映射（远程开发、容器、WSL）:本地路径和容器 / 虚拟机
+  路径互相映射
+  #+begin_example
+    PathMappings:
+      - Local: /home/user/project
+        Remote: /mnt/work/project
+  #+end_example
+
 * latex
 ** 方法
 # - 固定latex插入的图片位置
