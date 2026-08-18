@@ -48,15 +48,15 @@ Redistributor，Redistributor再接CPU Interface然后再连接到PE。
 #+begin_src plantuml :exports results :file ./pic/drw-gicarch.png
   @startuml
   package "IRI" {
-    [SPI] -> [Distributor]
+    [SPI] -down-> [Distributor]
     [Distributor] <-down-> [Redistributor #1]
     [Distributor] <-down-> [Redistributor #2]
-    [ITS] -> [LPI #1]
-    [ITS] -> [LPI #2]
-    [LPI #1] -> [Redistributor #1]
-    [LPI #2] -> [Redistributor #2]
-    [PPI #1] -> [Redistributor #1]
-    [PPI #2] -> [Redistributor #2]
+    [ITS] -down-> [LPI #1]
+    [ITS] -down-> [LPI #2]
+    [LPI #1] -down-> [Redistributor #1]
+    [LPI #2] -down-> [Redistributor #2]
+    [PPI #1] -right-> [Redistributor #1]
+    [PPI #2] -left-> [Redistributor #2]
   }
   package "Cluster C0" {
     [Redistributor #1] <-down-> [CPU Interface #1]
