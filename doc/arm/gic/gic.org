@@ -1,0 +1,307 @@
+#+title: GIC
+# #+subtitle: 
+#+author: Joe
+#+latex_class: org-latex-pdf 
+#+toc: tables 
+#+toc: listings 
+#+latex: \clearpage\pagenumbering{arabic} 
+#+latex: \AddToShipoutPicture{\BackgroundPicture} 
+#+options: h:4 ^:{} 
+#+startup: overview
+
+* GIC
+GIC经历了多个版本的演进：v2、v3、v4；
+#+caption: GICv2&GICv3对比
+#+name: tbl-gicv23
+#+attr_latex: :placement [H] :width 0.6\textwidth
+|---------+---------------------+-------------------------+---------------------|
+| 特性     | GICv2（GIC-400）     | GICv3（GIC-500/600）     | GICv4               |
+|---------+---------------------+-------------------------+---------------------|
+|---------+---------------------+-------------------------+---------------------|
+| 发布时间 | 2011                | 2014                    | 2016                |
+| 支持架构 | ARMv7-A             | ARMv8-A及以上            | ARMv8.1及以上        |
+| 虚拟化   | 软件模拟，支持有限   | 硬件虚拟化(GICv3.1)      | 增强虚拟化(直接注入) |
+| 中断数量 | 最多1020个           | 最多1020个               | 最多1020个（可扩展） |
+| 安全性   | 不支持安全隔离       | 支持安全隔离             | 增强安全隔离         |
+| 功能性能 | 性能一般延迟高       | 更低延迟支持大规模系统    | 最低延迟             |
+| CPU接口  | GICC,每个CPU独立MMIO | RD,一组RD服务多个CPU     |                     |
+| 中断路由 | CPU掩码(最多8核)     | 精准CPU编号,支持超多核心  |                     |
+| 消息中断 | 不支持               | 支持ITS,PCIe/MSI消息中断 |                     |
+| 架构     | 32位寄存器为主       | 原生适配AArch64          | 原生适配AArch64      |
+| DTS     | arm,gic-400         | arm,gic-v3              |                     |
+| 应用场景 | 消费级设备           | 服务器、手机、高性能设备  | 云计算虚拟化并发场景  |
+|---------+---------------------+-------------------------+---------------------|
+
+
+GICv3之后架构组件构成如下，呈现的结构为，Distributor和ITS连接
+Redistributor，Redistributor再接CPU Interface然后再连接到PE。
+- 1个Distributor，控制寄存器构成：GICD_prefix;
+- 1个ITS组件，用以支持基于LPI的消息事件翻译；
+- 每个PE 1个Redistributor， 控制寄存器构成：GICR_prefix;
+- 每个PE 1个CPU interface，寄存器构成；
+  + ICC_prefix：处理物理中断;
+  + ICV_prefix：处理虚拟中断；
+  + ICH_prefix：处理Hypervisior的中断；
+
+
+
+#+begin_src plantuml :exports results :file ./pic/drw-gicarch.png
+  @startuml
+  package "IRI" {
+    [SPI] -> [Distributor]
+    [Distributor] <-down-> [Redistributor #1]
+    [Distributor] <-down-> [Redistributor #2]
+    [ITS] -> [LPI #1]
+    [ITS] -> [LPI #2]
+    [LPI #1] -> [Redistributor #1]
+    [LPI #2] -> [Redistributor #2]
+    [PPI #1] -> [Redistributor #1]
+    [PPI #2] -> [Redistributor #2]
+  }
+  package "Cluster C0" {
+    [Redistributor #1] <-down-> [CPU Interface #1]
+    [Redistributor #2] <-down-> [CPU Interface #2]
+    [CPU Interface #1] <-down-> [PE1]: maybe SGI#1
+    [CPU Interface #2] <-down-> [PE2]: maybe SGI#2
+  }
+  @enduml
+#+end_src
+#+caption: 中断路由架构
+#+name: drw-gicarch
+#+attr_latex: :placement [H] :width 0.6\textwidth
+#+results:
+[[file:./pic/drw-gicarch.png]]
+
+
+
+各自中断的分发规则如下。
+- SPI：由外部模块触发经由Distributor分发给Redistributor；
+- SGI则源自PE发出经由CPUInterface和Redistributor到Distributor再到其他
+  的Redistributor和CPU Interface再到其他的PE回路;
+- PPI则直接提供给Redistributor分发；
+- LPI则
+  + 由ITS收到事件消息，再发出LPI给Redistributor分发；
+  + 也可以不来自ITS，由其他地方直接给Redistributor。
+** 名词
+- INTID：Interrupt ID；
+- SPI：Shared peripheral Interrupt
+- PPI：private peripheral Interrupt
+- LPI：locality-specific Peripheral Interrupt，局部外设中断
+- SGI：software generated Interrupt，核间中断（IPI）
+- IPI：Inter-processor Interrupt，核间中断
+- IRI: Interrupt routing infrastructure
+- ITS: Interrupt translation service，中断翻译服务
+- ITT：Interrupt Translation Table，中断翻译表
+ 
+** 中断号（INTID）
+#+caption: 中断号分布
+#+name: tbl-irqid
+#+attr_latex: :placement [H] :width 0.6\textwidth
+|-----------+------+----------------|
+|     INTID | Type | Detail         |
+|-----------+------+----------------|
+|-----------+------+----------------|
+|       0-7 | SGI  | Non-secure SGI |
+|      8-15 | SGI  | Secure SGI     |
+|-----------+------+----------------|
+|     16-31 | PPI  | 本地中断        |
+|-----------+------+----------------|
+|   32-1019 | SPI  |                |
+|-----------+------+----------------|
+| 1024-1055 |      | Reserve        |
+|-----------+------+----------------|
+| 1056-1119 | PPI  |                |
+|-----------+------+----------------|
+| 1120-4095 |      | Reserve        |
+|-----------+------+----------------|
+| 4096-5119 | ESPI | Extend SPI     |
+|-----------+------+----------------|
+| 5120-8191 |      | Reserve        |
+|-----------+------+----------------|
+|    8192-~ | LPI  |                |
+|-----------+------+----------------|
+
+** 中断组（Grouping）
+中断组是GIC配合TZ安全扩展机制，给每路中断打上安全标签，没有TZ，则没有
+组的功能。中断组决定中断信号类型和安全访问权限。
+- 中断最终以IRQ/FIQ哪路信号送给CPU；
+- 安全域/非安全域能否读写该中断配置；
+- 中断应该路由到哪个异常等级(EL3/EL1 Sec/EL1 Non-Sec)
+
+
+GICv3每个中断都可以分为2个大组（G0、G1）或3个更细的组。
+- G0：Group 0的中断属于Secure中断，输出FIQ，去往EL3(Secure
+  monitor:ATF)处理；
+- G1S：Secure Group 1,安全OS中断。跨安全域的中断时，强制触发FIQ，进入
+  EL3做安全监控，防止非安全系统直接劫持安全中断；
+  + CPU处于sec态，使用IRQ handler处理该中断；
+  + 处于Non-sec态，升级为FIQ，进入EL3的FIQ handler处理；
+- G1NS：Non-secure Group 1，普通Linux中断,输出IRQ,CPU处于Non-sec时处理；
+
+
+#+caption: 中断组状态
+#+name: tbl-intgrp
+#+attr_latex: :placement [H]
+|----------------+-----+-----+------|
+| 当前异常等级    | G0  | G1S | G1NS |
+|----------------+-----+-----+------|
+|----------------+-----+-----+------|
+| Secure EL0/1/2 | FIQ | IRQ | FIQ  |
+| NS EL0/1/2     | FIQ | FIQ | IRQ  |
+| EL3            | FIQ | FIQ | FIQ  |
+|----------------+-----+-----+------|
+** 中断路由（Routing）
+中断路由管控SPI和SGI中断。
+*** 掩码路由（Mask routing）
+仅仅GICv2使用。
+- 配置寄存器：GICD_ITARGETSRn（Interrupt Targets Register），每个SPI占
+  用8bit，每个bit对应1个PE；PPI/SGI 忽略此寄存器。如
+  GICD_ITARGETSR=0x1(仅PE0可接收)，GICD_ITARGETSR=0x5(PE0/PE2)，
+  GICD_ITARGETSR=0xF(全部PE)。
+  + Bit N = 1 -> 允许中断路由到 PE N
+  + Bit N = 0 -> 禁止路由到 PE N
+- 路由算法
+  + GICD收到SPI pending中断；
+  + 读取该中断ITARGETSR得到允许的PE集合；
+  + 如果集合内存在多个PE，GIC硬件使用内部轮询算法，动态挑选1个PE投递，
+    注意，多个掩码bit不表示同时广播给这些PE，GICv2默认单播投递，某刻只
+    会送到某个PE，然后轮询投递，需要广播投递，只能SGI，SPI没有硬件广播
+    投递。
+*** 亲和性路由（Affinity routing）
+GICv3、GICv4使用该算法，SPI使用GICD_IROUTERn寄存器路由，SGI使用
+ICC_SGIxR_EL1路由。affinity决定送给哪个CPU；LPI、PPI不受GICD_IROUTERn
+控制。
+- MPIDR PE身份格式:PE由4级亲和编号标识，每个PE的MPIDR_EL1 寄存器存放自
+  身 Aff3.Aff2.Aff1.Aff0：
+  + Aff0：Cluster内核心号
+  + Aff1：Cluster集群号
+  + Aff2：Die/Socket
+  + Aff3：多扩展节点
+- IROUTERn：每个中断的IROUTER寄存器存放目标PE的完整亲和地址，外加1个路
+  由模式位RoutingMode（bit31）
+  + 0=Direct（直接模式）：中断固定投递到唯一指定PE，IROUTER写入目标
+    PE完整Aff地址。
+  + 1=Any（任意模式）：指定一个亲和组（例如 Aff2.Aff1 = 0.0 整个集群），
+    GIC硬件在该亲和组内，自动选择一个在线PE投递（负载均衡）。
+** 中断优先级（Priority）
+GIC的中断优先级是一个8bit的无符号二进制数，数值越小优先级越大。
+- SPI/SGI/PPI的优先级数值在寄存器GICD_IPRIORITYR<n>中设置，设计上还可
+  以将某个中断的优先级固定，不可软件修改。
+- LPI的优先级在内存中LPI Pending表里面配置和查询。
+*** 优先级组
+优先级组用于控制中断如何提交给PE执行和抢占相关。优先级组使用Binary
+Point寄存器配置。优先级组寄存器分2个部分组优先级（group priority）和子
+优先级（subpriority）。
+- ICC_BPR0_EL1： 用于控制G0中断
+- ICC_BPR1_EL1：用于控制G1中断
+
+*** NMI优先级
+Secure的NMI比优先级为0的non-NMI中断优先级还高。
+#+caption: NMI优先级
+|-------------+-----------|
+|  Secure NMI | 优先级最高 |
+|-------------+-----------|
+|        0x00 |           |
+|         ... |           |
+|        0x7F |           |
+|-------------+-----------|
+| Non-sec NMI |           |
+|-------------+-----------|
+|        0x80 |           |
+|         ... |           |
+|        0xFF | 优先级最低 |
+|-------------+-----------|
+
+*** 优先级抢占（Preemption）
+更高group Priority的中断将会抢占当前执行的中断。
+
+*** 优先级掩盖（Masking）
+掩盖定义了目标PE的优先级门限，如果被pending的中断的最高优先级小于或等
+于掩盖寄存器（ICC_PMR_EL1）配置的掩码，这个最高优先级的中断将会被掩盖，
+不会发射给目标PE。
+** 共享中断（SPI）
+SPI由PE掩码或affinity 路由到具体的GICC/GICR再投递给具体的PE。
+
+** 私有中断（PPI）
+PPI固定归属本地PE，无路由投递。
+** 软件生成中断（SGI）
+也叫核间中断（IPI，Inter-processor Interrupt），全局可见，由CPU软件主
+动触发，没有硬件外设引脚。常用于多核SMP系统中，CPU间互相发送消息，触发
+对方的中断服务程序。
+- SGI 和PPI区别
+  + PPI：硬件产生，每个CPU私有中断（定时器、PMU）
+  + SGI：软件产生，可以定向发送给任意一个/多个CPU；
+- SGI 和SPI区别：
+  + SPI：外设硬件触发（UART等），信号线进GIC
+  + SGI：CPU写寄存器触发，无外部硬件；
+
+
+SGI中断使用如下寄存器产生。
+- ICC_SGI0R_EL1;
+- ICC_SGI1R_EL1;
+- ICC_ASGI1R_EL1;
+** 局部外设中断（LPI）
+LPI由ITS的Collection Table决定目标PE，绕过GICD。
+- LPI是纯消息触发，没有物理中断引脚，PCIe 设备 MSI/MSI-X 本质就是向
+  GITS_TRANSLATER 地址做一次内存写；写入数据 = EventID。
+- 永远边沿触发，无电平语义
+- 只能路由到单个 PE（CPU 核），不支持广播、多核心接收
+- 中断状态保存在内存（LPI Pending Table），不在 GIC 寄存器SPI/PPI 配置
+  全部存在 MMIO 寄存器；LPI 所有 pending 状态放在 DDR 内存，GICR 硬件
+  缓存。
+- 固定为 Non-Secure Group1（G1NS），不能配置为 Group0/Group1S
+- 没有 Active 状态，不需要传统EOIR去激活
+  + SPI/PPI 流程：IAR (ACK) -> 处理 -> EOI；
+  + LPI 只需要 ACK，不需要写 EOIR。
+** 中断翻译服务（ITS）
+GICv3和GICv4才有。ITS支持MSI消息型中断，典型用于PCIe设备。PCIe设备没有
+物理中断引脚，通过PCIe总线发送一段MSI消息，ITS负责接收这条事务消息，翻
+译成GIC内部标准中断事件，再送入Distributor/RD参与中断调度。ITS输出LPI
+中断。ITS翻译后输出的LPI直达Redistributor然后路由到单个PE,而不经过
+Distributor。ITS服务可以有多个实现，每个ITS都有一套GITS寄存器。
+
+
+ITS作用：
+- PCIe设备发送MSI消息，只携带两个信息，GIC硬件无法直接识别这两个值。
+  + DeviceID（设备编号）
+  + EventID（该设备内中断向量号）
+- ITS负责查表翻译：DeviceID+EventID -> LPI中断号+目标
+  CPU（Redistributor）
+- ITS使用三张内存表（由 Linux 内核分配、配置）
+  + Device Table（设备表）：以 DeviceID 索引；每个 PCIe 设备对应一条表
+    项，指向该设备专属 ITT。
+  + ITT：Interrupt Translation Table 中断翻译表：以 EventID 索引；输出：
+    LPI 编号 + CollectionID（ICID）。
+  + Collection Table（集合表）：以 ICID 索引；确定这个 LPI 最终投递到
+    哪一个 CPU 的 Redistributor。
+    
+* GICD
+GICD，GIC distributor处理。
+- SPI中断的路由处理和配置；
+- 保持和处理所有中断相关路由和优先级信息；
+* GICR
+GICR，GIC redistributor提供PPI和SGI中断的配置处理。
+** GIC中断的生命周期
+- 中断信号到达GICD:硬件拉高电平/产生脉冲送入GICD对应的SPI输入引脚。
+- GICD检查配置:
+  + 该中断是否使能
+  + 触发方式匹配（边沿/电平）
+  + 读取优先级，参与仲裁
+- GICD路由转发：根据ITARGETSR掩码，把中断请求发送到目标CPU的GICC或RD。
+- GICC或RD仲裁与上报CPU：GICC对比中断优先级和GICC_PMR阈值；如果优先级
+  更高->拉高CPU内核IRQ信号，CPU 进入异常向量。
+- CPU进入异常，执行中断底层入口：Linux内核跳转到irq向量。
+- CPU读取GICC_IAR（ACK阶段）：动作意义：告知GIC“我已经捕获这个中断”；
+  GIC会临时屏蔽该中断，防止重复上报。返回值：中断号。
+- 内核调用对应驱动中断服务函数（snps_accel ISR），ISR工作：
+  + 读取Mailbox状态寄存器
+  + 清除硬件侧中断标志（非常关键，硬件不清标志，电平中断会持续上报）
+  + 唤醒等待推理完成的线程（不要在ISR做耗时运算）
+- 中断处理完毕，写GICC_EOIR，通知GIC：本次中断处理结束，GIC解除该中
+  断锁定，允许再次触发。
+- 等待下一次硬件中断。两个清除动作不要混淆：
+  + 外设寄存器清除硬件中断标志（Mailbox模块）
+  + GICC_EOIR通知GIC中断结束（中断控制器层面）只做其中一个，一定会
+    出现异常。
+    
+* GITS
