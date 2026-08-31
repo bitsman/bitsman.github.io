@@ -10,6 +10,7 @@
 #+startup: overview
 
 * blog
+ID 148f:5370 Ralink Technology, Corp. RT5370 Wireless Adapter
 ** HPC
 - [ ] https://pramodkumbhar.com/
 - [X] Understanding CPU Architecture And Performance Using LIKWID
