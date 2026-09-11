@@ -1,0 +1,734 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2026-09-11 五 10:15 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>xPU</title>
+<meta name="author" content="Joe" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="css/org-manual.css"/>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">xPU
+<br />
+<span class="subtitle">NPU&amp;GPU</span>
+</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org8f3eec1">1. xPU简介</a>
+<ul>
+<li><a href="#org171d78b">1.1. 名词</a></li>
+<li><a href="#orga5acdf2">1.2. GPU</a>
+<ul>
+<li><a href="#org73eb0d7">1.2.1. 线程</a></li>
+<li><a href="#orgab2a3e4">1.2.2. T&amp;L处理</a></li>
+<li><a href="#org0a8990b">1.2.3. 光栅化</a></li>
+</ul>
+</li>
+<li><a href="#org1c16c4b">1.3. 存储互联</a>
+<ul>
+<li><a href="#org7b2d342">1.3.1. DDR</a></li>
+<li><a href="#orgd9f1211">1.3.2. GDDR</a></li>
+<li><a href="#orgb128fca">1.3.3. HBM</a></li>
+<li><a href="#org9e1c894">1.3.4. PCIe</a></li>
+<li><a href="#orgb04368c">1.3.5. CXL</a></li>
+<li><a href="#org57c0f60">1.3.6. NVLink</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org626d41e">2. 算法</a></li>
+</ul>
+</div>
+</div>
+<div id="list-of-tables">
+<h2>List of Tables</h2>
+<div id="text-list-of-tables">
+<ul>
+<li><a href="#orgdc80566"><span class="table-number">Table 1:</span> GPU存储体系特点</a></li>
+<li><a href="#orge105ee9"><span class="table-number">Table 2:</span> 算法项目</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org8f3eec1" class="outline-2">
+<h2 id="org8f3eec1"><span class="section-number-2">1.</span> xPU简介</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+CPU的设计以指令控制为核心，以整数计算为基础，衍生出了浮点单元和SIMD单
+元，近几年少数CPU集成了矩阵单元。GPU的设计通过SIMT前端的指令管理方式和SIMD
+后端的执行模式，以高吞吐量的浮点计算为主，衍生出矩阵单元，以适应AI计算任务中
+庞大的矩阵计算需求。
+</p>
+<ul class="org-ul">
+<li>NPU：neural PU；</li>
+<li>DPU：data PU；</li>
+<li>GPU：graphic PU；</li>
+<li>TPU：tensor PU；</li>
+</ul>
+</div>
+<div id="outline-container-org171d78b" class="outline-3">
+<h3 id="org171d78b"><span class="section-number-3">1.1.</span> 名词</h3>
+<div class="outline-text-3" id="text-1-1">
+<ul class="org-ul">
+<li>TOP500：以FP64双精度算力的FLOPS作为评判标准；</li>
+<li>FLOPS：floating point Operation per second；
+<ul class="org-ul">
+<li>MFLOPS：Mega FLOPS</li>
+<li>GFLOPS：Giga FLOPS</li>
+<li>TFLOPS：Tera FLOPS</li>
+<li>PFLOPS：Peta FLOPS</li>
+<li>EFLOPS：Exa FLOPS</li>
+<li>ZFLOPS：Zetta FLOPS</li>
+</ul></li>
+<li>MLPerf：Machine learning perf，一个公开的、行业标准的基准测试套件，
+用于衡量人工智能领域的机器学习硬件、软件和服务的性能；由MLCommons社
+区维护；</li>
+<li>RNN-T：Recurrent Neural Network Transducer，一种端到端的序列到序列的
+学习模型；</li>
+<li>BERT：Bidirectional encoder representations from transformers,通过
+Transformer结构捕捉文本中的双向关系；</li>
+<li>RoCe：RDMA over converged Ethernet，以太网上的协议；</li>
+<li>RDMA：Remote direct memory Access，以太网上的协议；</li>
+<li>DLRM：deep learning recommendation model；</li>
+<li>CPI：Cycle per instruction，平均指令周期数；</li>
+<li>IPC：instruction per clock/Cycle，每个时钟周期内的指令数；</li>
+<li>流水线寄存器：是用来在每个流水线阶段之间存储指令的中间状态的器件，理
+解为C语言函数的变量；</li>
+<li>Superscalar：超标量，x86处理器的译码单元可以同时处理多个指令译码，然
+后将译码后的微指令通过发射单元并行发射给执行单元，提高并行度和性能；</li>
+<li>inclusive cache：包含性缓存，一份数据在本级及下级缓存中都有一份；</li>
+<li>exclusive cache：独占性缓存，一份数据只会出现在本级缓存中；</li>
+<li>MMX: multi media extension，intel MMX指令集；</li>
+<li>SSE：streaming SIMD extension，intel SSE指令集；</li>
+<li>AVX：advanced vector extension，intel AVX 指令集；</li>
+<li>APX：advanced performance extension，intel APX指令集；</li>
+<li>AMX：advanced matrix extension，intel AMX指令集；</li>
+<li>SVE：scalable vector extension，arm SVE指令集；</li>
+<li>PTX：parallel thread execution，并行线程执行指令集；</li>
+<li>SASS：streaming assembly shader，NVIDIA GPU低级指令集；</li>
+<li>SDF：scalable data fabric，可扩展数据互联；</li>
+<li>SCF：scalable control fabric，可扩展控制互联；</li>
+<li>CCX：cache coherent exchange，缓存一致性交换；</li>
+<li>CCM：cache coherent master，缓存一致性主控制器；</li>
+<li>UMC：uniform Memory Controller，统一内存控制器；</li>
+<li>UMA：uniform memory access，统一内存访问；</li>
+<li>NUMA：Non-Uniform Memory Access，非统一内存访问；</li>
+<li>NoC：Networks on Chip，片上网络；</li>
+<li>NMC：Near memory computing，近存计算；</li>
+<li>CXL：Compute Express link，计算快速链；</li>
+<li>SIMD：single instruction multiple data，单指令多数据处理；</li>
+<li>SIMT：single instruction multiple threads，单指令多线程；</li>
+<li>Scalar：标量是一个单独的数值，它没有方向和维度。标量可被视作零维张量。</li>
+<li>Vector：向量是有方向和大小的量。它由一组有序的标量组成，可以在空间中
+被表示为一个有限维度的坐标向量。向量可被表示为一维数组。向量可被视作
+一维张量。</li>
+<li>Matrix：矩阵是一个二维数组，包含多行和多列的数字。它可被视为一个平面，
+表示多维数据的关系或变换。矩阵可被视作二维张量。</li>
+<li>Tensor：张量是一个多维数组，可以具有任意维度。它是由一组数字按照规则
+排列组成的数据结构。在数学和物理中，张量被广泛用于描述多维数据和多维
+空间中的物理量。例如，二维矩阵是一个二维张量，三维图像是一个三维张量。
+张量的每个元素都可以是标量、向量或其他更高维度的张量。</li>
+<li>MindSpore：是华为提出的AI框架，与TensorFlow、PyTorch、PaddlePaddle等
+框架并列，是一个开源的深度学习训练和推理框架。</li>
+<li>GDDR：Graphics DDR；</li>
+<li>HBM：high bandwidth memory；</li>
+<li>TSV：through silicon via；</li>
+<li>CXL：compute Express link，对标PCIe；</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orga5acdf2" class="outline-3">
+<h3 id="orga5acdf2"><span class="section-number-3">1.2.</span> GPU</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+NVIDIA的GPU经历了若干代。
+</p>
+<ul class="org-ul">
+<li>G80</li>
+<li>G92</li>
+<li>GT200</li>
+<li>Fermi</li>
+<li>Maxwell</li>
+<li>Kepler</li>
+<li>Pascal</li>
+</ul>
+
+
+<p>
+华为的NPU芯片发展
+</p>
+<ul class="org-ul">
+<li>Ascend 910：320TFLOPS，310W功耗，7nm，1228mm^2，用于训练场景；</li>
+<li>Ascend 310：16TFLOPS，12nm，用于推理场景；</li>
+</ul>
+
+
+<p>
+华为Atlas 900超级计算机，分布式训练系统昇腾集群，采用华为HCCS处理器、
+最新的PCIe 4.0总线、100 Gb/s RoCE接口等3类高速互连方式，形成高速集群网
+络，每台Atlas 900超级计算机由数千颗Ascend 910组成，每个节点都采用“华为
+Kunpeng 920+Ascend 910”的CPU+AI加速芯片的组合。
+</p>
+
+
+
+<p>
+GPU的经典结构为,访问速度由快到慢，其架构如图<a href="#org6711444">1</a>所示。
+</p>
+<ul class="org-ul">
+<li>寄存器：Register，属于每个CUDA计算核心独享的片上存储资源；</li>
+<li>缓存：Cache，L1和L2缓存；</li>
+<li>共享内存：Shared Memory，在每个SM内部多个线程可共享的缓存；</li>
+<li>显存：DRAM（DDR），也被称为全局内存(GlobalMemory) ，可拆分为
+<ul class="org-ul">
+<li>局部内存：LocalMemory；</li>
+<li>常量内存：Constant Memory；</li>
+</ul></li>
+<li>纹理内存：Texture Memory，完全为图形而生，但在GPGPU应用中也能被调用；</li>
+</ul>
+
+
+<div id="org6711444" class="figure">
+<p><img src="./pic/img-gpuarch.png" alt="img-gpuarch.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>GPU存储体系</p>
+</div>
+
+
+<table id="orgdc80566" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 1:</span> GPU存储体系特点</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">存储类型</th>
+<th scope="col" class="org-left">GPU片内</th>
+<th scope="col" class="org-left">缓冲</th>
+<th scope="col" class="org-left">RW权限</th>
+<th scope="col" class="org-left">服务范围</th>
+<th scope="col" class="org-left">声明周期</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">寄存器</td>
+<td class="org-left">是</td>
+<td class="org-left">否</td>
+<td class="org-left">RW</td>
+<td class="org-left">1个线程</td>
+<td class="org-left">线程</td>
+</tr>
+
+<tr>
+<td class="org-left">局部内存</td>
+<td class="org-left">否</td>
+<td class="org-left">2</td>
+<td class="org-left">RW</td>
+<td class="org-left">1个线程</td>
+<td class="org-left">线程</td>
+</tr>
+
+<tr>
+<td class="org-left">共享内存</td>
+<td class="org-left">是</td>
+<td class="org-left">否</td>
+<td class="org-left">RW</td>
+<td class="org-left">线程块</td>
+<td class="org-left">线程块</td>
+</tr>
+
+<tr>
+<td class="org-left">全局内存</td>
+<td class="org-left">否</td>
+<td class="org-left">1</td>
+<td class="org-left">RW</td>
+<td class="org-left">所有线程</td>
+<td class="org-left">主机管理</td>
+</tr>
+
+<tr>
+<td class="org-left">常亮内存</td>
+<td class="org-left">否</td>
+<td class="org-left">是</td>
+<td class="org-left">R</td>
+<td class="org-left">所有线程</td>
+<td class="org-left">主机管理</td>
+</tr>
+
+<tr>
+<td class="org-left">纹理内存</td>
+<td class="org-left">否</td>
+<td class="org-left">是</td>
+<td class="org-left">R</td>
+<td class="org-left">所有线程</td>
+<td class="org-left">主机管理</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="outline-container-org73eb0d7" class="outline-4">
+<h4 id="org73eb0d7"><span class="section-number-4">1.2.1.</span> 线程</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+当主机端(CPU)启动一个内核函数时，会转移到GPU上执行，并产生大量的线程。
+为了方便管理这些线程，CUDA采用了一种层次结构。所有由一个内核函数启动的
+线程都被统称为一个线程网格，而线程网格由多个线程块组成，每个线程块中又
+包含多个线程。这种层次结构可以是1D、2D或3D的，根据应用的需要进行选择。
+</p>
+<ul class="org-ul">
+<li>线程：最小的并行执行单元，一个线程负责执行一部分程序代码；</li>
+<li>线程块：多个线程组织成一个线程块，是SM硬件单元，可以理解为GPU上的完
+整功能单元，GPU中资源管理的基本单位；</li>
+<li>线程束：每个线程块中以线程束作为一次执行的单位；</li>
+<li>线程网格：多个线程块组织成一个线程网格，是一个完整的GPU芯片+DRAM显存，
+可以理解为一张完整的显卡；</li>
+</ul>
+
+
+<p>
+为了区分不同的线程，CUDA运行时为每个线程分配了两个坐标变量，即
+BlockIdx 和 ThreadIdx。这两个变量都是结构体类型的，其中包含了 x、y、z
+共3个字段。这3个字段对应着不同的维度，在线程网格和线程块的组织方式中起
+到了标识的作用。BlockIdx表示线程块在线程网格中的索引，ThreadIdx表示线
+程在线程块中的索引。通过这两个变量，可以确定每个线程在各自维度上的坐标。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgab2a3e4" class="outline-4">
+<h4 id="orgab2a3e4"><span class="section-number-4">1.2.2.</span> T&amp;L处理</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<ul class="org-ul">
+<li>Transform（变换）：该阶段负责几何变换，即将顶点从一个坐标空间变换到
+另一个坐标空间（旋转、平移、缩放等），它处理的阶段如下。
+<ul class="org-ul">
+<li>模型变换：将物体从对象空间变换到世界空间，每个3D物体（例如游戏中的
+角色或建筑物）都有其自己的局部坐标系，这被称为模型空间。在这个模型
+空间中，物体的原点通常是其中心点或某个关键点。模型变换是将物体从其
+模型空间变换到一个统一的世界空间，其中所有物体都被放置在一个大的3D
+场景中。这涉及对物体进行旋转、平移和缩放操作，以确定它在整个3D世界
+中的位置、方向和大小。；</li>
+<li>视图变换：从世界空间变换到摄像机空间，一旦所有物体都被放置在世界空
+间中，下一步就是确定观察者（或相机）如何查看这个世界。观察变换负责
+将整个3D世界从世界空间转换到观察空间，使得相机位于原点，并且正面朝
+向一个特定方向，它会考虑相机的位置、方向。；</li>
+<li>投影变换：从摄像机空间变换到屏幕空间，将3D世界投影到2D屏幕上就要使
+用投影变换。投影变换将观察空间的3D场景变换到一个被称为裁剪空间的空
+间中。在这个空间中，所有即将显示在屏幕上的物体都位于一个定义的立方
+体内（通常被称为裁剪体或视椎体）。这个变换也定义了是使用正射投影还
+是透视投影。；</li>
+</ul></li>
+<li>Lighting（光照）：该阶段根据场景中的光源、材质属性以及顶点的位置和法
+线，计算顶点的颜色和亮度。</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org0a8990b" class="outline-4">
+<h4 id="org0a8990b"><span class="section-number-4">1.2.3.</span> 光栅化</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<p>
+光栅化Rasterization，是将矢量顶点组成的图形进行像素化的过程，它是一个
+桥梁，连接了3D顶点数据和2D屏幕像素，需要经过若干过程。
+</p>
+
+<div id="org81115ac" class="figure">
+<p><img src="./pic/drw-rast.png" alt="drw-rast.png" />
+</p>
+<p><span class="figure-number">Figure 2: </span>光栅化过程</p>
+</div>
+
+
+
+<p>
+而光栅化过程需的详细步骤如下。
+</p>
+<ul class="org-ul">
+<li>屏幕映射：三角形的顶点坐标（在裁剪空间中）会映射到屏幕坐标系，这通常
+涉及透视除法和视口变换(Viewport Transformation)，将3D空间中的坐标变
+换为屏幕上的2D像素坐标。</li>
+<li>边界确定：在知道三角形顶点在屏幕上的位置后，就可以确定三角形的边界框。
+这是一个矩形区域，包含了整个三角形，用于进一步优化遍历过程，因为只有
+在这个框内的像素才可能被三角形所覆盖。</li>
+<li>三角形遍历：系统遍历边界框内的每个像素，以确定它们是否在三角形内部。
+判断像素是否在三角形内部的常用方法是边测试：对于三角形的每条边都可以
+使用线性方程来描述；测试屏幕上的点（像素中心）是否在该方程的正确一侧，
+如果屏幕上的点在3条边的正确一侧，则它位于三角形内部。</li>
+<li>片段生成：在三角形内部的每个像素都会生成一个片段。这个片段会包含屏幕
+上的位置信息及其他与该位置相关的数据。例如，通过插值三角形顶点的数据
+（如颜色、纹理坐标等），为每个片段生成相应的数据。</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org1c16c4b" class="outline-3">
+<h3 id="org1c16c4b"><span class="section-number-3">1.3.</span> 存储互联</h3>
+<div class="outline-text-3" id="text-1-3">
+</div>
+<div id="outline-container-org7b2d342" class="outline-4">
+<h4 id="org7b2d342"><span class="section-number-4">1.3.1.</span> DDR</h4>
+</div>
+<div id="outline-container-orgd9f1211" class="outline-4">
+<h4 id="orgd9f1211"><span class="section-number-4">1.3.2.</span> GDDR</h4>
+</div>
+<div id="outline-container-orgb128fca" class="outline-4">
+<h4 id="orgb128fca"><span class="section-number-4">1.3.3.</span> HBM</h4>
+<div class="outline-text-4" id="text-1-3-3">
+<p>
+HBM主要通过硅通孔(Through Silicon Via, TSV)技术进行芯片堆叠，即将数个
+DRAM裸片像楼层一样垂直堆叠以提高吞吐量并克服单一封装内带宽的限制
+</p>
+<ul class="org-ul">
+<li>HBM1</li>
+<li>HBM2</li>
+<li>HBM3</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org9e1c894" class="outline-4">
+<h4 id="org9e1c894"><span class="section-number-4">1.3.4.</span> PCIe</h4>
+</div>
+<div id="outline-container-orgb04368c" class="outline-4">
+<h4 id="orgb04368c"><span class="section-number-4">1.3.5.</span> CXL</h4>
+<div class="outline-text-4" id="text-1-3-5">
+<p>
+Intel推出的设备（内存、加速器）互联标准，和PCIe协议共用物理层和电气层，
+改进了协议层。通过CXL接口，CPU可以与多个CXL设备进行通信，实现高性能的
+数据交换和协同计算。CXL还提供了一种统一的内存访问模型，使得CXL设备能够
+共享和访问其他CPU的内存。而传统的PCIe总线的内存是被CPU所独占的，或者说
+是割裂的，CXL对异构计算平台的性能扩展有极大帮助，内存不再限于单节点几
+百GB或者几个TB，而是可以通过CXL技术扩展到目前的10～100倍。它包含3个子
+协议。
+</p>
+<ul class="org-ul">
+<li>CXL.io：该子协议在功能上等同于PCIe协议，是PCIe 5.0协议的增强版本，可
+用于初始化、连接、设备发现和枚举，以及寄存器访问；</li>
+<li>CXL.cache：该子协议可以用于将内存缓存到外部设备中，构建出多级存储系
+统，以提高系统的性能；</li>
+<li>CXL.memory：在需要更大内存容量的AI服务器中，CXL.memory子协议可以将
+CXL内存作为主内存使用，以扩展内存容量；</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org57c0f60" class="outline-4">
+<h4 id="org57c0f60"><span class="section-number-4">1.3.6.</span> NVLink</h4>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org626d41e" class="outline-2">
+<h2 id="org626d41e"><span class="section-number-2">2.</span> 算法</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+表格<a href="#orge105ee9">2</a>是MLPerf Training v2.0的8个经典算法项目。
+</p>
+<table id="orge105ee9" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 2:</span> 算法项目</caption>
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">项目</th>
+<th scope="col" class="org-right">发布时间</th>
+<th scope="col" class="org-left">领域</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">ResNet</td>
+<td class="org-right">2015</td>
+<td class="org-left">图像识别</td>
+</tr>
+
+<tr>
+<td class="org-left">SSD</td>
+<td class="org-right">2016</td>
+<td class="org-left">轻量级目标物体检测</td>
+</tr>
+
+<tr>
+<td class="org-left">Mask R-CNN</td>
+<td class="org-right">2017</td>
+<td class="org-left">重量级目标物体检测</td>
+</tr>
+
+<tr>
+<td class="org-left">U-Net3D</td>
+<td class="org-right">2015</td>
+<td class="org-left">医学图像分割</td>
+</tr>
+
+<tr>
+<td class="org-left">RNN-T</td>
+<td class="org-right">2014</td>
+<td class="org-left">语音识别</td>
+</tr>
+
+<tr>
+<td class="org-left">BERT</td>
+<td class="org-right">2018</td>
+<td class="org-left">自然语言理解</td>
+</tr>
+
+<tr>
+<td class="org-left">DLRM</td>
+<td class="org-right">2019</td>
+<td class="org-left">智能推荐算法</td>
+</tr>
+
+<tr>
+<td class="org-left">MiniGo</td>
+<td class="org-right">2016</td>
+<td class="org-left">强化学习</td>
+</tr>
+</tbody>
+</table>
+
+<ul class="org-ul">
+<li>ResNet：核心思想是通过“残差学习”来避免深度神经网络的退化问题。在残差
+块中，输入会被跳过一层或多层与该层的输出相加，这有助于梯度的反向传播
+和避免梯度消失问题；ResNet对深度学习领域产生了深远影响，成为之后许多
+模型的基础。其设计允许研究者训练非常深的神经网络，从而大大提高图像识
+别的准确性。</li>
+<li>SSD：核心思想是在多个尺度的特征图上进行目标检测，每个特征图都负责检
+测不同尺寸的对象。这使得SSD可以在一个前向传递中同时检测出多个尺寸的
+对象；SSD提供了一个高效和准确的目标检测方案，并被广泛用于实时目标检
+测的应用中。</li>
+<li>Mask R-CNN：基于Faster R-CNN在原来的框架上增加了一个并行的分支来预测
+对象掩码。这使得它可以在单次前向传递中同时进行目标检测和实例分割；
+Mask R-CNN推动了实例分割技术的发展，并被广泛应用于需要细粒度对象识别
+的场景中。</li>
+<li>U-Net3D：U-Net3D包括一个收缩路径，用来捕获上下文信息，还包括一个对称
+的扩展路径，用来精确的分割定位。由于其特点，模型可以利用很少的标注数
+据进行训练；U-Net3D对医学图像分割产生了巨大的影响，很多后续工作都以
+此为基础进行扩展和改进。</li>
+<li>RNN-T：RNN-T是一种端到端的序列到序列的学习模型，适用于语音识别等任务，
+RNN-T不需要先进行声学模型和语言模型的预训练，可直接从原始音频转到文
+本；它大大简化了语音识别的训练流程，被许多商业系统采用。</li>
+<li>BERT：通过Transformer结构捕捉文本中的双向关系，与传统单向模型不同，
+BERT能够同时考虑文本左右两侧的上下文；BERT开创了自然语言新纪元，成为
+许多NLP任务新的基线，被广泛用于搜索引擎、聊天机器人领域。</li>
+<li>DLRM：结合了分类和连续特征，通过嵌入表达和MLP（多层感知机）进行推荐；
+该模型在许多大型商业推荐系统中被采用，有效提高了推荐的精度。</li>
+<li>MiniGo：MiniGo是Google DeepMind围棋AI AlphaGo的轻量版，它利用蒙特卡
+罗树搜索（MCTS）和深度学习来模拟围棋的博弈过程，通过强化学习的训练，
+模型能够自我对弈提高策略。</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Joe</p>
+<p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
+<p class="date">Created: 2026-09-11 五 10:15</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

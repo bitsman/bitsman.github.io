@@ -24,6 +24,14 @@
   - [[file:dts/pinctrl.org][PINCTRL子系统]]
 - doc
   - [[file:doc/doc.org][blog]]
+  - ml
+    - [[file:doc/ml/ml.org][机器学习]]
+  - xpu
+    - [[file:doc/xpu/xpu.org][xPU]]
+  - mmu
+    - [[file:doc/mmu/mmu.org][MMU]]
+  - cache
+    - [[file:doc/cache/cache.org][Cache]]
   - chip
     - [[file:doc/chip/embed_software_platform.org][SOC芯片软件开发平台]]
     - [[file:doc/chip/digital.org][数字电路]]
@@ -71,3 +79,5 @@
     - [[file:doc/arm/armv78-guide.org][ARMv7/8 Guide]]
     - [[file:doc/arm/arm-coresight.org][ARM CoreSight寄存器级调试]]
     - [[file:doc/arm/arm-coresight3.org][AARCH64调试架构与CoreSight技术演进]]
+    - gic
+      - [[file:doc/arm/gic/gic.org][GIC]]

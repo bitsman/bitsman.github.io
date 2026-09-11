@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2026-07-12 日 12:54 -->
+<!-- 2026-09-11 五 10:18 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>比克曼的知识管理</title>
@@ -210,7 +210,15 @@
 <li><a href="#org2aa1c7e">3. 协议</a></li>
 <li><a href="#org2a51e30">4. 软件</a></li>
 <li><a href="#orgade616b">5. 硬件</a></li>
-<li><a href="#org7eda322">6. 工具</a></li>
+<li><a href="#org7eda322">6. 工具</a>
+<ul>
+<li><a href="#org3b3e2fc">6.1. 编码</a>
+<ul>
+<li><a href="#org54f430b">6.1.1. clangd</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#orge841632">7. 信号系统</a></li>
 <li><a href="#org12a0a19">8. 操作系统</a>
 <ul>
@@ -242,7 +250,67 @@
 </ul>
 </div>
 </div>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">&#xa0;</th>
+<th scope="col" class="org-left">NN</th>
+<th scope="col" class="org-left">TT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">一</td>
+<td class="org-left">竹笛18：20</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">二</td>
+<td class="org-left">网球</td>
+<td class="org-left">英语19：00</td>
+</tr>
+
+<tr>
+<td class="org-left">三</td>
+<td class="org-left">竹笛18：20</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">四</td>
+<td class="org-left">英语18：30</td>
+<td class="org-left">CPP18：20，英语19：00</td>
+</tr>
+
+<tr>
+<td class="org-left">五</td>
+<td class="org-left">跳舞18：30</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">六</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">英语8：30~9：30</td>
+</tr>
+
+<tr>
+<td class="org-left">天</td>
+<td class="org-left">写字10：30</td>
+<td class="org-left">数学15：20~17：50</td>
+</tr>
+</tbody>
+</table>
 <div id="outline-container-orgd09e9f8" class="outline-2">
 <h2 id="orgd09e9f8"><span class="section-number-2">1.</span> <a href="./math.html">数学</a></h2>
 <div class="outline-text-2" id="text-1">
@@ -289,6 +357,23 @@
 <p>
 总结工作中用到的工具，emacs、latex、git、软件工具等。
 </p>
+</div>
+<div id="outline-container-org3b3e2fc" class="outline-3">
+<h3 id="org3b3e2fc"><span class="section-number-3">6.1.</span> 编码</h3>
+<div class="outline-text-3" id="text-6-1">
+</div>
+<div id="outline-container-org54f430b" class="outline-4">
+<h4 id="org54f430b"><span class="section-number-4">6.1.1.</span> <a href="./clangd.html">clangd</a></h4>
+<div class="outline-text-4" id="text-6-1-1">
+<p>
+clangd是一个基于LLVM的Clang编译器前端提供的代码补全服务工具，主要用于C
+和C++的代码补全、诊断、重构等功能。它支持多种编辑器和IDE，并且通过
+Language Server Protocol (LSP) 提供服务，使得它可以很容易地集成到不同
+的开发环境中。实际使用中不需要了解clangd的细节, 只需要通过.clangd配置
+文件指导clangd行为。
+</p>
+</div>
+</div>
 </div>
 </div>
 <div id="outline-container-orge841632" class="outline-2">
@@ -392,7 +477,7 @@ org-publish-project-alist变中的blog路径，并使之生效；</li>
 <p>
 我的公钥指纹：
 </p>
-<pre class="example" id="orgca8e382">
+<pre class="example" id="org313bb96">
 pub   rsa2048 2019-05-07 [SC]
       E622 558B A9B8 4ACE 5E05  66D1 6F44 A889 D571 A5AA
 </pre>
@@ -400,7 +485,7 @@ pub   rsa2048 2019-05-07 [SC]
 <p>
 你可以使用如下命令获得我的公钥
 </p>
-<pre class="example" id="org00f8f73">
+<pre class="example" id="orgf746117">
 gpg --keyserver hkps://hkps.pool.sks-keyservers.net --search-keys bitman@163.com
 </pre>
 </div>
@@ -410,7 +495,7 @@ gpg --keyserver hkps://hkps.pool.sks-keyservers.net --search-keys bitman@163.com
 <div id="postamble" class="status">
 <p class="author">Author: 比克曼</p>
 <p class="email">Email: <a href="mailto:bitman@163.com">bitman@163.com</a></p>
-<p class="date">Created: 2026-07-12 日 12:54</p>
+<p class="date">Created: 2026-09-11 五 10:18</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
