@@ -48,22 +48,126 @@
   建立一个端到端的学习算法，可以有效地避免它们之间准则的不一致性。这种
   表示学习方法就称为深度学习（Deep Learning，DL）；目前比较有效的模型
   是神经网络，即将最后的输出层作为预测学习，其它层作为表示学习。
+** 名词
+- ERM：empirical risk minimization，经验风险最小化；
+- IID：identically & independently distributed，独立同分布；
+- ANN：artificial neural Network，人工神经网络；
+- Feature：特征；
+- Feature vector：特征向量；
+- Label：标签；
+- sample：样本；
+- data set：数据集；
+- training set：训练集；
+- test set：测试集；
+- validation set：验证集；
+- loss function：损失函数；
+- overfitting：过拟合，往往是由于训练数据少和噪声以及模型能力强等原因
+  造成的；
+- underfitting：欠拟合，一般是由于模型能力不足造成的；
+- regularization：正则化；
+- SRM：structure risk minimization，结构风险最小化；
+- learning rate：学习率；
+- BGD：batch gradient descend，批量梯度下降法，在每次迭代时需要计算每
+  个样本上损失函数的梯度并求和，计算开销很大；
+- SGD：stochastic gradient descend，随机梯度下降法，在每次迭代时只采集
+  一个样本，计算这个样本损失函数的梯度并更新参数；
+- MBGD：mini-batch gradient descend，小批量梯度下降法，是批量梯度下降
+  和随机梯度下降的折中，随机选取一小部分训练样本来计算梯度并更新参数，
+  这样既可以兼顾随机梯度下降法的优点，也可以提高训练效率。
+- Linear Regression：线性回归；
+- LSE：least square estimation，最小二乘法估计；
+- LMS：least mean squares，最小均方误差；
+- Ridge regression：岭回归，岭回归的解，可以看做是结构风险最小化准则下
+  的最小二乘法估计；
+- likehood：似然函数；
+- MLE：maximum likehood estimate，最大似然估计；
+- MAP：maximum a posteriori estimate，最大后验估计；
+- supervised learning，监督学习；
+- UL：unsupervised learning，无监督学习；
+- RL：reinforcement learning，强化学习；
+- PAC：Probably Approximately Correct，可能近似正确；
+- NFL：No Free Lunch Theorem，没有免费午餐定理，对于基于迭代的最优化
+  算法，不存在某种算法对所有问题（有限的搜索空间内）都有效。如果一个算
+  法对某些问题有效，那么它一定在另外一些问题上比纯随机搜索算法更差。也
+  就是说，不能脱离具体问题来谈论算法的优劣，任何算法都有局限性；
+- decision function：决策函数；
+- discriminant function：判别函数；
+- LR：logistic regression，logistic回归；
+- activation function：激活函数，logistics回归中，其作用是把线性函数的
+  值域从实数区间“挤压”到了 (0, 1) 之间，可以用来表示概率；
+- link function：联系函数，激活函数的逆函数；
+- perceptron：感知机；
+- SVM：support vector machine，支持向量机;
+- MANN：memory-argumented neural network，记忆增强神经网络；
+- GCN：graph convolutional network，图卷积网络；
+- MPNN：message passing neural network，消息传递网络；
+- FNN：feedforward neural network，前馈神经网络；
+- MLP：multi layer perceptron，多层感知机；
+- BP：backpropagation，反向传播算法；
+- vanishing gradient：梯度消失；
+- exploding gradient：梯度爆炸；
+- ResNet：Residual network，残差网络；
+- CNN：convolutional neural network，卷积神经网络；
+- RNN：Recurrent Neural Network，循环神经网络；
+- TDNN：Time Delay Neural Network，延时神经网络；
+- RecNN：Recursive neural network，递归神经网络；
+- PCA：principal component analysis，主成分分析；
+- LDA：Linear Discriminant Analysis，线性判别分析；
+- sparse coding：稀疏编码；
+- AE：auto encoder，自编码；
+- PDE：probabilistic density estimation，概率密度估计；
+- KDE：kernel density estimation，核密度估计；
+- SSL：semi supervised learning，半监督学习；
+- PGM：probabilistic graphical model，概率图模型；
+- SNN：stochastic neural network，随机神经网络；
+- Boltzmann Machine：玻尔兹曼机；
+- DBN：deep belief network，深度信念网络；
+- GAN：generative adversarial networks，生成对抗网络；
+- LSTM:long Short term memory，长短期记忆网络；
+- GRU：gated recurrent unit，门控循环单元；
+- GNN：graph neural network，图神经网络；
+- BERT：bidirectional encoder representations from Transformers；
+- GPT：generative pre=trained Transformer；
+- RoPE：rotary Position embedding，旋转位置编码；
+- MQA：multi-query attention，多查询注意力；
+- GQA：grouped query attention，分组查询注意力；
+- MoE：mixture of experts，混合专家模型；
+- VAE：variational auto encoder，变分自编码器；
+- MAE：masked auto encoder，掩码自编码器；
 ** 评价
+*** 分类问题
 对于分类问题，常见的评价标准有
 - 正确率
-- 准确率，accuracy
+- 准确率，accuracy：预测对的样本占总样本的比例，90%准确率意味着 100 个
+  样本里预测对了90个；当数据类别不平衡时它会严重误导；
 - 错误率，error rate，和准确率相对应；
-- 召回率和
-- F值，是一个综合指标，为查准率和查全率的调和平均；
-- 查准率，precision，也叫精确度，精度，类别c的查准率为是所有预测为类别
-  c的样本中，预测正确的比例；
+- F值，是一个综合指标，为查准率和查全率的调和平均，取值在[0,1]之间，越
+  高越好；
+- 查准率，精确率，precision，也叫精确度，精度，类别c的查准率为是所有预
+  测为类别c的样本中，预测正确的比例；精确率高意味着模型 “不乱报警”；
 - 查全率，recall，也叫召回率，类别c的查全率为是所有真实标签为类别c的样
-  本中，预测正确的比例；
+  本中，预测正确的比例；召回率高意味着模型 “不漏报”；
 - 宏平均，macro average；
 - 微平均，micro average；
 
 
-定理和理论
+两者通常是权衡关系，提高精确率的代价往往是牺牲召回率，反之亦然．比如你
+可以把 “判成诈骗” 的阈值设很高（只在极度确信时才报警），这样精确率很高
+（报警的基本都是真的），但召回率低（很多诈骗邮件被放过了）．反过来把阈
+值设得很低（只要有嫌疑就报警），召回率高（很少漏报），但精确率低（大量
+误报）．一万封邮件中有 100 封诈骗邮件．模型标出120封，其中80封确为诈骗，
+那么
+- 精确率：80/120=66.7%
+- 召回率：80/100=80%
+- F值： 为72.7%
+*** 回归问题
+- 均方误差（MSE）：所有样本预测误差的平方平均．这既是常见的训练目标，
+  也是评估指标．
+- 平均绝对误差（MAE）：所有样本预测误差的绝对值平均；比 MSE 更 “温和”，
+  不对大误差特别惩罚．当数据有大量异常值时，MAE 比 MSE 更稳健．
+- 𝑅^2决定系数：衡量模型解释数据变异的比例．
+  
+*** 定理和理论
 - PAC学习理论；
 - 没有免费午餐定理：对于基于迭代的最优化算法，不存在某种算法对所有问题
   （有限的搜索空间内）都有效。如果一个算法对某些问题有效，那么它一定在
@@ -130,80 +234,13 @@
   + norm crop，标准裁剪
 - embed
 - exp
-** 名词
-- ERM：empirical risk minimization，经验风险最小化；
-- IID：identically & independently distributed，独立同分布；
-- ANN：artificial neural Network，人工神经网络；
-- Feature：特征；
-- Feature vector：特征向量；
-- Label：标签；
-- sample：样本；
-- data set：数据集；
-- training set：训练集；
-- test set：测试集；
-- validation set：验证集；
-- loss function：损失函数；
-- overfitting：过拟合，往往是由于训练数据少和噪声以及模型能力强等原因
-  造成的；
-- underfitting：欠拟合，一般是由于模型能力不足造成的；
-- regularization：正则化；
-- SRM：structure risk minimization，结构风险最小化；
-- learning rate：学习率；
-- BGD：batch gradient descend，批量梯度下降法，在每次迭代时需要计算每
-  个样本上损失函数的梯度并求和，计算开销很大；
-- SGD：stochastic gradient descend，随机梯度下降法，在每次迭代时只采集
-  一个样本，计算这个样本损失函数的梯度并更新参数；
-- MBGD：mini-batch gradient descend，小批量梯度下降法，是批量梯度下降
-  和随机梯度下降的折中，随机选取一小部分训练样本来计算梯度并更新参数，
-  这样既可以兼顾随机梯度下降法的优点，也可以提高训练效率。
-- Linear Regression：线性回归；
-- LSE：least square estimation，最小二乘法估计；
-- LMS：least mean squares，最小均方误差；
-- Ridge regression：岭回归，岭回归的解，可以看做是结构风险最小化准则下
-  的最小二乘法估计；
-- likehood：似然函数；
-- MLE：maximum likehood estimate，最大似然估计；
-- MAP：maximum a posteriori estimate，最大后验估计；
-- supervised learning，监督学习；
-- UL：unsupervised learning，无监督学习；
-- RL：reinforcement learning，强化学习；
-- PAC：Probably Approximately Correct，可能近似正确；
-- NFL：No Free Lunch Theorem，没有免费午餐定理，对于基于迭代的最优化
-  算法，不存在某种算法对所有问题（有限的搜索空间内）都有效。如果一个算
-  法对某些问题有效，那么它一定在另外一些问题上比纯随机搜索算法更差。也
-  就是说，不能脱离具体问题来谈论算法的优劣，任何算法都有局限性；
-- decision function：决策函数；
-- discriminant function：判别函数；
-- LR：logistic regression，logistic回归；
-- activation function：激活函数，logistics回归中，其作用是把线性函数的
-  值域从实数区间“挤压”到了 (0, 1) 之间，可以用来表示概率；
-- link function：联系函数，激活函数的逆函数；
-- perceptron：感知机；
-- SVM：support vector machine，支持向量机;
-- MANN：memory-argumented neural network，记忆增强神经网络；
-- GCN：graph convolutional network，图卷积网络；
-- MPNN：message passing neural network，消息传递网络；
-- FNN：feedforward neural network，前馈神经网络；
-- MLP：multi layer perceptron，多层感知机；
-- BP：backpropagation，反向传播算法；
-- vanishing gradient：梯度消失；
-- ResNet：Residual network，残差网络；
-- CNN：convolutional neural network，卷积神经网络；
-- RNN：Recurrent Neural Network，循环神经网络；
-- TDNN：Time Delay Neural Network，延时神经网络；
-- RecNN：Recursive neural network，递归神经网络；
-- PCA：principal component analysis，主成分分析；
-- LDA：Linear Discriminant Analysis，线性判别分析；
-- sparse coding：稀疏编码；
-- AE：auto encoder，自编码；
-- PDE：probabilistic density estimation，概率密度估计；
-- KDE：kernel density estimation，核密度估计；
-- SSL：semi supervised learning，半监督学习；
-- PGM：probabilistic graphical model，概率图模型；
-- SNN：stochastic neural network，随机神经网络；
-- Boltzmann Machine：玻尔兹曼机；
-- DBN：deep belief network，深度信念网络；
-- GAN：generative adversarial networks，生成对抗网络；
+** 损失函数
+三个常用的损失函数
+- 均方误差：适合回归任务．它假设误差是对称的，正负偏差惩罚一样；对大误
+  差惩罚重；
+- 交叉熵：适合分类任务．它对 “自信而错” 惩罚极重，对 “不确定” 惩罚较轻；
+- 0-1损失：错几个就是几．最直观，但不可导，没法用梯度下降优化．实际中
+  一般只用于评价模型表现（比如 “准确率”），而不是用于训练模型；
 * 监督学习模型
 ** 线性模型
 线性模型，指通过样本特征的线性组合来进行预测的模型。
@@ -320,6 +357,16 @@
 - 即时奖励r(s,a,s′)是一个标量函数，即智能体根据当前状态s做出动作a之后，
   环境会反馈给智能体一个奖励，这个奖励也经常和下一个时刻的状态s′有关。
 ** 序列生成模型
+** Transformer
+一个 Transformer 层（Block）由四个部分组成：
+- 多头自注意力：让序列中任意两个位置直接交互；
+- 前馈网络（FFN）：每个位置独立地经过同一组前馈网络参数，经典形式是中
+  间带非线性的两次线性变换．它的作用是在聚合了跨位置信息之后，给每个位
+  置做一次 “深加工”．在许多常见配置中，FFN 占据层内的大部分参数；
+- 残差连接：第3章和第4章讲过，每个子模块的输入直接加到输出上，为信息和
+  梯度增加跨层路径；
+- 层规范化（LayerNorm）：第4章讲过，在每次子模块计算前或后做一次规范化，
+  稳定训练；
 * 监督学习优化
 参数分为权重参数和超参数，参数优化的方法有很多种也分若干个阶段。
 - 小批量梯度下降法；
@@ -402,3 +449,27 @@
     1. 直方图方法
     2. 核密度方法
     3. K近邻方法
+* 大语言模型
+** 大语言模型
+|-----------+-----------|
+| 大语言模型 | 出品方     |
+|-----------+-----------|
+|-----------+-----------|
+| claude    | Anthropic |
+| gemini    | Google    |
+| llama     | Meta      |
+| Qwen      | 阿里       |
+| Deepseek  | Deepseek  |
+| Kimi      | 月之暗面   |
+| ChatGPT   | OpenAI    |
+|-----------+-----------|
+** Agent
+
+|-------------+-----------|
+| Agent       | 出品方     |
+|-------------+-----------|
+|-------------+-----------|
+| Codex       | OpenAI    |
+| Claude Code | Anthropic |
+| OpenClaw    | 开源        |
+|-------------+-----------|
