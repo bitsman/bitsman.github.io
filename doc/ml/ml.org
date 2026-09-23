@@ -134,6 +134,7 @@
 - MoE：mixture of experts，混合专家模型；
 - VAE：variational auto encoder，变分自编码器；
 - MAE：masked auto encoder，掩码自编码器；
+- MDP：markov decision Process，马尔科夫决策过程；
 ** 评价
 *** 分类问题
 对于分类问题，常见的评价标准有
