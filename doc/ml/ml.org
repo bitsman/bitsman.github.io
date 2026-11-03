@@ -140,6 +140,7 @@
   学习；
 - MCP：model context protocol，模型上下文协议；
 - A2A：Agent to Agent，智能体到智能体协议；
+- RAG：retrieval-augmented generation，检索增强生成；
 ** 评价
 *** 分类问题
 对于分类问题，常见的评价标准有
